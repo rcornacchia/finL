@@ -3,29 +3,29 @@
 
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA COLON AT
-%token POWER
+(*%token POWER *)
 %token PLUS MINUS TIMES DIVIDE
-%token MOD
-%token ASSIGN AASSIGN SASSIGN MASSIGN DASSIGN
-%token EQ GEQ GT LEQ LT
+(*%token MOD *)
+%token ASSIGN (* AASSIGN SASSIGN MASSIGN DASSIGN
+%token EQ GEQ GT LEQ LT *)
 %token RETURN WHILE WHEN IF ELSE ELSEIF VOID NULL BREAK
-%token AND OR NOT
+(*%token AND OR NOT *)
 %token INTD FLOATD PERCENT ARRAY STRING CURR STOCK ORDER PF FUNC
 %token <int> INT
-%token <float> FLOAT
+(* %token <float> FLOAT *)
 %token <string> STR
-%token <percent> FLOAT
-%token <currency> FLOAT
+(* %token <percent> FLOAT
+%token <currency> FLOAT *)
 %token EOF
 
-%nonassoc ELSE
-%right ASSIGN AASSIGN SASSIGN MASSIGN DASSIGN
-%left EQ
-%left GEQ GT LEQ LT
+(* %nonassoc ELSE *)
+%right ASSIGN (* AASSIGN SASSIGN MASSIGN DASSIGN *)
+/*%left EQ*/
+/*%left GEQ GT LEQ LT*/
 %left PLUS MINUS
-%left TIMES DIVIDE MOD
-%left OR
-%left AND
+/*%left TIMES DIVIDE MOD*/
+/*%left OR*/
+/*%left AND*/
 
 %start program
 %type <Ast.program> program
@@ -43,7 +43,7 @@ fdecl:
   {
     { fname = $3;
       formals = $5;
-      funcBody = list.rev $6;
+      funcBody = List.rev $9;
     }
   }
 
@@ -72,13 +72,12 @@ statement:
   expression SEMI
 
 expression:
+ INT  {Int($1)}
+ | VAR  {Var($1)}
+ | expression PLUS expression  { Binop($1, Add, $3) }
+ | VAR ASSIGN expression  { Assign($1, $3) }
+ | VAR LPAREN expression RPAREN { Call($1, $3)}
+ | LPAREN expression RPAREN   { $2 }
+
+
  
-
-
-
-
-
-
-    }}
-
-vdecl
