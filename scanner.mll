@@ -3,7 +3,7 @@
 let letter = ['a'-'z' 'A'-'Z']
 let digit = ['0'-'9']
 
-rule token = parse 
+rule token = parse
 	[' ' '\t' '\r' '\n']     { token lexbuf }
 	| '#'                    { comment lexbuf }
 	| '('                    { LPAREN }
@@ -56,7 +56,8 @@ rule token = parse
 	| digit+ as i            { INT(int_of_string i) }
 	| digit*'.'digit+ as flt { FLOAT(float_of_string flt) }
 	| '"'[^ '"']'"' as str   { STR(str) }
+	| eof                  					{ EOF }
 
-and comment = parse 
+and comment = parse
 	'\n' { token lexbuf }
 	| _  { comment lexbuf }
