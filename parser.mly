@@ -53,7 +53,7 @@ args:
 
 arg_list:
   VAR   { [$1] }
-  | formal_list COMMA VAR   {$3 :: $1}
+  | arg_list COMMA VAR   {$3 :: $1}
 
 vdecl_list:
   { [] }
@@ -78,6 +78,3 @@ expression:
  | VAR ASSIGN expression  { Assign($1, $3) }
  | VAR LPAREN expression RPAREN { Call($1, $3)}
  | LPAREN expression RPAREN   { $2 }
-
-
- 
