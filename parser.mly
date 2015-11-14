@@ -18,7 +18,7 @@
 %token <currency> FLOAT
 %token EOF
 
-%nonassoc ELSE 
+%nonassoc ELSE
 %right ASSIGN AASSIGN SASSIGN MASSIGN DASSIGN
 %left EQ
 %left GEQ GT LEQ LT
@@ -26,3 +26,59 @@
 %left TIMES DIVIDE MOD
 %left OR
 %left AND
+
+%start program
+%type <Ast.program> program
+
+
+%%
+program:
+	/* nothing */				{ [] }
+	| program vdecl 			{ ($2 :: fst $1), snd $1 }
+  | program fdecl     {fst $1, ($2 :: snd $1) }
+
+fdecl:
+  FUNC type VAR LPAREN args RPAREN COLON
+  LBRACE statement_list RBRACE
+  {
+    { fname = $3;
+      formals = $5;
+      funcBody = list.rev $6;
+    }
+  }
+
+args:
+  { [] }
+  | arg_list {List.rev $1}
+
+arg_list:
+  VAR   { [$1] }
+  | formal_list COMMA VAR   {$3 :: $1}
+
+vdecl_list:
+  { [] }
+  | vdecl_list vdecl  { $2 :: $1}
+
+vdecl:
+  INT VAR SEMI  {$2}
+  | STRING VAR SEMI {$2}
+  (* TODO dont forget other types!!! *)
+
+statement_list:
+  { [] }
+  | statement_list statement  {$2 :: $1}
+
+statement:
+  expression SEMI
+
+expression:
+ 
+
+
+
+
+
+
+    }}
+
+vdecl
