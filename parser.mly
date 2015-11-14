@@ -10,7 +10,7 @@
 %token EQ GEQ GT LEQ LT */
 %token RETURN WHILE WHEN IF ELSE ELSEIF VOID NULL BREAK
 /*%token AND OR NOT */
-%token INTD FLOATD PERCENT ARRAY STRING CURR STOCK ORDER PF FUNC
+%token INTD /* FLOATD PERCENT ARRAY STRING CURR STOCK ORDER PF FUNC */
 %token <int> INT
 /* %token <float> FLOAT */
 %token <string> STR
@@ -62,14 +62,14 @@ vdecl_list:
 vdecl:
   INT VAR SEMI  {$2}
   | STRING VAR SEMI {$2}
-  (* TODO dont forget other types!!! *)
+  /* TODO dont forget other types!!! */
 
 statement_list:
   { [] }
   | statement_list statement  {$2 :: $1}
 
 statement:
-  expression SEMI
+  expression SEMI { Expr($1) }
 
 expression:
  INT  {Int($1)}

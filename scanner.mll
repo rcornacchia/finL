@@ -56,7 +56,7 @@ rule token = parse
 	| digit+ as i            { INT(int_of_string i) }
 	| digit*'.'digit+ as flt { FLOAT(float_of_string flt) }
 	| '"'[^ '"']'"' as str   { STR(str) }
-	| eof                  					{ EOF }
+	| eof                  	 { EOF }
 
 and comment = parse
 	'\n' { token lexbuf }
