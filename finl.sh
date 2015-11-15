@@ -1,2 +1,3 @@
 #!/bin/sh
-./finl -c < $1
+javac -c $1
+java 
