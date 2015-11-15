@@ -1,18 +1,18 @@
 %{ open Ast %}
 
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA COLON AT
+%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA COLON /*AT*/
 /*%token POWER */
 %token PLUS MINUS TIMES DIVIDE
 /*%token MOD */
 %token ASSIGN /* AASSIGN SASSIGN MASSIGN DASSIGN */
 %token EQ GEQ GT LEQ LT
-%token RETURN /*WHILE WHEN IF ELSE ELSEIF VOID NULL BREAK*/
+/*%token RETURN WHILE WHEN IF ELSE ELSEIF VOID NULL BREAK*/
 /*%token AND OR NOT */
 %token INTD STRINGD /* FLOATD PERCENT ARRAY STRING CURR STOCK ORDER PF */ FUNC
 %token <int> INT
 /* %token <float> FLOAT */
-%token <string> STRING
+/*%token <string> STRING*/
 /* %token <percent> FLOAT
 %token <currency> FLOAT */
 %token <string> VAR
@@ -27,15 +27,18 @@
 /*%left OR*/
 /*%left AND*/
 
-%start expression /*program*/
-%type <Ast.expression> expression /*<Ast.program> program*/
+%start /*expression*/ program
+%type /*<Ast.expression> expression*/ <Ast.program> program
 
 
 %%
 program:
-	/* nothing */				{ [], []}
-	| program vdecl 			{ ($2 :: fst $1), snd $1 }
-  | program fdecl     {fst $1, ($2 :: snd $1) }
+  decls EOF { $1 }
+
+decls:
+	/* nothing */				{ [], [] }
+	| decls vdecl 			{ ($2 :: fst $1), snd $1 }
+  | decls fdecl     {fst $1, ($2 :: snd $1) }
 
 fdecl:
   FUNC /*type*/ VAR LPAREN args RPAREN COLON
