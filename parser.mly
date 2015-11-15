@@ -3,10 +3,10 @@
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA COLON AT
 /*%token POWER */
-%token PLUS MINUS /*TIMES DIVIDE*/
+%token PLUS MINUS TIMES DIVIDE
 /*%token MOD */
-%token ASSIGN /* AASSIGN SASSIGN MASSIGN DASSIGN
-%token EQ GEQ GT LEQ LT */
+%token ASSIGN /* AASSIGN SASSIGN MASSIGN DASSIGN */
+%token EQ GEQ GT LEQ LT
 %token RETURN /*WHILE WHEN IF ELSE ELSEIF VOID NULL BREAK*/
 /*%token AND OR NOT */
 %token INTD STRINGD /* FLOATD PERCENT ARRAY STRING CURR STOCK ORDER PF */ FUNC
@@ -20,10 +20,10 @@
 
 /* %nonassoc ELSE */
 %right ASSIGN /* AASSIGN SASSIGN MASSIGN DASSIGN */
-/*%left EQ*/
-/*%left GEQ GT LEQ LT*/
+%left EQ
+%left GEQ GT LEQ LT
 %left PLUS MINUS
-/*%left TIMES DIVIDE MOD*/
+%left TIMES DIVIDE /* MOD POWER */
 /*%left OR*/
 /*%left AND*/
 
@@ -55,7 +55,7 @@ args:
 
 arg_list:
   VAR   { [$1] }
-  | arg_list COMMA VAR   {$3 :: $1}
+  | arg_list COMMA VAR /* would this be an expression */  {$3 :: $1}
 
 /* vdecl_list:
   { [] }
@@ -77,6 +77,14 @@ expression:
  INT  {Int($1)}
  | VAR  {Var($1)}
  | expression PLUS expression  { Binop($1, Add, $3) }
+ | expression MINUS  expression { Binop($1, Sub, $3) }
+ | expression TIMES expression { Binop($1, Mult, $3 ) }
+ | expression DIVIDE expression { Binop($1, Div, $3) }
+ | expression EQ expression { Binop($1, Equal, $3) }
+ | expression LT expression { Binop($1, Less, $3) }
+ | expression LEQ expression { Binop($1, Leq, $3) }
+ | expression GT expression { Binop($1, Greater, $3) }
+ | expression GEQ expression { Binop($1, Geq, $3) }
  | VAR ASSIGN expression  { Assign($1, $3) }
  | VAR LPAREN expression RPAREN { Call($1, $3)} /* should be able to call multiple parameters */
  | LPAREN expression RPAREN   { $2 }

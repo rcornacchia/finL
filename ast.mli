@@ -1,4 +1,4 @@
-type op = Add
+type op = Add | Sub | Mult | Div | Equal | Less | Leq | Greater | Geq
 
 type expression =
   Int of int

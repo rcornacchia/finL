@@ -16,15 +16,15 @@ rule token = parse
 	| '@'                    { AT }
 	| '+'                    { PLUS }
 	| '-'                    { MINUS }
-	(*| '*'                    { TIMES }
+	| '*'                    { TIMES }
 	| '/'                    { DIVIDE }
-	| '%'                    { MOD }
-	| "**"                   { POWER }
+	(*| '%'                    { MOD }
+	| "**"                   { POWER }*)
 	| '<'                    { LT }
 	| "<="                   { LEQ }
 	| '>'                    { GT }
 	| ">="                   { GEQ }
-	| '='                    { EQ }*)
+	| '='                    { EQ }
 	| "<<"                   { ASSIGN }
 	(*| "+<<"                  { AASSIGN }
 	| "-<<"                  { SASSIGN }
@@ -52,7 +52,7 @@ rule token = parse
 	| "function"             { FUNC }
 	| "return"               { RETURN }
 	(*| "void"                 { VOID }*)
-	| letter+ as var   { VAR(var) }
+	| letter+ as var   { VAR(var) } (* add underscores to variable names *)
 	| digit+ as i            { INT(int_of_string i) }
 	(*| digit*'.'digit+ as flt { FLOAT(float_of_string flt) }*)
 	| '"'[^ '"']'"' as str   { STRING(str) }
