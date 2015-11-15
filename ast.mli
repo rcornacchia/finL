@@ -5,15 +5,16 @@ type expression =
   | Var of string
   | Binop of expression * op * expression
   | Assign of string * expression
-  | Call of string * expression list
+  | Call of string * expression
 
 type statement =
   Expr of expression
 
 type func_decl = {
+  (*rtype : string;*)
   fname : string;
   formals : string list;
-  body : statement list;
+  funcBody : statement list;
 }
 
-type program = string list * func decl_list
+type program = string list * func_decl list

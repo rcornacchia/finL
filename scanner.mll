@@ -16,7 +16,7 @@ rule token = parse
 	| '@'                    { AT }
 	| '+'                    { PLUS }
 	| '-'                    { MINUS }
-	| '*'                    { TIMES }
+	(*| '*'                    { TIMES }
 	| '/'                    { DIVIDE }
 	| '%'                    { MOD }
 	| "**"                   { POWER }
@@ -24,9 +24,9 @@ rule token = parse
 	| "<="                   { LEQ }
 	| '>'                    { GT }
 	| ">="                   { GEQ }
-	| '='                    { EQ }
+	| '='                    { EQ }*)
 	| "<<"                   { ASSIGN }
-	| "+<<"                  { AASSIGN }
+	(*| "+<<"                  { AASSIGN }
 	| "-<<"                  { SASSIGN }
 	| "*<<"                  { MASSIGN }
 	| "/<<"                  { DASSIGN }
@@ -38,24 +38,24 @@ rule token = parse
 	| '!'                    { ELSE }
 	| "while"                { WHILE }
 	| "when"                 { WHEN }
-	| "break"                { BREAK }
+	| "break"                { BREAK }*)
 	| "int"                  { INTD }
-	| "float"                { FLOATD }
+	(*| "float"                { FLOATD }
 	| "percent"              { PERCENT }
 	| "null"                 { NULL }
-	| "array"                { ARRAY }
-	| "string"               { STRING }
-	| "currency"             { CURR }
+	| "array"                { ARRAY }*)
+	| "string"               { STRINGD }
+	(*| "currency"             { CURR }
 	| "stock"                { STOCK }
 	| "order"                { ORDER }
-	| "portfolio"            { PF }
+	| "portfolio"            { PF }*)
 	| "function"             { FUNC }
 	| "return"               { RETURN }
-	| "void"                 { VOID }
-	| [letter '_']+ as var   { VAR(var) }
+	(*| "void"                 { VOID }*)
+	| letter+ as var   { VAR(var) }
 	| digit+ as i            { INT(int_of_string i) }
-	| digit*'.'digit+ as flt { FLOAT(float_of_string flt) }
-	| '"'[^ '"']'"' as str   { STR(str) }
+	(*| digit*'.'digit+ as flt { FLOAT(float_of_string flt) }*)
+	| '"'[^ '"']'"' as str   { STRING(str) }
 	| eof                  	 { EOF }
 
 and comment = parse
