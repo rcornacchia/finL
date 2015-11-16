@@ -14,5 +14,5 @@ make :
 
 .PHONY : clean
 clean :
-	rm -f interpret parser.ml parser.mli scanner.ml \
-	*.cmo *.cmi *.output
+	rm -f finl parser.ml parser.mli scanner.ml \
+	*.cmo *.cmi *.output *.finl

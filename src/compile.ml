@@ -21,18 +21,19 @@ let rec compile_expression = function
 
 let compile_statement = function
   Expr(expr) -> compile_expression expr ^ ";"
-  (*DECLARATIONS*)
+  | Stringdecl(str) -> "String " ^ str ^ ";"
+  (*INTDECL*)
 
 let compile_fdecl (func: Ast.func_decl) =
   "public static void " ^
   func.name ^
   (* ADD ARGUMENTS!!!!!! / remove hardcoding *)
-  "(String[] args) {\n" ^
+  "(String[] args) {\n\t\t" ^
   String.concat "\n" (List.map compile_statement func.body) ^
-  "}"
+  "\n}"
 
 let compile (prog: Ast.program) =
-  "public class finl{\n" ^
+  "public class finl{\n\t" ^
   (*String.concat "\n" (List.map compile_vdecl prog.vdecls) ^*)
   String.concat "\n" (List.map compile_fdecl prog.fdecls) ^
   "\n}"

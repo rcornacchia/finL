@@ -1,5 +1,6 @@
 function main(): {
-	"hello world";
+	string str;
+	str << "helloworld";
 }
 
 main();
