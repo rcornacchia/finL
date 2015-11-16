@@ -17,4 +17,4 @@ type func_decl = {
   funcBody : statement list;
 }
 
-type program = string list * func_decl list
+type program = {vdecls: string list; fdecls: func_decl list }
