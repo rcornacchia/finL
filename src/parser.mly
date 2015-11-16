@@ -45,9 +45,9 @@ fdecl:
   {
     {
       (*rtype = $2;*)
-      fname = $2;
+      name = $2;
       formals = $4;
-      funcBody = List.rev $8;
+      body = List.rev $8;
     }
   }
 

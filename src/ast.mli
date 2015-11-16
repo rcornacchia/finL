@@ -12,9 +12,9 @@ type statement =
 
 type func_decl = {
   (*rtype : string;*)
-  fname : string;
+  name : string;
   formals : string list;
-  funcBody : statement list;
+  body : statement list;
 }
 
-type program = {vdecls: string list; fdecls: func_decl list }
+type program = string list * func_decl list;
