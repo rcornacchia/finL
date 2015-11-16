@@ -2,13 +2,17 @@ type op = Add | Sub | Mult | Div | Equal | Less | Leq | Greater | Geq
 
 type expression =
   Int of int
+  | String of string
   | Var of string
   | Binop of expression * op * expression
   | Assign of string * expression
   | Call of string * expression
+  | Noexpr
 
 type statement =
   Expr of expression
+  | Intdecl of string
+  | Stringdecl of string
 
 type func_decl = {
   (*rtype : string;*)
@@ -17,7 +21,7 @@ type func_decl = {
   body : statement list;
 }
 
-type program = {
-  vdecls : string list;
-  fdecls : func_decl list;
+type program = { 
+    statements : statement list;
+    fdecls : func_decl list;
 }

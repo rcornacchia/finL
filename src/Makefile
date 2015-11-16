@@ -1,6 +1,6 @@
 .PHONY : make
 make :
-	ocamlc -c ast.mli
+	ocamlc -c ast.ml
 	ocamlyacc -v parser.mly
 	ocamlc -c parser.mli
 	ocamlc -c parser.ml
@@ -9,7 +9,7 @@ make :
 	#ocamlc -c interpret.ml
 	ocamlc -c compile.ml
 	ocamlc -c finlc.ml
-	ocamlc -o finlc ast.cmo parser.cmo scanner.cmo compile.cmo finl.cmo
+	ocamlc -o finlc ast.cmo parser.cmo scanner.cmo compile.cmo finlc.cmo
 
 
 .PHONY : clean

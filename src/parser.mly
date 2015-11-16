@@ -33,11 +33,12 @@
 
 %%
 program:
-  decls EOF { $1 }
+  lines EOF { $1 }
 
-decls:
-	| decls vdecl 			{ ($2 :: fst $1), snd $1 }
-  | decls fdecl     {fst $1, ($2 :: snd $1) }
+lines:
+  /* nothing */ { { statements = []; fdecls = [] } }
+  | lines statement { { statements = ($2 :: $1.statements); fdecls = $1.fdecls } }
+  | lines fdecl { { statements = $1.statements; fdecls = ($2 :: $1.fdecls) } }
 
 fdecl:
   FUNC /*type*/ VAR LPAREN args RPAREN COLON
@@ -59,24 +60,17 @@ arg_list:
   VAR   { [$1] }
   | arg_list COMMA VAR /* would this be an expression */  {$3 :: $1}
 
-/* vdecl_list:
-  { [] }
-  | vdecl_list vdecl  { $2 :: $1} */
-
-vdecl:
-  INTD VAR SEMI  {$2}
-  | STRINGD VAR SEMI {$2}
-  /* TODO dont forget other types!!! */
-
 statement_list:
   { [] }
   | statement_list statement  {$2 :: $1}
 
 statement:
   expression SEMI { Expr($1) }
+  | INTD VAR SEMI  { Intdecl($2) }
+  | STRINGD VAR SEMI { Stringdecl($2) }
 
 expression:
- INT  {Int($1)}
+ STRING  {String($1)}
  | VAR  {Var($1)}
  | expression PLUS expression  { Binop($1, Add, $3) }
  | expression MINUS  expression { Binop($1, Sub, $3) }
@@ -88,8 +82,13 @@ expression:
  | expression GT expression { Binop($1, Greater, $3) }
  | expression GEQ expression { Binop($1, Geq, $3) }
  | VAR ASSIGN expression  { Assign($1, $3) }
- | VAR LPAREN expression RPAREN { Call($1, $3)} /* should be able to call multiple parameters */
+ | VAR LPAREN expression_option RPAREN { Call($1, $3)} /* should be able to call multiple parameters*/
  | LPAREN expression RPAREN   { $2 }
+
+expression_option:
+ /* nothing */ { Noexpr }
+ | expression { $1 }
+
 
 /*type:
   INTD { "int" }*/
