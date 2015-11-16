@@ -7,12 +7,12 @@
 /*%token MOD */
 %token ASSIGN /* AASSIGN SASSIGN MASSIGN DASSIGN */
 %token EQ GEQ GT LEQ LT
-/*%token RETURN WHILE WHEN IF ELSE ELSEIF VOID NULL BREAK*/
+%token RETURN /*WHILE WHEN IF ELSE ELSEIF VOID NULL BREAK*/
 /*%token AND OR NOT */
 %token INTD STRINGD /* FLOATD PERCENT ARRAY STRING CURR STOCK ORDER PF */ FUNC
 %token <int> INT
 /* %token <float> FLOAT */
-/*%token <string> STRING*/
+%token <string> STRING
 /* %token <percent> FLOAT
 %token <currency> FLOAT */
 %token <string> VAR

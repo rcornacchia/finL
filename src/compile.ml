@@ -8,7 +8,7 @@ let compile (prog: Ast.program) =
   String.concat "\n" (List.map compile_fdecl prog.fdecls) ^
   "\n}"
 
-let compile_vdecl () =
+(*let compile_vdecl () =*)
 
 let compile_fdecl (func: Ast.func_decl) =
   "public static void " ^

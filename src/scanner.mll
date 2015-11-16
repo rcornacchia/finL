@@ -13,7 +13,7 @@ rule token = parse
 	| ':'                    { COLON }
 	| ';'                    { SEMI }
 	| ','                    { COMMA }
-	| '@'                    { AT }
+	(*| '@'                    { AT }*)
 	| '+'                    { PLUS }
 	| '-'                    { MINUS }
 	| '*'                    { TIMES }
