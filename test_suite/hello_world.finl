@@ -1,6 +1,7 @@
 function main(): {
 	string str;
 	str << "helloworld";
+	print(str);
 }
 
 main();

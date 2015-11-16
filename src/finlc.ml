@@ -16,5 +16,7 @@ let program = Parser.program Scanner.token lexbuf in
   | Interpret -> print_string "to do"
   | Compile ->
     let compiled_program = Compile.compile program in
-    let file = open_out ("finl.java") in
-   	fprintf file "%s"  compiled_program; 
+    let file = open_out "finl.java" in
+   	fprintf file "%s"  compiled_program;
+    close_out file; 
+    ignore (Sys.command "javac finl.java")

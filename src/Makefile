@@ -11,8 +11,7 @@ make :
 	ocamlc -c finlc.ml
 	ocamlc -o finlc ast.cmo parser.cmo scanner.cmo compile.cmo finlc.cmo
 
-
 .PHONY : clean
 clean :
-	rm -f finl parser.ml parser.mli scanner.ml \
-	*.cmo *.cmi *.output *.finl
+	rm -f finlc parser.ml parser.mli scanner.ml \
+	*.cmo *.cmi *.output *.finl *.class *.java
