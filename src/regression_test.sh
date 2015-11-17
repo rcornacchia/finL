@@ -6,7 +6,7 @@ do
 	echo "Compiling $FILENAME ..."
 	EXECUTABLE="${FILENAME%.*}"
 	./finlc $file
-	echo "Running $FILENAME ..."
+	echo "Running $EXECUTABLE ..."
 	./finl.sh $EXECUTABLE > "$EXECUTABLE.log"
 	DIFF=$(diff $EXECUTABLE.log ../test_suite/$EXECUTABLE.out)
 	if [ "$DIFF" = "" ]
