@@ -14,4 +14,4 @@ make :
 .PHONY : clean
 clean :
 	rm -f finlc parser.ml parser.mli scanner.ml \
-	*.cmo *.cmi *.output *.finl *.class *.java
+	*.cmo *.cmi *.output *.class *.java *.finl 

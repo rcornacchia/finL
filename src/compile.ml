@@ -37,8 +37,8 @@ let compile_fdecl (func: Ast.func_decl) =
   String.concat "\n" (List.map compile_statement func.body) ^
   "\n}"
 
-let compile (prog: Ast.program) =
-  "public class finl {\n" ^
+let compile (prog: Ast.program) (filename: string) =
+  "public class " ^ filename ^ " {\n" ^
   String.concat "\n" (List.map compile_fdecl prog.fdecls) ^
   (*String.concat "\n" (List.map compile_statements prog.statements) ^*)
   "\n}"
