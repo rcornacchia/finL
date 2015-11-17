@@ -3,6 +3,7 @@ function main(): {
 	i << 3 + 3;
 	print(i + 3);
 	print(3);
+	print("\n");
 }
 
 main();
