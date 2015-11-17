@@ -70,7 +70,8 @@ statement:
   | STRINGD VAR SEMI { Stringdecl($2) }
 
 expression:
- STRING  {String($1)}
+ INT {Int($1)}
+ | STRING  {String($1)}
  | VAR  {Var($1)}
  | expression PLUS expression  { Binop($1, Add, $3) }
  | expression MINUS  expression { Binop($1, Sub, $3) }
