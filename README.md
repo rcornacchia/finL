@@ -1,15 +1,28 @@
-# Class project for Programming Languages and Translators
+# finL
 
-
-Package manager and IDE:
+Package Manager and IDE
+-----------------------
 
 http://opam.ocaml.org/doc/Install.html
 
 http://www.typerex.org/ocaml-top.html
 
+Compiling Compiler
+------------------
 
+$ make
 
-In order to test Hello World:
+Compiling finL Programs
+-----------------------
 
-001     ./finlc < ../test_suite/arith_test.finl
-002     ./finlsh .finl
+$ ./finlc [filename]
+
+Running finL Programs
+---------------------
+
+$ ./finl.sh [executable]
+
+Running Test Suite
+------------------
+
+$ ./regression_test.sh
