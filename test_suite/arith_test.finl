@@ -1,7 +1,7 @@
 function main(): {
 	int i;
 	i << 3 + 3;
-	#print(i + 3);
+	print(i + 3);
 	print(3);
 }
 
