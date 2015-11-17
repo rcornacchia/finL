@@ -2,7 +2,9 @@ function main(): {
 	string str;
 	str << "hello world\n";
 	print(str);
-	print("hello world\n");
+	print("hello edwards\n");
+	str << "goodnight moon\n";
+	print(str);
 }
 
 main();
