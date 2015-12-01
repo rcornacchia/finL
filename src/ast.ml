@@ -25,3 +25,6 @@ type program = {
     statements : statement list;
     fdecls : func_decl list;
 }
+
+let string_of_program (prog: program) =
+  "string of program\n"

@@ -52,7 +52,7 @@ rule token = parse
 	| "function"             { FUNC }
 	| "return"               { RETURN }
 	(*| "void"                 { VOID }*)
-	| letter+ as var   { VAR(var) } (* add underscores to variable names *)
+	| letter+ as var   { VAR(var) } (* add underscores to variable names and numbers *)
 	| digit+ as i            { INT(int_of_string i) }
 	(*| digit*'.'digit+ as flt { FLOAT(float_of_string flt) }*)
 	| '"'('\\'_|[^'"'])*'"' as str   { STRING(str) }

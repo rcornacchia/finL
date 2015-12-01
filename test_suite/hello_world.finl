@@ -1,4 +1,4 @@
-function main(): {
+function mainn(): {
 	string str;
 	str << "hello world\n";
 	print(str);
@@ -7,4 +7,4 @@ function main(): {
 	print(str);
 }
 
-main();
+mainn();

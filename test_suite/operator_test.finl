@@ -1,4 +1,4 @@
-function mai(): {
+function mainn(): {
 
   print(1+1);
   print("\n");
@@ -10,4 +10,4 @@ function mai(): {
   print("\n");
 }
 
-mai();
+mainn();

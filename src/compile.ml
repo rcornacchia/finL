@@ -32,13 +32,16 @@ let compile_statement = function
 let compile_fdecl (func: Ast.func_decl) =
   "public static void " ^
   func.name ^
-  (* ADD ARGUMENTS!!!!!! / remove hardcoding *)
-  "(String[] args) {\n" ^
+  (* ADD ARGUMENTS!!!!!! *)
+  "() {\n" ^
   String.concat "\n" (List.map compile_statement func.body) ^
   "\n}"
 
 let compile (prog: Ast.program) (filename: string) =
-  "public class " ^ filename ^ " {\n" ^
+  "public class " ^ 
+  filename ^ 
+  " {\n" ^
   String.concat "\n" (List.map compile_fdecl prog.fdecls) ^
-  (*String.concat "\n" (List.map compile_statements prog.statements) ^*)
-  "\n}"
+  "\npublic static void main(String[] args) {\n" ^
+  String.concat "\n" (List.map compile_statement prog.statements) ^
+  "\n}\n}"
