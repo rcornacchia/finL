@@ -8,8 +8,9 @@ make :
 	ocamlc -c scanner.ml
 	#ocamlc -c interpret.ml
 	ocamlc -c compile.ml
+	ocamlc -c semantics.ml
 	ocamlc -c finlc.ml
-	ocamlc -o finlc ast.cmo parser.cmo scanner.cmo compile.cmo finlc.cmo
+	ocamlc -o finlc ast.cmo parser.cmo scanner.cmo compile.cmo semantics.cmo finlc.cmo
 
 .PHONY : clean
 clean :

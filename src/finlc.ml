@@ -17,7 +17,8 @@ let _ =
       let start = last_slash + 1 in
       let name = sub Sys.argv.(1) start ((length Sys.argv.(1)) - 5 - start) in     
       let write_file = open_out (name ^ ".java") in
-      let compiled_program = Compile.compile program name in
+      let checked_program = Semantics.analyze program in
+      let compiled_program = Compile.compile checked_program name in
         fprintf write_file "%s" compiled_program;
         close_out write_file; 
         ignore (Sys.command ("javac " ^ name ^ ".java")) end

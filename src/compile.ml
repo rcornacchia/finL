@@ -11,7 +11,7 @@ let string_of_op = function
 	| Greater -> ">"
 	| Geq -> ">="
 
-let check_function name =
+let check_function (name: string) =
   if name = "print" then "System.out.print"
   else name
 
