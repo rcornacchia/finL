@@ -17,7 +17,7 @@ type statement =
 type func_decl = {
   (*rtype : string;*)
   name : string;
-  formals : string list;
+  formals : expression list;
   body : statement list;
 }
 

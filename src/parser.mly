@@ -57,8 +57,8 @@ args:
   | arg_list {List.rev $1}
 
 arg_list:
-  VAR   { [$1] }
-  | arg_list COMMA VAR /* would this be an expression */  {$3 :: $1}
+  expression   { [$1] }
+  | arg_list COMMA expression {$3 :: $1}
 
 statement_list:
   { [] }

@@ -1,6 +1,7 @@
 .PHONY : make
 make :
 	ocamlc -c ast.ml
+	ocamlc -c sast.ml
 	ocamlyacc -v parser.mly
 	ocamlc -c parser.mli
 	ocamlc -c parser.ml
@@ -10,7 +11,7 @@ make :
 	ocamlc -c compile.ml
 	ocamlc -c semantics.ml
 	ocamlc -c finlc.ml
-	ocamlc -o finlc ast.cmo parser.cmo scanner.cmo compile.cmo semantics.cmo finlc.cmo
+	ocamlc -o finlc sast.cmo ast.cmo parser.cmo scanner.cmo compile.cmo semantics.cmo finlc.cmo
 
 .PHONY : clean
 clean :

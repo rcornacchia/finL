@@ -1,0 +1,9 @@
+function mainn(): {
+	print(1);
+}
+
+function mainn(): {
+	print(2);
+}
+
+mainn();
