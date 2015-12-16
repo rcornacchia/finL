@@ -1,5 +1,9 @@
 type op = Add | Sub | Mult | Div | Equal | Less | Leq | Greater | Geq
 
+type data_type =
+  Inttype
+  | Stringtype
+
 type expression =
   Int of int
   | String of string
@@ -7,12 +11,11 @@ type expression =
   | Binop of expression * op * expression
   | Assign of string * expression
   | Call of string * expression
+  | Vdecl of data_type * string
   | Noexpr
 
 type statement =
   Expr of expression
-  | Intdecl of string
-  | Stringdecl of string
 
 type func_decl = {
   (*rtype : string;*)

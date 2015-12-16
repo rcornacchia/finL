@@ -53,12 +53,16 @@ fdecl:
   }
 
 args:
-  { [] }
+  /* no arguments */ { [] }
   | arg_list {List.rev $1}
 
 arg_list:
-  expression   { [$1] }
-  | arg_list COMMA expression {$3 :: $1}
+  declaration   { [$1] }
+  | arg_list COMMA declaration {$3 :: $1}
+
+declaration:
+  INTD VAR { Vdecl(Inttype, $2) }
+  | STRINGD VAR { Vdecl(Stringtype, $2) }
 
 statement_list:
   { [] }
@@ -66,13 +70,12 @@ statement_list:
 
 statement:
   expression SEMI { Expr($1) }
-  | INTD VAR SEMI  { Intdecl($2) }
-  | STRINGD VAR SEMI { Stringdecl($2) }
 
 expression:
- INT {Int($1)}
- | STRING  {String($1)}
- | VAR  {Var($1)}
+ INT { Int($1) }
+ | STRING  { String($1) }
+ | VAR  { Var($1) }
+ | declaration { $1 }
  | expression PLUS expression  { Binop($1, Add, $3) }
  | expression MINUS  expression { Binop($1, Sub, $3) }
  | expression TIMES expression { Binop($1, Mult, $3 ) }
@@ -89,7 +92,3 @@ expression:
 expression_option:
  /* nothing */ { Noexpr }
  | expression { $1 }
-
-
-/*type:
-  INTD { "int" }*/
