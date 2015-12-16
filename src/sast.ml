@@ -4,6 +4,11 @@ type sdata_type =
   Inttype
   | Stringtype
 
+type svar_decl = {
+  sdtype : sdata_type;
+  svname : string;
+}
+
 type sexpression =
   Int of int
   | String of string
@@ -11,7 +16,7 @@ type sexpression =
   | Binop of sexpression * op * sexpression
   | Assign of string * sexpression
   | Call of string * sexpression
-  | Vdecl of sdata_type * string
+  | Vdecl of svar_decl
   | Noexpr
 
 type sstatement =
@@ -20,7 +25,7 @@ type sstatement =
 type sfunc_decl = {
   (*rtype : string;*)
   sname : string;
-  sformals : sexpression list;
+  sformals : svar_decl list;
   sbody : sstatement list;
 }
 

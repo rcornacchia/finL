@@ -4,6 +4,11 @@ type data_type =
   Inttype
   | Stringtype
 
+type var_decl = {
+  dtype : data_type;
+  vname : string;
+}
+
 type expression =
   Int of int
   | String of string
@@ -11,7 +16,7 @@ type expression =
   | Binop of expression * op * expression
   | Assign of string * expression
   | Call of string * expression
-  | Vdecl of data_type * string
+  | Vdecl of var_decl
   | Noexpr
 
 type statement =
@@ -20,7 +25,7 @@ type statement =
 type func_decl = {
   (*rtype : string;*)
   name : string;
-  formals : expression list;
+  formals : var_decl list;
   body : statement list;
 }
 

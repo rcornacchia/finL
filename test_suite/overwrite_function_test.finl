@@ -1,9 +1,9 @@
-function mainn(): {
+function main(): {
 	print(1);
 }
 
-function mainn(): {
+function main(): {
 	print(2);
 }
 
-mainn();
+main();

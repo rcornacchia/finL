@@ -15,12 +15,12 @@ let check_function (name: string) =
   if name = "print" then "System.out.print"
   else name
 
-let compile_svdecl (dtype: Sast.sdata_type) name =
-  let data_type = match dtype with
+let compile_svdecl (svdecl: Sast.svar_decl) =
+  let data_type = match svdecl.sdtype with
     Inttype -> "int"
     | Stringtype -> "String"
   in
-  data_type ^ " " ^ name
+  data_type ^ " " ^ svdecl.svname
 
 let rec compile_sexpression = function
   String(str) -> str
@@ -29,7 +29,7 @@ let rec compile_sexpression = function
   | Assign(var, expr) -> var ^ "=" ^ compile_sexpression expr
   | Var(str) -> str
   | Call(name, expr) -> check_function name ^ "(" ^ compile_sexpression expr ^ ")"
-  | Vdecl(dtype, name) -> compile_svdecl dtype name
+  | Vdecl(decl) -> compile_svdecl decl
   | Noexpr -> ""
 
 let compile_sstatement = function

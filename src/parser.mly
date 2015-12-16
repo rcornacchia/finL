@@ -57,12 +57,12 @@ args:
   | arg_list {List.rev $1}
 
 arg_list:
-  declaration   { [$1] }
-  | arg_list COMMA declaration {$3 :: $1}
+  vdecl   { [$1] }
+  | arg_list COMMA vdecl {$3 :: $1}
 
-declaration:
-  INTD VAR { Vdecl(Inttype, $2) }
-  | STRINGD VAR { Vdecl(Stringtype, $2) }
+vdecl:
+  INTD VAR { { dtype = Inttype; vname = $2 } }
+  | STRINGD VAR { { dtype = Stringtype; vname = $2 } }
 
 statement_list:
   { [] }
@@ -75,7 +75,7 @@ expression:
  INT { Int($1) }
  | STRING  { String($1) }
  | VAR  { Var($1) }
- | declaration { $1 }
+ | vdecl { Vdecl($1) }
  | expression PLUS expression  { Binop($1, Add, $3) }
  | expression MINUS  expression { Binop($1, Sub, $3) }
  | expression TIMES expression { Binop($1, Mult, $3 ) }
