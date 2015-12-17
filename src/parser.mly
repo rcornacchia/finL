@@ -54,7 +54,7 @@ fdecl:
 
 params:
   /* no parameters */ { [] }
-  | param_list {List.rev $1}
+  | param_list { List.rev $1 }
 
 param_list:
   vdecl   { [$1] }
@@ -72,23 +72,27 @@ statement:
   expression SEMI { Expr($1) }
 
 expression:
- INT { Int($1) }
- | STRING  { String($1) }
- | VAR  { Var($1) }
- | vdecl { Vdecl($1) }
- | expression PLUS expression  { Binop($1, Add, $3) }
- | expression MINUS  expression { Binop($1, Sub, $3) }
- | expression TIMES expression { Binop($1, Mult, $3 ) }
- | expression DIVIDE expression { Binop($1, Div, $3) }
- | expression EQ expression { Binop($1, Equal, $3) }
- | expression LT expression { Binop($1, Less, $3) }
- | expression LEQ expression { Binop($1, Leq, $3) }
- | expression GT expression { Binop($1, Greater, $3) }
- | expression GEQ expression { Binop($1, Geq, $3) }
- | VAR ASSIGN expression  { Assign($1, $3) }
- | VAR LPAREN arg_list RPAREN { Call($1, $3)} /* should be able to call multiple parameters*/
- | LPAREN expression RPAREN   { $2 }
+  INT { Int($1) }
+  | STRING  { String($1) }
+  | VAR  { Var($1) }
+  | vdecl { Vdecl($1) }
+  | expression PLUS expression  { Binop($1, Add, $3) }
+  | expression MINUS  expression { Binop($1, Sub, $3) }
+  | expression TIMES expression { Binop($1, Mult, $3 ) }
+  | expression DIVIDE expression { Binop($1, Div, $3) }
+  | expression EQ expression { Binop($1, Equal, $3) }
+  | expression LT expression { Binop($1, Less, $3) }
+  | expression LEQ expression { Binop($1, Leq, $3) }
+  | expression GT expression { Binop($1, Greater, $3) }
+  | expression GEQ expression { Binop($1, Geq, $3) }
+  | VAR ASSIGN expression  { Assign($1, $3) }
+  | VAR LPAREN args RPAREN { Call($1, $3) }
+  | LPAREN expression RPAREN   { $2 }
+
+args:
+  /* no arguments */ { [] }
+  | arg_list { List.rev $1 }
 
 arg_list:
- /* no arguments */ { [] }
- | arg_list expression { $2 :: $1 }
+  expression { [$1] }
+  | arg_list COMMA expression { $3 :: $1 }

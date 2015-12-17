@@ -39,8 +39,9 @@ let compile_sstatement = function
 let compile_sfdecl (func: Sast.sfunc_decl) =
   "public static void " ^
   func.sname ^
-  (* ADD ARGUMENTS!!!!!! -> EXPRESSIONS *)
-  "() {\n" ^
+  "(" ^
+  String.concat ", " (List.map compile_vdecl func.sformals) ^
+  ") {\n" ^
   String.concat "\n" (List.map compile_sstatement func.sbody) ^
   "\n}"
 

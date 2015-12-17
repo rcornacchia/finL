@@ -1,0 +1,8 @@
+function main(int x, string y): {
+	print(x);
+	print("\n");
+	print(y);
+	print("\n");
+}
+
+main(3, "string");
