@@ -1,3 +1,4 @@
+open Ast
 open Sast
 
 let string_of_op = function
@@ -15,12 +16,12 @@ let check_function (name: string) =
   if name = "print" then "System.out.print"
   else name
 
-let compile_svdecl (svdecl: Sast.svar_decl) =
-  let data_type = match svdecl.sdtype with
+let compile_svdecl (vdecl: Ast.var_decl) =
+  let data_type = match vdecl.dtype with
     Inttype -> "int"
     | Stringtype -> "String"
   in
-  data_type ^ " " ^ svdecl.svname
+  data_type ^ " " ^ vdecl.vname
 
 let rec compile_sexpression = function
   String(str) -> str

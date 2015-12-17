@@ -8,10 +8,40 @@ let builtin_functions =
 		sformals = [];
 		sbody = []; } ]
 
+(*let vdecls_to_svdecls (vdecl: Ast.var_decl) =
+	{ sdtype = vdecl.dtype; svname = vdecl.vname }
+
+let formals_to_sformals formals =
+	List.map vdecls_to_svdecls formals*)
+
+let check_for_main name expression =
+	let new_name = 
+		if name = "main" then "reserved"
+		else name
+	in Call(new_name, expression)
+
+let expression_to_sexpression = function
+	Int(i) -> Int(i)
+	| String(s) -> String(s)
+	| Var(v) -> Var(v)
+	| Binop(e1, o, e2) -> Binop(e1, o, e2)
+	| Assign(a1, a2) -> Assign(a1, a2)
+	| Call(c1, c2) -> check_for_main c1 c2
+	| Vdecl(v) -> Vdecl(v)
+	| Noexpr -> Noexpr
+
+let statement_to_sstatement = function
+	Expr(expression) -> Expr(expression_to_sexpression expression)
+
+(*let body_to_sbody body =
+	List.map statements_to_sstatements body*)
+
 let fdecl_to_sfdecl name (fdecl: Ast.func_decl) =
+	(*let new_formals = formals_to_sformals fdecl.formals in
+	let new_body = body_to_sbody fdecl.body in *)
 	{ sname = name;
-	  sformals = [];
-	  sbody = []; }
+	  sformals = fdecl.formals;
+	  sbody = fdecl.body; }
 
 let check_function funcs (fdecl: Ast.func_decl) =
 	let name = 
@@ -33,5 +63,6 @@ let check_for_builtin_funcs fdecls =
 let analyze (prog: Ast.program) =
 	let fdecls = check_for_builtin_funcs prog.fdecls in
 	let function_table = List.fold_left check_function builtin_functions fdecls in
+	let new_statements = List.map statement_to_sstatement prog.statements in
 	(*let env = List.fold_left check_function builtin_functions fdecls*)
-	{ sfdecls = function_table; sstatements = [] }
+	{ sfdecls = function_table; sstatements = new_statements }

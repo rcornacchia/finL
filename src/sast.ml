@@ -1,15 +1,11 @@
-type op = Add | Sub | Mult | Div | Equal | Less | Leq | Greater | Geq
+open Ast
 
-type sdata_type =
-  Inttype
-  | Stringtype
-
-type svar_decl = {
-  sdtype : sdata_type;
+(*type svar_decl = {
+  sdtype : data_type;
   svname : string;
-}
+}*)
 
-type sexpression =
+(*type sexpression =
   Int of int
   | String of string
   | Var of string
@@ -20,17 +16,17 @@ type sexpression =
   | Noexpr
 
 type sstatement =
-  Expr of sexpression 
+  Expr of expression *)
 
 type sfunc_decl = {
   (*rtype : string;*)
   sname : string;
-  sformals : svar_decl list;
-  sbody : sstatement list;
+  sformals : var_decl list;
+  sbody : statement list;
 }
 
 type sprogram = { 
-    sstatements : sstatement list;
+    sstatements : statement list;
     sfdecls : sfunc_decl list;
 }
 

@@ -8,8 +8,8 @@ make :
 	ocamllex scanner.mll
 	ocamlc -c scanner.ml
 	#ocamlc -c interpret.ml
-	ocamlc -c compile.ml
 	ocamlc -c semantics.ml
+	ocamlc -c compile.ml
 	ocamlc -c finlc.ml
 	ocamlc -o finlc sast.cmo ast.cmo parser.cmo scanner.cmo compile.cmo semantics.cmo finlc.cmo
 
