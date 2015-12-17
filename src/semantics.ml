@@ -3,8 +3,6 @@ open Sast
 
 exception Except of string
 
-
-
 type environment =
 	{ variables : Ast.var_decl list;
 	  functions : Ast.func_decl list; }
@@ -61,14 +59,19 @@ let check_for_builtin_funcs fdecls =
 		raise (Except("Reserved function name '" ^ func.name ^ "'!"))
 	else fdecls
 
+let analyze_formals variables (variable: Ast.var_decl) =
+	let found = List.exists (fun f -> variable.vname = f.vname) variables in
+	if found then raise (Except("Formal parameter " ^ variable.vname ^ " already defined!"))
+	else variable :: variables 
+
 let analyze_function function_table (fdecl: Ast.func_decl) =
-	let variables = fdecl.formals in
+	let variables = List.fold_left analyze_formals [] fdecl.formals in
 	fdecl :: function_table
 
 let analyze (prog: Ast.program) =
 	let fdecls = check_for_builtin_funcs prog.fdecls in
 	let function_table = List.fold_left check_function_name builtin_functions fdecls in
-	(*let function_table = List.fold_left analyze_function function_table function_table in*)
+	let function_table = List.fold_left analyze_function function_table function_table in
 	(*let env =*) 
 	let new_statements = List.map statement_to_sstatement prog.statements in
 	(*let env = List.fold_left check_function builtin_functions fdecls*)
