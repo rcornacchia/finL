@@ -16,11 +16,11 @@ type expression =
   | Binop of expression * op * expression
   | Assign of string * expression
   | Call of string * expression list
-  | Vdecl of var_decl
   | Noexpr
 
 type statement =
   Expr of expression
+  | Vdecl of var_decl
 
 type func_decl = {
   (*rtype : string;*)

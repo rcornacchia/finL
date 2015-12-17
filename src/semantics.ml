@@ -3,16 +3,19 @@ open Sast
 
 exception Except of string
 
+
+
+type environment =
+	{ variables : Ast.var_decl list;
+	  functions : Ast.func_decl list; }
+
 let builtin_functions = 
-	[ { sname = "print";
-		sformals = [];
-		sbody = []; } ]
+	[ { name = "print";
+		formals = [];
+		body = []; } ]
 
 (*let vdecls_to_svdecls (vdecl: Ast.var_decl) =
-	{ sdtype = vdecl.dtype; svname = vdecl.vname }
-
-let formals_to_sformals formals =
-	List.map vdecls_to_svdecls formals*)
+	{ sdtype = vdecl.dtype; svname = vdecl.vname }*)
 
 let check_for_main name expression =
 	let new_name = 
@@ -27,31 +30,29 @@ let expression_to_sexpression = function
 	| Binop(e1, o, e2) -> Binop(e1, o, e2)
 	| Assign(a1, a2) -> Assign(a1, a2)
 	| Call(c1, c2) -> check_for_main c1 c2
-	| Vdecl(v) -> Vdecl(v)
 	| Noexpr -> Noexpr
 
 let statement_to_sstatement = function
 	Expr(expression) -> Expr(expression_to_sexpression expression)
+	| Vdecl(v) -> Vdecl(v)
 
 (*let body_to_sbody body =
 	List.map statements_to_sstatements body*)
 
-let fdecl_to_sfdecl name (fdecl: Ast.func_decl) =
-	(*let new_formals = formals_to_sformals fdecl.formals in
-	let new_body = body_to_sbody fdecl.body in *)
-	{ sname = name;
-	  sformals = fdecl.formals;
-	  sbody = fdecl.body; }
+let update_fdecl_name name (fdecl: Ast.func_decl) =
+	{ name = name;
+	  formals = fdecl.formals;
+	  body = fdecl.body; }
 
-let check_function funcs (fdecl: Ast.func_decl) =
+let check_function_name funcs (fdecl: Ast.func_decl) =
 	let name = 
 		if fdecl.name = "main" then "reserved"
 		else fdecl.name
 	in
-	let found = List.exists (fun f -> f.sname = name) funcs in
+	let found = List.exists (fun f -> f.name = name) funcs in
 	if found then raise (Except(fdecl.name ^ " already exists!"))
-	else let sfdecl = fdecl_to_sfdecl name fdecl (* probably need environment here -> MAYBE NOT *) in
-	sfdecl :: funcs
+	else let updated_fdecl = update_fdecl_name name fdecl (* probably need environment here -> MAYBE NOT *) in
+	updated_fdecl :: funcs
 
 let check_for_builtin_funcs fdecls =
 	let found = List.exists (fun f -> f.name = "reserved" || f.name = "print") fdecls in
@@ -60,9 +61,15 @@ let check_for_builtin_funcs fdecls =
 		raise (Except("Reserved function name '" ^ func.name ^ "'!"))
 	else fdecls
 
+let analyze_function function_table (fdecl: Ast.func_decl) =
+	let variables = fdecl.formals in
+	fdecl :: function_table
+
 let analyze (prog: Ast.program) =
 	let fdecls = check_for_builtin_funcs prog.fdecls in
-	let function_table = List.fold_left check_function builtin_functions fdecls in
+	let function_table = List.fold_left check_function_name builtin_functions fdecls in
+	(*let function_table = List.fold_left analyze_function function_table function_table in*)
+	(*let env =*) 
 	let new_statements = List.map statement_to_sstatement prog.statements in
 	(*let env = List.fold_left check_function builtin_functions fdecls*)
 	{ sfdecls = function_table; sstatements = new_statements }

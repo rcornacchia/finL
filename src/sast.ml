@@ -5,18 +5,10 @@ open Ast
   svname : string;
 }*)
 
-(*type sexpression =
-  Int of int
-  | String of string
-  | Var of string
-  | Binop of sexpression * op * sexpression
-  | Assign of string * sexpression
-  | Call of string * sexpression
-  | Vdecl of svar_decl
-  | Noexpr
+type sexpression = Ast.expression * Ast.data_type
 
-type sstatement =
-  Expr of expression *)
+(*type sstatement =
+  Expr of expression
 
 type sfunc_decl = {
   (*rtype : string;*)
@@ -24,11 +16,11 @@ type sfunc_decl = {
   sformals : var_decl list;
   sbody : statement list;
   (*env : some kind of symbol table*)
-}
+}*)
 
 type sprogram = { 
     sstatements : statement list;
-    sfdecls : sfunc_decl list;
+    sfdecls : func_decl list;
 }
 
 let string_of_sprogram (prog: sprogram) =

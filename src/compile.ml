@@ -30,19 +30,19 @@ let rec compile_expression = function
   | Assign(var, expr) -> var ^ "=" ^ compile_expression expr
   | Var(str) -> str
   | Call(name, exprlst) -> check_function name ^ "(" ^ String.concat ", " (List.map compile_expression exprlst) ^ ")"
-  | Vdecl(decl) -> compile_vdecl decl
   | Noexpr -> ""
 
 let compile_sstatement = function
   Expr(expr) -> compile_expression expr ^ ";"
+  | Vdecl(v) -> compile_vdecl v ^ ";"
 
-let compile_sfdecl (func: Sast.sfunc_decl) =
+let compile_sfdecl (func: Ast.func_decl) =
   "public static void " ^
-  func.sname ^
+  func.name ^
   "(" ^
-  String.concat ", " (List.map compile_vdecl func.sformals) ^
+  String.concat ", " (List.map compile_vdecl func.formals) ^
   ") {\n" ^
-  String.concat "\n" (List.map compile_sstatement func.sbody) ^
+  String.concat "\n" (List.map compile_sstatement func.body) ^
   "\n}"
 
 let compile (prog: Sast.sprogram) (filename: string) =

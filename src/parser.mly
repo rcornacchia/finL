@@ -70,12 +70,12 @@ statement_list:
 
 statement:
   expression SEMI { Expr($1) }
+  | vdecl SEMI { Vdecl($1) }
 
 expression:
   INT { Int($1) }
   | STRING  { String($1) }
   | VAR  { Var($1) }
-  | vdecl { Vdecl($1) }
   | expression PLUS expression  { Binop($1, Add, $3) }
   | expression MINUS  expression { Binop($1, Sub, $3) }
   | expression TIMES expression { Binop($1, Mult, $3 ) }
