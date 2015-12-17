@@ -41,7 +41,7 @@ lines:
   | lines fdecl { { statements = $1.statements; fdecls = ($2 :: $1.fdecls) } }
 
 fdecl:
-  FUNC /*type*/ VAR LPAREN args RPAREN COLON
+  FUNC /*type*/ VAR LPAREN params RPAREN COLON
   LBRACE statement_list RBRACE
   {
     {
@@ -52,13 +52,13 @@ fdecl:
     }
   }
 
-args:
-  /* no arguments */ { [] }
-  | arg_list {List.rev $1}
+params:
+  /* no parameters */ { [] }
+  | param_list {List.rev $1}
 
-arg_list:
+param_list:
   vdecl   { [$1] }
-  | arg_list COMMA vdecl {$3 :: $1}
+  | param_list COMMA vdecl {$3 :: $1}
 
 vdecl:
   INTD VAR { { dtype = Inttype; vname = $2 } }
@@ -86,9 +86,9 @@ expression:
  | expression GT expression { Binop($1, Greater, $3) }
  | expression GEQ expression { Binop($1, Geq, $3) }
  | VAR ASSIGN expression  { Assign($1, $3) }
- | VAR LPAREN expression_option RPAREN { Call($1, $3)} /* should be able to call multiple parameters*/
+ | VAR LPAREN arg_list RPAREN { Call($1, $3)} /* should be able to call multiple parameters*/
  | LPAREN expression RPAREN   { $2 }
 
-expression_option:
- /* nothing */ { Noexpr }
- | expression { $1 }
+arg_list:
+ /* no arguments */ { [] }
+ | arg_list expression { $2 :: $1 }

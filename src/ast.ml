@@ -15,7 +15,7 @@ type expression =
   | Var of string
   | Binop of expression * op * expression
   | Assign of string * expression
-  | Call of string * expression
+  | Call of string * expression list
   | Vdecl of var_decl
   | Noexpr
 

@@ -16,25 +16,25 @@ let check_function (name: string) =
   if name = "print" then "System.out.print"
   else name
 
-let compile_svdecl (vdecl: Ast.var_decl) =
+let compile_vdecl (vdecl: Ast.var_decl) =
   let data_type = match vdecl.dtype with
     Inttype -> "int"
     | Stringtype -> "String"
   in
   data_type ^ " " ^ vdecl.vname
 
-let rec compile_sexpression = function
+let rec compile_expression = function
   String(str) -> str
   | Int(i) -> string_of_int i
-  | Binop(expr1, op, expr2) -> compile_sexpression expr1 ^ string_of_op op ^ compile_sexpression expr2
-  | Assign(var, expr) -> var ^ "=" ^ compile_sexpression expr
+  | Binop(expr1, op, expr2) -> compile_expression expr1 ^ string_of_op op ^ compile_expression expr2
+  | Assign(var, expr) -> var ^ "=" ^ compile_expression expr
   | Var(str) -> str
-  | Call(name, expr) -> check_function name ^ "(" ^ compile_sexpression expr ^ ")"
-  | Vdecl(decl) -> compile_svdecl decl
+  | Call(name, exprlst) -> check_function name ^ "(" ^ String.concat ", " (List.map compile_expression exprlst) ^ ")"
+  | Vdecl(decl) -> compile_vdecl decl
   | Noexpr -> ""
 
 let compile_sstatement = function
-  Expr(expr) -> compile_sexpression expr ^ ";"
+  Expr(expr) -> compile_expression expr ^ ";"
 
 let compile_sfdecl (func: Sast.sfunc_decl) =
   "public static void " ^

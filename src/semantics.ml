@@ -50,7 +50,7 @@ let check_function funcs (fdecl: Ast.func_decl) =
 	in
 	let found = List.exists (fun f -> f.sname = name) funcs in
 	if found then raise (Except(fdecl.name ^ " already exists!"))
-	else let sfdecl = fdecl_to_sfdecl name fdecl (* probably need environment here *) in
+	else let sfdecl = fdecl_to_sfdecl name fdecl (* probably need environment here -> MAYBE NOT *) in
 	sfdecl :: funcs
 
 let check_for_builtin_funcs fdecls =

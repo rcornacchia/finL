@@ -23,6 +23,7 @@ type sfunc_decl = {
   sname : string;
   sformals : var_decl list;
   sbody : statement list;
+  (*env : some kind of symbol table*)
 }
 
 type sprogram = { 
