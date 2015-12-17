@@ -37,9 +37,15 @@ let statement_to_sstatement = function
 (*let body_to_sbody body =
 	List.map statements_to_sstatements body*)
 
-let update_fdecl_name name (fdecl: Ast.func_decl) =
+let analyze_formals variables (variable: Ast.var_decl) =
+	let found = List.exists (fun f -> variable.vname = f.vname) variables in
+	if found then raise (Except("Formal parameter " ^ variable.vname ^ " already defined!"))
+	else variable :: variables 
+
+let analyze_function_signature name (fdecl: Ast.func_decl) =
+	let new_formals = List.fold_left analyze_formals [] fdecl.formals in
 	{ name = name;
-	  formals = fdecl.formals;
+	  formals = List.rev new_formals;
 	  body = fdecl.body; }
 
 let check_function_name funcs (fdecl: Ast.func_decl) =
@@ -49,7 +55,7 @@ let check_function_name funcs (fdecl: Ast.func_decl) =
 	in
 	let found = List.exists (fun f -> f.name = name) funcs in
 	if found then raise (Except(fdecl.name ^ " already exists!"))
-	else let updated_fdecl = update_fdecl_name name fdecl (* probably need environment here -> MAYBE NOT *) in
+	else let updated_fdecl = analyze_function_signature name fdecl (* probably need environment here -> MAYBE NOT *) in
 	updated_fdecl :: funcs
 
 let check_for_builtin_funcs fdecls =
@@ -59,19 +65,10 @@ let check_for_builtin_funcs fdecls =
 		raise (Except("Reserved function name '" ^ func.name ^ "'!"))
 	else fdecls
 
-let analyze_formals variables (variable: Ast.var_decl) =
-	let found = List.exists (fun f -> variable.vname = f.vname) variables in
-	if found then raise (Except("Formal parameter " ^ variable.vname ^ " already defined!"))
-	else variable :: variables 
-
-let analyze_function function_table (fdecl: Ast.func_decl) =
-	let variables = List.fold_left analyze_formals [] fdecl.formals in
-	fdecl :: function_table
-
 let analyze (prog: Ast.program) =
 	let fdecls = check_for_builtin_funcs prog.fdecls in
 	let function_table = List.fold_left check_function_name builtin_functions fdecls in
-	let function_table = List.fold_left analyze_function function_table function_table in
+	(*let function_table = List.map analyze_function function_table in*)
 	(*let env =*) 
 	let new_statements = List.map statement_to_sstatement prog.statements in
 	(*let env = List.fold_left check_function builtin_functions fdecls*)
