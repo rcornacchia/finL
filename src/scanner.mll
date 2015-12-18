@@ -26,8 +26,8 @@ rule token = parse
 	| ">="                   { GEQ }
 	| '='                    { EQ }
 	| "<<"                   { ASSIGN }
-	(*| "+<<"                  { AASSIGN }
-	| "-<<"                  { SASSIGN }
+	| "+<<"                  { AASSIGN }
+	(*| "-<<"                  { SASSIGN }
 	| "*<<"                  { MASSIGN }
 	| "/<<"                  { DASSIGN }
 	| "and"                  { AND }

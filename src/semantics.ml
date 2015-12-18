@@ -69,6 +69,7 @@ let rec check_type env (expression: Ast.expression) =
 					with Not_found -> raise (Except("Symbol '" ^ v ^ "' is uninitialized!"))) (* uninitialized_variable_test.finl *)
 		| Binop(e1, o, e2) -> check_type env e1
 		| Assign(a, e) -> check_type env e
+		| Aassign(aa, e) -> check_type env e
 		| Call(c, el) -> (try let func = List.find (fun f -> f.sname = c) env.function_table in
 							 func.srtype
 						 with Not_found -> raise (Except("Function '" ^ c ^ "' not found!"))) (* uninitialized_call_test.finl *)
@@ -105,6 +106,8 @@ let rec analyze_expression env (expression: Ast.expression) =
 										 raise (Except("Symbol '" ^ a ^ "' is of type '" ^ dstring ^ "', not of type '" ^ estring ^ "'.")) (* assign_type_mismatch_test.finl *)
 						  		with Not_found -> raise (Except("Symbol '" ^ a ^ "' not initialized!"))) (* uninitialized_assignment_test.finl *)
 
+		| Aassign(aa, e) -> 	Aassign(aa, e) (* ADD SEMANTIC CHECKING *)
+
 		| Call(c, el) -> 		let sname = check_for_main c in (* no_return_test.finl *)
 						 		(try let func = List.find (fun f -> f.sname = sname) env.function_table in
 						 			let builtin = func.builtin in (* CHECK # of args to print *)
@@ -117,6 +120,7 @@ let rec analyze_expression env (expression: Ast.expression) =
 
 let check_statement = function
 	Assign(a, e) -> Assign(a, e)
+	| Aassign(aa, e1) -> Aassign(aa, e1)
 	| Call(c, el) -> Call(c, el)
 	| _ -> raise (Except("Not a statement!")) (* statement_test.finl *)
 
