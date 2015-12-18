@@ -73,6 +73,12 @@ let rec check_type env (expression: Ast.expression) =
 							 func.srtype
 						 with Not_found -> raise (Except("Function '" ^ c ^ "' not found!"))) (* uninitialized_call_test.finl *)
 
+let check_for_reserved sname =
+	let new_name = 
+		if sname = "reserved" then "main"
+		else sname
+	in new_name
+
 let rec analyze_expression env (expression: Ast.expression) =
 	match expression with
 		Int(i) -> 				Int(i)
@@ -106,7 +112,7 @@ let rec analyze_expression env (expression: Ast.expression) =
 						 			else
 						 				(try List.iter2 (fun f e -> if f.dtype <> check_type env (analyze_expression env e) then raise (Except("Function parameter type mismatch!"))) func.sformals el; (* parameter_type_mismatch_test.finl *)
 						 			 	Call(sname, el)
-						 				with Invalid_argument _ -> raise (Except("Wrong argument length to function '" ^ func.sname ^ "'."))) (* arg_length_test.finl *)
+						 				with Invalid_argument _ -> raise (Except("Wrong argument length to function '" ^ check_for_reserved func.sname ^ "'."))) (* arg_length_test.finl *)
 						 		with Not_found -> raise (Except("Function '" ^ c ^ "' not found!"))) (* uninitialized_call_test.finl *)
 
 let check_statement = function

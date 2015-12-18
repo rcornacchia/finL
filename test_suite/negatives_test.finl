@@ -1,0 +1,8 @@
+int x;
+x << -1;
+float y;
+y << -1.4;
+print(x);
+print("\n");
+print(y);
+print("\n");
