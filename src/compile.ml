@@ -30,20 +30,27 @@ let rec compile_expression = function
   | Assign(var, expr) -> var ^ "=" ^ compile_expression expr
   | Var(str) -> str
   | Call(name, exprlst) -> check_function name ^ "(" ^ String.concat ", " (List.map compile_expression exprlst) ^ ")"
-  | Noexpr -> ""
 
 let compile_statement = function
   Expr(expr) -> compile_expression expr ^ ";"
   | Vdecl(v) -> compile_vdecl v ^ ";"
+  | Ret(r) -> "return " ^ compile_expression r ^ ";"
+
+let compile_dtype = function
+  Inttype -> "int"
+  | Stringtype -> "String"
 
 let compile_sfdecl (func: Sast.sfunc_decl) =
-  "public static void " ^
-  func.sname ^
-  "(" ^
-  String.concat ", " (List.map compile_vdecl func.sformals) ^
-  ") {\n" ^
-  String.concat "\n" (List.map compile_statement func.sbody) ^
-  "\n}"
+  if func.builtin then ("")
+  else "public static " ^
+       compile_dtype func.srtype ^
+       " " ^
+       func.sname ^
+       "(" ^
+       String.concat ", " (List.map compile_vdecl func.sformals) ^
+       ") {\n" ^
+       String.concat "\n" (List.map compile_statement func.sbody) ^
+       "\n}"
 
 let compile (sprogram: Sast.sprogram) (filename: string) =
   "public class " ^ 

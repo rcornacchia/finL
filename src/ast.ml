@@ -16,14 +16,14 @@ type expression =
   | Binop of expression * op * expression
   | Assign of string * expression
   | Call of string * expression list
-  | Noexpr
 
 type statement =
   Expr of expression
   | Vdecl of var_decl
+  | Ret of expression
 
 type func_decl = {
-  (*rtype : string;*)
+  rtype : data_type;
   name : string;
   formals : var_decl list;
   body : statement list;
@@ -53,13 +53,12 @@ let string_of_data_type = function
   | Stringtype -> "string"
 
 let rec string_of_expression = function
-  Int(i) -> string_of_int i
-  | String(s) -> s
-  | Var(v) -> v
-  | Binop(e1, o, e2) -> string_of_expression e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expression e2
-  | Assign(a, e) -> a ^ " = " ^ string_of_expression e 
+  Int(i) -> "Int(" ^ string_of_int i ^ ")"
+  | String(s) -> "String(" ^ s ^ ")"
+  | Var(v) -> "Var(" ^ v ^ ")"
+  | Binop(e1, o, e2) -> "Binop(" ^ string_of_expression e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expression e2 ^ ")"
+  | Assign(a, e) -> "Assign(" ^ a ^ " = " ^ string_of_expression e ^ ")"
   | Call(c, el) -> c ^ "(" ^ String.concat ", " (List.map string_of_expression el) ^ ")"
-  | Noexpr -> "NOEXPR"
 
 let string_of_vdecl (vdecl: var_decl) = 
   "vdecl{" ^ vdecl.vname ^ " -> " ^ string_of_data_type vdecl.dtype ^ "}"
@@ -67,13 +66,16 @@ let string_of_vdecl (vdecl: var_decl) =
 let string_of_statement = function
   Expr(e) -> "expression{" ^ string_of_expression e ^ "}"
   | Vdecl(v) -> string_of_vdecl v
+  | Ret(r) -> "return{" ^ string_of_expression r ^ "}"
 
 let string_of_fdecl (fdecl: func_decl) =
   "name{" ^ 
   fdecl.name ^ 
+  "} rtype{" ^
+  string_of_data_type fdecl.rtype ^
   "} formals{" ^ 
   String.concat ", " (List.map string_of_vdecl fdecl.formals) ^ 
-  "} body{\nstatement{" ^
+  "}\nbody{\nstatement{" ^
   String.concat "}\nstatement{" (List.map string_of_statement fdecl.body) ^
   "}\n}"
 

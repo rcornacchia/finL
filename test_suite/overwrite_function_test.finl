@@ -1,9 +1,11 @@
-function main() {
+function int main() {
 	print(1);
+	return 0;
 };
 
-function main() {
+function int main() {
 	print(2);
+	return 0;
 };
 
 main();

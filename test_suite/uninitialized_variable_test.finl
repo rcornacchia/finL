@@ -1,0 +1,7 @@
+function int main() {
+	int x;
+	x << 3;
+	x; # not a statement in java -> need to fix
+	y;
+	return 0;
+};

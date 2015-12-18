@@ -1,8 +1,9 @@
-function main(int x, string y) {
+function int main(int x, string y) {
 	print(x);
 	print("\n");
 	print(y);
 	print("\n");
+	return 0;
 };
 
 main(3, "string");

@@ -43,37 +43,10 @@ line:
   statement { Stmt($1) }
   | fdecl { Fdecl($1) }
 
-fdecl:
-  FUNC /*type*/ VAR LPAREN params RPAREN
-  LBRACE statement_list RBRACE SEMI
-  { 
-    {
-      (*rtype = $2;*)
-      name = $2;
-      formals = $4;
-      body = List.rev $7;
-    }
-  }
-
-params:
-  /* no parameters */ { [] }
-  | param_list { List.rev $1 }
-
-param_list:
-  vdecl   { [$1] }
-  | param_list COMMA vdecl { $3 :: $1 }
-
-vdecl:
-  INTD VAR { { dtype = Inttype; vname = $2 } }
-  | STRINGD VAR { { dtype = Stringtype; vname = $2 } }
-
 statement:
   expression SEMI { Expr($1) }
   | vdecl SEMI { Vdecl($1) }
-
-statement_list:
-  /* nothing */ { [] }
-  | statement_list statement { $2 :: $1 }
+  | RETURN expression SEMI { Ret($2) }
 
 expression:
   INT { Int($1) }
@@ -90,7 +63,6 @@ expression:
   | expression GEQ expression { Binop($1, Geq, $3) }
   | VAR ASSIGN expression  { Assign($1, $3) }
   | VAR LPAREN args RPAREN { Call($1, $3) }
-  | LPAREN expression RPAREN   { $2 }
 
 args:
   /* no arguments */ { [] }
@@ -99,3 +71,34 @@ args:
 arg_list:
   expression { [$1] }
   | arg_list COMMA expression { $3 :: $1 }
+
+vdecl:
+  dtype VAR { { dtype = $1; vname = $2 } }
+
+dtype:
+  INTD { Inttype }
+  | STRINGD { Stringtype }
+
+fdecl:
+  FUNC dtype VAR LPAREN params RPAREN
+  LBRACE statement_list RBRACE SEMI
+  { 
+    {
+      rtype = $2;
+      name = $3;
+      formals = $5;
+      body = List.rev $8;
+    }
+  }
+
+params:
+  /* no parameters */ { [] }
+  | param_list { List.rev $1 }
+
+param_list:
+  vdecl   { [$1] }
+  | param_list COMMA vdecl { $3 :: $1 }
+
+statement_list:
+  /* nothing */ { [] }
+  | statement_list statement { $2 :: $1 }

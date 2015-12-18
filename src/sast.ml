@@ -15,7 +15,7 @@ type sexpression = Ast.expression * Ast.data_type
   Expr of expression*)*)
 
 type sfunc_decl = {
-  (*rtype : string;*)
+  srtype : Ast.data_type;
   sname : string;
   sformals : Ast.var_decl list;
   sbody : Ast.statement list;
@@ -30,6 +30,8 @@ type sprogram = {
 let string_of_sfdecl (sfdecl: sfunc_decl) =
   "sname{" ^ 
   sfdecl.sname ^ 
+  "} srtype{" ^
+  Ast.string_of_data_type sfdecl.srtype ^
   "} sformals{" ^ 
   String.concat ", " (List.map Ast.string_of_vdecl sfdecl.sformals) ^ 
   "} builtin {" ^
@@ -39,8 +41,8 @@ let string_of_sfdecl (sfdecl: sfunc_decl) =
   "}\n}"
 
 let string_of_sprogram (sprog: sprogram) =
-	"sprogram{\nsfunc_decl{\n" ^ 
+	"sprogram{\nsfunc_decls{\nsfunc_decl{\n" ^ 
   String.concat "\n}\nsfunc_decl{\n" (List.map string_of_sfdecl sprog.sfunc_decls) ^ 
-  "\n}\nstatement{" ^
+  "\n}\n}\nstatements{\nstatement{" ^
   String.concat "}\nstatement{" (List.map Ast.string_of_statement sprog.statements) ^
-  "}\n}\n"
+  "}\n}\n}\n"

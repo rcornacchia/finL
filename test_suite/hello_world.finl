@@ -1,10 +1,11 @@
-function main() {
+function int main() {
 	string str;
 	str << "hello world\n";
 	print(str);
 	print("hello edwards\n");
 	str << "goodnight moon\n";
 	print(str);
+	return 0;
 };
 
 main();
