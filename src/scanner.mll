@@ -28,8 +28,8 @@ rule token = parse
 	| "<<"                   { ASSIGN }
 	| "+<<"                  { AASSIGN }
 	| "-<<"                  { SASSIGN }
-	(*| "*<<"                  { MASSIGN }
-	| "/<<"                  { DASSIGN }
+	| "*<<"                  { MASSIGN }
+	(*| "/<<"                  { DASSIGN }
 	| "and"                  { AND }
 	| "or"                   { OR }
 	| "not"                  { NOT }

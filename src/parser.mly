@@ -5,7 +5,7 @@
 /*%token POWER */
 %token PLUS MINUS TIMES DIVIDE
 /*%token MOD */
-%token ASSIGN AASSIGN SASSIGN /*MASSIGN DASSIGN */
+%token ASSIGN AASSIGN SASSIGN MASSIGN /* DASSIGN */
 %token EQ GEQ GT LEQ LT
 %token RETURN /*WHILE WHEN IF ELSE ELSEIF VOID NULL BREAK*/
 /*%token AND OR NOT */
@@ -19,7 +19,7 @@
 %token EOF
 
 /* %nonassoc ELSE */
-%right ASSIGN AASSIGN SASSIGN /*MASSIGN DASSIGN */
+%right ASSIGN AASSIGN SASSIGN MASSIGN /*DASSIGN */
 %left EQ
 %left GEQ GT LEQ LT
 %left PLUS MINUS
@@ -65,6 +65,7 @@ expression:
   | VAR ASSIGN expression  { Assign($1, $3) }
   | VAR AASSIGN expression { Aassign($1, $3) }
   | VAR SASSIGN expression { Sassign($1, $3) }
+  | VAR MASSIGN expression { Massign($1, $3) }
   | VAR LPAREN args RPAREN { Call($1, $3) }
 
 args:
