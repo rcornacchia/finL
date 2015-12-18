@@ -3,10 +3,6 @@ open Sast
 
 exception Except of string
 
-type environment =
-	{ variables : Ast.var_decl list;
-	  functions : Ast.func_decl list; }
-
 let builtin_functions = 
 	[ { name = "print";
 		formals = [];
@@ -65,11 +61,15 @@ let check_for_builtin_funcs fdecls =
 		raise (Except("Reserved function name '" ^ func.name ^ "'!"))
 	else fdecls
 
+(*let analyze_function fdecl =*)
+
+
 let analyze (prog: Ast.program) =
-	let fdecls = check_for_builtin_funcs prog.fdecls in
+	prog
+	(*let fdecls = check_for_builtin_funcs prog.fdecls in
 	let function_table = List.fold_left check_function_name builtin_functions fdecls in
-	(*let function_table = List.map analyze_function function_table in*)
+	let function_table = List.map analyze_function function_table in
 	(*let env =*) 
 	let new_statements = List.map statement_to_sstatement prog.statements in
 	(*let env = List.fold_left check_function builtin_functions fdecls*)
-	{ sfdecls = function_table; sstatements = new_statements }
+	{ sfdecls = function_table; sstatements = new_statements }*)

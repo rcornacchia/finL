@@ -45,11 +45,12 @@ let compile_sfdecl (func: Ast.func_decl) =
   String.concat "\n" (List.map compile_sstatement func.body) ^
   "\n}"
 
-let compile (prog: Sast.sprogram) (filename: string) =
-  "public class " ^ 
+let compile (prog: Ast.program) (filename: string) =
+  prog
+  (*"public class " ^ 
   filename ^ 
   " {\n" ^
-  String.concat "\n" (List.map compile_sfdecl prog.sfdecls) ^
+  String.concat "\n" (List.map compile_sfdecl prog.fdecls) ^
   "\npublic static void main(String[] args) {\n" ^
-  String.concat "\n" (List.map compile_sstatement prog.sstatements) ^
-  "\n}\n}"
+  String.concat "\n" (List.map compile_sstatement prog.statements) ^
+  "\n}\n}"*)

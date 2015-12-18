@@ -1,4 +1,4 @@
-function main(): {
+function main() {
 
   print(1+1);
   print("\n");
@@ -8,6 +8,6 @@ function main(): {
   print("\n");
   print(6/3);
   print("\n");
-}
+};
 
 main();

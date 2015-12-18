@@ -1,9 +1,9 @@
-function main(): {
+function main() {
 	print(1);
-}
+};
 
-function main(): {
+function main() {
 	print(2);
-}
+};
 
 main();

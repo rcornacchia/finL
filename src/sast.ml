@@ -5,22 +5,26 @@ open Ast
   svname : string;
 }*)
 
+(*type environment =
+	{ (*variables : Ast.var_decl list;*)
+	  functions : Sast.sfunc_decl list; }*)
+
 type sexpression = Ast.expression * Ast.data_type
 
 (*type sstatement =
-  Expr of expression
+  Expr of expression*)
 
-type sfunc_decl = {
+(*type sfunc_decl = {
   (*rtype : string;*)
   sname : string;
   sformals : var_decl list;
   sbody : statement list;
-  (*env : some kind of symbol table*)
+  (*env : sfunc_decl list;*)
 }*)
 
 type sprogram = { 
-    sstatements : statement list;
-    sfdecls : func_decl list;
+    statements : statement list;
+    fdecls : func_decl list;
 }
 
 let string_of_sprogram (prog: sprogram) =

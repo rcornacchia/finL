@@ -14,7 +14,7 @@ let _ =
       let program = Parser.program Scanner.token lexbuf in
       match action with
         Ast -> print_string (Ast.string_of_program program)
-        | _ ->
+        (*| _ ->
           let checked_program = Semantics.analyze program in
           (match action with
             Sast -> print_string "to do\n" (*(Sast.string_of_program checked_program)*)
@@ -27,4 +27,4 @@ let _ =
                 fprintf write_file "%s" compiled_program;
                 close_out write_file; 
                 ignore (Sys.command ("javac " ^ name ^ ".java")))
-		(*else (*Compile in*) print_endline "Please specify exactly 1 filename."*)
+		(*else (*Compile in*) print_endline "Please specify exactly 1 filename."*)*)

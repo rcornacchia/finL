@@ -1,7 +1,7 @@
 %{ open Ast %}
 
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA COLON /*AT*/
+%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA /*COLON AT*/
 /*%token POWER */
 %token PLUS MINUS TIMES DIVIDE
 /*%token MOD */
@@ -36,19 +36,22 @@ program:
   lines EOF { $1 }
 
 lines:
-  /* nothing */ { { statements = []; fdecls = [] } }
-  | lines statement { { statements = ($2 :: $1.statements); fdecls = $1.fdecls } }
-  | lines fdecl { { statements = $1.statements; fdecls = ($2 :: $1.fdecls) } }
+  /* nothing */ { { lines = [] } }
+  | lines line { { lines = $2 :: $1.lines } }
+
+line:
+  statement { Stmt($1) }
+  | fdecl { Fdecl($1) }
 
 fdecl:
-  FUNC /*type*/ VAR LPAREN params RPAREN COLON
-  LBRACE statement_list RBRACE
-  {
+  FUNC /*type*/ VAR LPAREN params RPAREN
+  LBRACE statement_list RBRACE SEMI
+  { 
     {
       (*rtype = $2;*)
       name = $2;
       formals = $4;
-      body = List.rev $8;
+      body = List.rev $7;
     }
   }
 
@@ -58,19 +61,19 @@ params:
 
 param_list:
   vdecl   { [$1] }
-  | param_list COMMA vdecl {$3 :: $1}
+  | param_list COMMA vdecl { $3 :: $1 }
 
 vdecl:
   INTD VAR { { dtype = Inttype; vname = $2 } }
   | STRINGD VAR { { dtype = Stringtype; vname = $2 } }
 
-statement_list:
-  { [] }
-  | statement_list statement  {$2 :: $1}
-
 statement:
   expression SEMI { Expr($1) }
   | vdecl SEMI { Vdecl($1) }
+
+statement_list:
+  /* nothing */ { [] }
+  | statement_list statement { $2 :: $1 }
 
 expression:
   INT { Int($1) }
