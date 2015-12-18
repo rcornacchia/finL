@@ -40,8 +40,8 @@ rule token = parse
 	| "when"                 { WHEN }
 	| "break"                { BREAK }*)
 	| "int"                  { INTD }
-	(*| "float"                { FLOATD }
-	| "percent"              { PERCENT }
+	| "float"                { FLOATD }
+	(*| "percent"              { PERCENT }
 	| "null"                 { NULL }
 	| "array"                { ARRAY }*)
 	| "string"               { STRINGD }
@@ -54,7 +54,7 @@ rule token = parse
 	(*| "void"                 { VOID }*)
 	| letter+ as var   { VAR(var) } (* add underscores to variable names and numbers PLEASE *)
 	| digit+ as i            { INT(int_of_string i) }
-	(*| digit*'.'digit+ as flt { FLOAT(float_of_string flt) }*)
+	| digit*'.'digit+ as flt { FLOAT(float_of_string flt) }
 	| '"'('\\'_|[^'"'])*'"' as str   { STRING(str) }
 	| eof                  	 { EOF }
 

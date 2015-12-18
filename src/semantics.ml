@@ -63,6 +63,7 @@ let rec check_type env (expression: Ast.expression) =
 	match expression with
 		Int(i) -> Inttype
 		| String(s) -> Stringtype
+		| Float(f) -> Floattype
 		| Var(v) -> (try let symbol = List.find (fun s -> s.vname = v) env.symbol_table in
 						symbol.dtype
 					with Not_found -> raise (Except("Symbol '" ^ v ^ "' is uninitialized!"))) (* uninitialized_variable_test.finl *)
@@ -75,8 +76,8 @@ let rec check_type env (expression: Ast.expression) =
 let rec analyze_expression env (expression: Ast.expression) =
 	match expression with
 		Int(i) -> 				Int(i)
-		
 		| String(s) -> 			String(s)
+		| Float(f) -> 			Float(f)
 		
 		| Var(v) -> 			let found = List.exists (fun s -> s.vname = v) env.symbol_table in
 								if found then (Var(v))

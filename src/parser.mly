@@ -9,9 +9,9 @@
 %token EQ GEQ GT LEQ LT
 %token RETURN /*WHILE WHEN IF ELSE ELSEIF VOID NULL BREAK*/
 /*%token AND OR NOT */
-%token INTD STRINGD /* FLOATD PERCENT ARRAY STRING CURR STOCK ORDER PF */ FUNC
+%token INTD STRINGD FLOATD /*PERCENT ARRAY STRING CURR STOCK ORDER PF */ FUNC
 %token <int> INT
-/* %token <float> FLOAT */
+%token <float> FLOAT
 %token <string> STRING
 /* %token <percent> FLOAT
 %token <currency> FLOAT */
@@ -51,6 +51,7 @@ statement:
 expression:
   INT { Int($1) }
   | STRING  { String($1) }
+  | FLOAT { Float($1) }
   | VAR  { Var($1) }
   | expression PLUS expression  { Binop($1, Add, $3) }
   | expression MINUS  expression { Binop($1, Sub, $3) }
@@ -78,6 +79,7 @@ vdecl:
 dtype:
   INTD { Inttype }
   | STRINGD { Stringtype }
+  | FLOATD { Floattype }
 
 fdecl:
   FUNC dtype VAR LPAREN params RPAREN

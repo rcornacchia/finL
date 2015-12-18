@@ -3,6 +3,7 @@ type op = Add | Sub | Mult | Div | Equal | Less | Leq | Greater | Geq
 type data_type =
   Inttype
   | Stringtype
+  | Floattype
 
 type var_decl = {
   dtype : data_type;
@@ -12,6 +13,7 @@ type var_decl = {
 type expression =
   Int of int
   | String of string
+  | Float of float
   | Var of string
   | Binop of expression * op * expression
   | Assign of string * expression
@@ -51,10 +53,12 @@ let string_of_op = function
 let string_of_data_type = function
   Inttype -> "int"
   | Stringtype -> "string"
+  | Floattype -> "float"
 
 let rec string_of_expression = function
   Int(i) -> "Int(" ^ string_of_int i ^ ")"
   | String(s) -> "String(" ^ s ^ ")"
+  | Float(f) -> "Float(" ^ string_of_float f ^ ")"
   | Var(v) -> "Var(" ^ v ^ ")"
   | Binop(e1, o, e2) -> "Binop(" ^ string_of_expression e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expression e2 ^ ")"
   | Assign(a, e) -> "Assign(" ^ a ^ " = " ^ string_of_expression e ^ ")"

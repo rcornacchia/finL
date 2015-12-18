@@ -16,16 +16,18 @@ let check_function name = (* HAVE SOME BUILTIN FUNCTIONALITY HERE *)
   if name = "print" then "System.out.print"
   else name
 
+let compile_dtype = function
+  Inttype -> "int"
+  | Stringtype -> "String"
+  | Floattype -> "double"
+
 let compile_vdecl (vdecl: Ast.var_decl) =
-  let data_type = match vdecl.dtype with
-    Inttype -> "int"
-    | Stringtype -> "String"
-  in
-  data_type ^ " " ^ vdecl.vname
+  compile_dtype vdecl.dtype ^ " " ^ vdecl.vname
 
 let rec compile_expression = function
   String(str) -> str
   | Int(i) -> string_of_int i
+  | Float(f) -> string_of_float f
   | Binop(expr1, op, expr2) -> compile_expression expr1 ^ string_of_op op ^ compile_expression expr2
   | Assign(var, expr) -> var ^ "=" ^ compile_expression expr
   | Var(str) -> str
@@ -35,10 +37,6 @@ let compile_statement = function
   Expr(expr) -> compile_expression expr ^ ";"
   | Vdecl(v) -> compile_vdecl v ^ ";"
   | Ret(r) -> "return " ^ compile_expression r ^ ";"
-
-let compile_dtype = function
-  Inttype -> "int"
-  | Stringtype -> "String"
 
 let compile_sfdecl (func: Sast.sfunc_decl) =
   if func.builtin then ("")
