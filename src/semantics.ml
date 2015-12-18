@@ -93,7 +93,7 @@ let fdecl_to_sfdecl env (fdecl: Ast.func_decl) =
 	in 
 	let func_env = List.fold_left analyze_statement func_env fdecl.body in
 	let sfdecl = { sname = checked_name;
-				   sformals = checked_formals;
+				   sformals = List.rev checked_formals;
 				   sbody = List.rev func_env.checked_statements;
 				   builtin = false; }
 	in

@@ -12,7 +12,7 @@ let string_of_op = function
 	| Greater -> ">"
 	| Geq -> ">="
 
-let check_function (name: string) =
+let check_function name = (* HAVE SOME BUILTIN FUNCTIONALITY HERE *)
   if name = "print" then "System.out.print"
   else name
 
@@ -32,25 +32,24 @@ let rec compile_expression = function
   | Call(name, exprlst) -> check_function name ^ "(" ^ String.concat ", " (List.map compile_expression exprlst) ^ ")"
   | Noexpr -> ""
 
-let compile_sstatement = function
+let compile_statement = function
   Expr(expr) -> compile_expression expr ^ ";"
   | Vdecl(v) -> compile_vdecl v ^ ";"
 
-let compile_sfdecl (func: Ast.func_decl) =
+let compile_sfdecl (func: Sast.sfunc_decl) =
   "public static void " ^
-  func.name ^
+  func.sname ^
   "(" ^
-  String.concat ", " (List.map compile_vdecl func.formals) ^
+  String.concat ", " (List.map compile_vdecl func.sformals) ^
   ") {\n" ^
-  String.concat "\n" (List.map compile_sstatement func.body) ^
+  String.concat "\n" (List.map compile_statement func.sbody) ^
   "\n}"
 
 let compile (sprogram: Sast.sprogram) (filename: string) =
-  ""
-  (*"public class " ^ 
+  "public class " ^ 
   filename ^ 
   " {\n" ^
-  String.concat "\n" (List.map compile_sfdecl prog.fdecls) ^
+  String.concat "\n" (List.map compile_sfdecl sprogram.sfunc_decls) ^
   "\npublic static void main(String[] args) {\n" ^
-  String.concat "\n" (List.map compile_sstatement prog.statements) ^
-  "\n}\n}"*)
+  String.concat "\n" (List.map compile_statement sprogram.statements) ^
+  "\n}\n}"

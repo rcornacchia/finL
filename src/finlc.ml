@@ -24,7 +24,7 @@ let _ =
               let name = sub Sys.argv.(file_index) start ((length Sys.argv.(file_index)) - 5 - start) in     
               let write_file = open_out (name ^ ".java") in
               let compiled_program = Compile.compile checked_program name in
-                (*fprintf write_file "%s" compiled_program;*)
+                fprintf write_file "%s" compiled_program;
                 close_out write_file; 
-                (*ignore (Sys.command ("javac " ^ name ^ ".java"))*))
+                ignore (Sys.command ("javac " ^ name ^ ".java")))
 		(*else (*Compile in*) print_endline "Please specify exactly 1 filename."*)
