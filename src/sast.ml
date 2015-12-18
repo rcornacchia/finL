@@ -22,12 +22,9 @@ type sfunc_decl = {
   builtin : bool;
 }
 
-type sline =
-  Stmt of Ast.statement
-  | Fdecl of sfunc_decl
-
 type sprogram = { 
-    slines : sline list;
+    sfunc_decls : sfunc_decl list;
+    statements : Ast.statement list;
 }
 
 let string_of_sfdecl (sfdecl: sfunc_decl) =
@@ -35,15 +32,15 @@ let string_of_sfdecl (sfdecl: sfunc_decl) =
   sfdecl.sname ^ 
   "} sformals{" ^ 
   String.concat ", " (List.map Ast.string_of_vdecl sfdecl.sformals) ^ 
-  "} builtin { " ^
+  "} builtin {" ^
   string_of_bool sfdecl.builtin ^
-  "} sbody{\nstatement{" ^
+  "}\nsbody{\nstatement{" ^
   String.concat "}\nstatement{" (List.map Ast.string_of_statement sfdecl.sbody) ^
   "}\n}"
 
-let string_of_sline = function
-  Stmt(s) -> "statement{" ^ Ast.string_of_statement s ^ "}"
-  | Fdecl(f) -> "sfdecl{\n" ^ string_of_sfdecl f ^ "\n}"
-
 let string_of_sprogram (sprog: sprogram) =
-	"sprogram{\nsline{\n" ^ String.concat "\n}\nsline{\n" (List.map string_of_sline sprog.slines) ^ "\n}\n}\n"
+	"sprogram{\nsfunc_decl{\n" ^ 
+  String.concat "\n}\nsfunc_decl{\n" (List.map string_of_sfdecl sprog.sfunc_decls) ^ 
+  "\n}\nstatement{" ^
+  String.concat "}\nstatement{" (List.map Ast.string_of_statement sprog.statements) ^
+  "}\n}\n"

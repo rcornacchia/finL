@@ -19,13 +19,13 @@ let builtin_functions =
 type environment = {
 	function_table : Sast.sfunc_decl list;
 	symbol_table : Ast.var_decl list;
-	checked_lines : Sast.sline list;
+	checked_statements : Ast.statement list;
 }
 
 let root_env = {
 	function_table = builtin_functions;
 	symbol_table = [];
-	checked_lines = [];
+	checked_statements = [];
 }
 
 let name_to_sname env name =
@@ -71,16 +71,16 @@ let analyze_expression env (expression: Ast.expression) = (* DO TYPE CHECKING!!!
 let analyze_statement env (statement: Ast.statement) =
 	match statement with
 		Expr(e) -> let checked_expression = analyze_expression env e in
-				   let checked_line = Stmt(Expr(checked_expression)) in
+				   let checked_statement = Expr(checked_expression) in
 				   let new_env = { function_table = env.function_table;
 								   symbol_table = env.symbol_table; 
-								   checked_lines = checked_line :: env.checked_lines; }
+								   checked_statements = checked_statement :: env.checked_statements; }
 				   in new_env 
 		| Vdecl(v) -> let checked_vdecl = analyze_vdecl env v in
-					  let checked_line = Stmt(Vdecl(checked_vdecl)) in
+					  let checked_statement = Vdecl(checked_vdecl) in
 					  let new_env = { function_table = env.function_table;
 									  symbol_table = checked_vdecl :: env.symbol_table; 
-									  checked_lines = checked_line :: env.checked_lines; } 
+									  checked_statements = checked_statement :: env.checked_statements; } 
 					  in new_env
 					
 
@@ -89,26 +89,27 @@ let fdecl_to_sfdecl env (fdecl: Ast.func_decl) =
 	let checked_formals = List.fold_left formal_to_sformal [] fdecl.formals in
 	let func_env = { function_table = env.function_table; 
 					 symbol_table = checked_formals; 
-					 checked_lines = env.checked_lines; }
+					 checked_statements = []; }
 	in 
 	let func_env = List.fold_left analyze_statement func_env fdecl.body in
 	let sfdecl = { sname = checked_name;
 				   sformals = checked_formals;
-				   sbody = fdecl.body;
+				   sbody = List.rev func_env.checked_statements;
 				   builtin = false; }
 	in
 	let new_env = { function_table = sfdecl :: env.function_table; 
 					symbol_table = env.symbol_table;
-					checked_lines = Fdecl(sfdecl) :: env.checked_lines; }
+					checked_statements = env.checked_statements; }
 	in
 	new_env
 
-let line_to_sline env (line: Ast.line) =
+let analyze_line env (line: Ast.line) =
 	match line with
 		Stmt(s) -> analyze_statement env s
 		| Fdecl(f) -> fdecl_to_sfdecl env f
 
 let analyze (program: Ast.program) =
-	let new_env = List.fold_left line_to_sline root_env program.lines in
-	let sprogram = { slines = List.rev new_env.checked_lines; } in
-	sprogram
+	let new_env = List.fold_left analyze_line root_env program.lines in
+	let sprogram = { sfunc_decls = new_env.function_table; 
+					 statements = List.rev new_env.checked_statements; }
+	in sprogram

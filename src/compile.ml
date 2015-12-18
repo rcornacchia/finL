@@ -46,6 +46,7 @@ let compile_sfdecl (func: Ast.func_decl) =
   "\n}"
 
 let compile (sprogram: Sast.sprogram) (filename: string) =
+  ""
   (*"public class " ^ 
   filename ^ 
   " {\n" ^
