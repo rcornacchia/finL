@@ -18,6 +18,7 @@ type expression =
   | Binop of expression * op * expression
   | Assign of string * expression
   | Aassign of string * expression
+  | Sassign of string * expression
   | Call of string * expression list
 
 type statement =
@@ -63,6 +64,8 @@ let rec string_of_expression = function
   | Var(v) -> "Var(" ^ v ^ ")"
   | Binop(e1, o, e2) -> "Binop(" ^ string_of_expression e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expression e2 ^ ")"
   | Assign(a, e) -> "Assign(" ^ a ^ " = " ^ string_of_expression e ^ ")"
+  | Aassign(aa, e) -> "Assign(" ^ aa ^ " = " ^ string_of_expression e ^ ")"
+  | Sassign(sa, e) -> "Assign(" ^ sa ^ " = " ^ string_of_expression e ^ ")"
   | Call(c, el) -> c ^ "(" ^ String.concat ", " (List.map string_of_expression el) ^ ")"
 
 let string_of_vdecl (vdecl: var_decl) = 

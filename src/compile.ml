@@ -31,6 +31,7 @@ let rec compile_expression = function
   | Binop(expr1, op, expr2) -> compile_expression expr1 ^ string_of_op op ^ compile_expression expr2
   | Assign(var, expr) -> var ^ "=" ^ compile_expression expr
   | Aassign(avar, aexpr) -> avar ^ "+=" ^ compile_expression aexpr
+  | Sassign(svar, sexpr) -> svar ^ "-=" ^ compile_expression sexpr
   | Var(str) -> str
   | Call(name, exprlst) -> check_function name ^ "(" ^ String.concat ", " (List.map compile_expression exprlst) ^ ")"
 
