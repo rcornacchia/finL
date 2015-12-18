@@ -1,11 +1,11 @@
-function int main() {
+function int m() {
 	print(1);
 	return 0;
 };
 
-function int main() {
+function int m() {
 	print(2);
 	return 0;
 };
 
-main();
+m();

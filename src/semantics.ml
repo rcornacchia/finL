@@ -11,16 +11,23 @@ let builtin_functions =
 		srtype = Inttype; (*TEMPORARY*) 
 		builtin = true; } ]
 
+type scope = {
+	scope_name : string;
+	scope_rtype : Ast.data_type ;
+}
+
 type environment = {
 	function_table : Sast.sfunc_decl list;
 	symbol_table : Ast.var_decl list;
 	checked_statements : Ast.statement list;
+	env_scope : scope;
 }
 
 let root_env = {
 	function_table = builtin_functions;
 	symbol_table = [];
 	checked_statements = [];
+	env_scope = { scope_name = "reserved"; scope_rtype = Inttype; (* TO CHANGE *) };
 }
 
 let name_to_sname env name =
@@ -32,8 +39,8 @@ let name_to_sname env name =
 	in
 	(try
 		let func = List.find (fun f -> f.sname = sname) env.function_table in
-		if func.builtin then (raise (Except(func.sname ^ " is a built in function!")))
-		else raise (Except(func.sname ^ " is already defined!"))
+		if func.builtin then (raise (Except("Function '" ^ func.sname ^ "' is a built in function!")))
+		else raise (Except("Function '" ^ name ^ "' is already defined!"))
 	with Not_found -> sname)
 
 let formal_to_sformal sformals (formal: Ast.var_decl) =
@@ -59,7 +66,7 @@ let rec check_type env (expression: Ast.expression) =
 		| Var(v) -> (try let symbol = List.find (fun s -> s.vname = v) env.symbol_table in
 						symbol.dtype
 					with Not_found -> raise (Except("Symbol '" ^ v ^ "' is uninitialized!")))
-		| Binop(e1, o, e2) -> check_type env e1 (* TO DO? -> MAYBE NOT *)
+		| Binop(e1, o, e2) -> check_type env e1
 		| Assign(a, e) -> check_type env e
 		| Call(c, el) -> (try let func = List.find (fun f -> f.sname = c) env.function_table in
 							 func.srtype
@@ -88,7 +95,7 @@ let rec analyze_expression env (expression: Ast.expression) =
 									if sametype then (Assign(a, e))
 									else let dstring = Ast.string_of_data_type dtype
 										 and estring = Ast.string_of_data_type etype in 
-										 raise (Except("Symbol '" ^ a ^ "' is of type " ^ dstring ^ ", not of type " ^ estring ^ "."))
+										 raise (Except("Symbol '" ^ a ^ "' is of type '" ^ dstring ^ "', not of type '" ^ estring ^ "'."))
 						  		with Not_found -> raise (Except("Symbol '" ^ a ^ "' not initialized!")))
 
 		| Call(c, el) -> 		let sname = check_for_main c in
@@ -106,26 +113,41 @@ let check_statement = function
 	| Call(c, el) -> Call(c, el)
 	| _ -> raise (Except("Not a statement!"))
 
+let check_return env (expression: Ast.expression) =
+	let scope = env.env_scope in
+	let fname = scope.scope_name in
+	let within_func = fname <> "reserved" in
+	if within_func then 
+		(let rtype = scope.scope_rtype in
+		let etype = check_type env expression in
+		let sametype = rtype = etype in
+		if sametype then (expression)
+		else raise (Except("Function '" ^ fname ^ "' returns type '" ^ Ast.string_of_data_type rtype ^ "', not type '" ^ Ast.string_of_data_type etype ^ "'.")))
+	else raise (Except("return statements cannot be used outside of functions!"))
+
 let analyze_statement env (statement: Ast.statement) =
 	match statement with
 		Expr(e) -> let checked_expression = analyze_expression env e in
 				   let checked_statement = Expr(check_statement checked_expression) in
 				   let new_env = { function_table = env.function_table;
 								   symbol_table = env.symbol_table; 
-								   checked_statements = checked_statement :: env.checked_statements; }
+								   checked_statements = checked_statement :: env.checked_statements; 
+								   env_scope = env.env_scope; }
 				   in new_env 
 		| Vdecl(v) -> let checked_vdecl = analyze_vdecl env v in
 					  let checked_statement = Vdecl(checked_vdecl) in
 					  let new_env = { function_table = env.function_table;
 									  symbol_table = checked_vdecl :: env.symbol_table; 
-									  checked_statements = checked_statement :: env.checked_statements; } 
+									  checked_statements = checked_statement :: env.checked_statements; 
+									  env_scope = env.env_scope; } 
 					  in new_env
-		| Ret(r) -> let checked_expression = analyze_expression env r in
+		| Ret(r) -> let checked_expression = check_return env (analyze_expression env r) in
 					let checked_statement = Ret(checked_expression) in
 					let new_env = { function_table = env.function_table;
 									symbol_table = env.symbol_table;
-									checked_statements = checked_statement :: env.checked_statements; }
-					in new_env (* TO DO -> type checking *)
+									checked_statements = checked_statement :: env.checked_statements; 
+									env_scope = env.env_scope; }
+					in new_env
 					
 
 let fdecl_to_sfdecl env (fdecl: Ast.func_decl) =
@@ -133,7 +155,8 @@ let fdecl_to_sfdecl env (fdecl: Ast.func_decl) =
 	let checked_formals = List.fold_left formal_to_sformal [] fdecl.formals in
 	let func_env = { function_table = env.function_table; 
 					 symbol_table = checked_formals; 
-					 checked_statements = []; }
+					 checked_statements = []; 
+					 env_scope = { scope_name = fdecl.name; scope_rtype = fdecl.rtype; }; }
 	in 
 	let func_env = List.fold_left analyze_statement func_env fdecl.body in
 	let sfdecl = { sname = checked_name;
@@ -144,7 +167,8 @@ let fdecl_to_sfdecl env (fdecl: Ast.func_decl) =
 	in
 	let new_env = { function_table = sfdecl :: env.function_table; 
 					symbol_table = env.symbol_table;
-					checked_statements = env.checked_statements; }
+					checked_statements = env.checked_statements;
+					env_scope = { scope_name = "reserved"; scope_rtype = Inttype; (* TO CHANGE *) }; }
 	in
 	new_env
 

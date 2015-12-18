@@ -1,0 +1,7 @@
+function int main() {
+	return 1;
+};
+
+function string mainn() {
+	return 1;
+};
