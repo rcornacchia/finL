@@ -30,11 +30,11 @@ let name_to_sname env name =
 			if name = "main" then ("reserved")
 			else name
 	in
-	try
+	(try
 		let func = List.find (fun f -> f.sname = sname) env.function_table in
 		if func.builtin then (raise (Except(func.sname ^ " is a built in function!")))
 		else raise (Except(func.sname ^ " is already defined!"))
-	with Not_found -> sname
+	with Not_found -> sname)
 
 let formal_to_sformal sformals (formal: Ast.var_decl) =
 	let found = List.exists (fun sf -> formal.vname = sf.vname) sformals in
@@ -59,16 +59,13 @@ let rec check_type env (expression: Ast.expression) =
 		| Var(v) -> (try let symbol = List.find (fun s -> s.vname = v) env.symbol_table in
 						symbol.dtype
 					with Not_found -> raise (Except("Symbol '" ^ v ^ "' is uninitialized!")))
-		| Binop(e1, o, e2) -> Inttype (* TO DO *)
+		| Binop(e1, o, e2) -> check_type env e1 (* TO DO? -> MAYBE NOT *)
 		| Assign(a, e) -> check_type env e
 		| Call(c, el) -> (try let func = List.find (fun f -> f.sname = c) env.function_table in
 							 func.srtype
 						 with Not_found -> raise (Except("Function '" ^ c ^ "' not found!")))
 
-(*let check_formals formal expression =
-	if formal.dtype <> check_type expression then raise (Except("Function parameter type mismatch!"))*)
-
-let analyze_expression env (expression: Ast.expression) =
+let rec analyze_expression env (expression: Ast.expression) =
 	match expression with
 		Int(i) -> 				Int(i)
 		
@@ -78,15 +75,15 @@ let analyze_expression env (expression: Ast.expression) =
 								if found then (Var(v))
 								else raise (Except("Symbol '" ^ v ^ "' is uninitialized!"))
 		
-		| Binop(e1, o, e2) -> 	let type1 = check_type env e1
-							  	and type2 = check_type env e2
+		| Binop(e1, o, e2) -> 	let type1 = check_type env (analyze_expression env e1) (* CHECK OPERATIONS ON STRINGS *)
+							  	and type2 = check_type env (analyze_expression env e2)
 							  	in let sametype = type1 = type2 in
 							  	if sametype then (Binop(e1, o, e2))
 							  	else raise (Except("binop type mismatch!"))
 
 		| Assign(a, e) -> 		(try let vdecl = List.find (fun s -> s.vname = a) env.symbol_table in
 									let dtype = vdecl.dtype in
-									let etype = check_type env e in
+									let etype = check_type env (analyze_expression env e) in
 									let sametype = dtype = etype in
 									if sametype then (Assign(a, e))
 									else let dstring = Ast.string_of_data_type dtype
@@ -94,17 +91,25 @@ let analyze_expression env (expression: Ast.expression) =
 										 raise (Except("Symbol '" ^ a ^ "' is of type " ^ dstring ^ ", not of type " ^ estring ^ "."))
 						  		with Not_found -> raise (Except("Symbol '" ^ a ^ "' not initialized!")))
 
-		| Call(c, el) -> 		(*let name = check_for_main c in
-						 		try let func = List.find (fun f -> f.sname = sname) env.function_table in
-						 			try List.iter2 checkformals func.formals el
-						 			with raise (Except("Wrong argument length to function '" ^ func ^ "'."))
-						 		with raise (Except("Function '" ^ c ^ "' not found!"))*)
-								Call(check_for_main c, el)
+		| Call(c, el) -> 		let sname = check_for_main c in
+						 		(try let func = List.find (fun f -> f.sname = sname) env.function_table in
+						 			let builtin = func.builtin in (* CHECK # of args to print *)
+						 			if builtin then (Call(sname, List.map (fun e -> analyze_expression env e) el))
+						 			else
+						 				(try List.iter2 (fun f e -> if f.dtype <> check_type env (analyze_expression env e) then raise (Except("Function parameter type mismatch!"))) func.sformals el;
+						 			 	Call(sname, el)
+						 				with Invalid_argument _ -> raise (Except("Wrong argument length to function '" ^ func.sname ^ "'.")))
+						 		with Not_found -> raise (Except("Function '" ^ c ^ "' not found!")))
+
+let check_statement = function
+	Assign(a, e) -> Assign(a, e)
+	| Call(c, el) -> Call(c, el)
+	| _ -> raise (Except("Not a statement!"))
 
 let analyze_statement env (statement: Ast.statement) =
 	match statement with
 		Expr(e) -> let checked_expression = analyze_expression env e in
-				   let checked_statement = Expr(checked_expression) in
+				   let checked_statement = Expr(check_statement checked_expression) in
 				   let new_env = { function_table = env.function_table;
 								   symbol_table = env.symbol_table; 
 								   checked_statements = checked_statement :: env.checked_statements; }
@@ -116,11 +121,11 @@ let analyze_statement env (statement: Ast.statement) =
 									  checked_statements = checked_statement :: env.checked_statements; } 
 					  in new_env
 		| Ret(r) -> let checked_expression = analyze_expression env r in
-							 let checked_statement = Ret(checked_expression) in
-							 let new_env = { function_table = env.function_table;
-										 	 symbol_table = env.symbol_table;
-										 	 checked_statements = checked_statement :: env.checked_statements; }
-							 in new_env (* TO DO *)
+					let checked_statement = Ret(checked_expression) in
+					let new_env = { function_table = env.function_table;
+									symbol_table = env.symbol_table;
+									checked_statements = checked_statement :: env.checked_statements; }
+					in new_env (* TO DO -> type checking *)
 					
 
 let fdecl_to_sfdecl env (fdecl: Ast.func_decl) =

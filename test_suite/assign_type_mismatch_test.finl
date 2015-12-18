@@ -1,0 +1,5 @@
+function int main() { # make more robust
+	int x;
+	x << "string";
+	return x;
+};

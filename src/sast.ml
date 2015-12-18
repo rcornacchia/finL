@@ -1,19 +1,5 @@
 open Ast
 
-(*type svar_decl = {
-  sdtype : data_type;
-  svname : string;
-}*)
-
-(*type environment =
-	{ (*variables : Ast.var_decl list;*)
-	  functions : Sast.sfunc_decl list; }
-
-type sexpression = Ast.expression * Ast.data_type
-
-(*type sstatement =
-  Expr of expression*)*)
-
 type sfunc_decl = {
   srtype : Ast.data_type;
   sname : string;
