@@ -149,8 +149,11 @@ let analyze_statement env (statement: Ast.statement) =
 									env_scope = env.env_scope; }
 					in new_env
 					
+let check_for_return = function 
+	Ret(_) -> true
+	| _ -> false
 
-let fdecl_to_sfdecl env (fdecl: Ast.func_decl) =
+let fdecl_to_sfdecl env (fdecl: Ast.func_decl) = (* multiple_return_test.finl NEEDS FIX *)
 	let checked_name = name_to_sname env fdecl.name in
 	let checked_formals = List.fold_left formal_to_sformal [] fdecl.formals in
 	let func_env = { function_table = env.function_table; 
@@ -159,18 +162,21 @@ let fdecl_to_sfdecl env (fdecl: Ast.func_decl) =
 					 env_scope = { scope_name = fdecl.name; scope_rtype = fdecl.rtype; }; }
 	in 
 	let func_env = List.fold_left analyze_statement func_env fdecl.body in
-	let sfdecl = { sname = checked_name;
-				   sformals = List.rev checked_formals;
-				   sbody = List.rev func_env.checked_statements;
-				   srtype = fdecl.rtype;
-				   builtin = false; }
-	in
-	let new_env = { function_table = sfdecl :: env.function_table; 
-					symbol_table = env.symbol_table;
-					checked_statements = env.checked_statements;
-					env_scope = { scope_name = "reserved"; scope_rtype = Inttype; (* TO CHANGE *) }; }
-	in
-	new_env
+	let returns = List.exists check_for_return func_env.checked_statements in
+	if returns then
+		(let sfdecl = { sname = checked_name;
+				   		sformals = List.rev checked_formals;
+				   		sbody = List.rev func_env.checked_statements;
+				   		srtype = fdecl.rtype;
+				   		builtin = false; }
+		in
+		let new_env = { function_table = sfdecl :: env.function_table; 
+						symbol_table = env.symbol_table;
+						checked_statements = env.checked_statements;
+						env_scope = { scope_name = "reserved"; scope_rtype = Inttype; (* TO CHANGE *) }; }
+		in
+		new_env)
+	else raise (Except("Function '" ^ fdecl.name ^ "' does not have a return statement!")) (* no_return_test.finl *)
 
 let analyze_line env (line: Ast.line) =
 	match line with
