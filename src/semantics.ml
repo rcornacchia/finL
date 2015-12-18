@@ -52,42 +52,48 @@ let check_for_main name =
 		else name
 	in new_name
 
-(*let check_type env expression =
+let rec check_type env (expression: Ast.expression) =
 	match expression with
 		Int(i) -> Inttype
 		| String(s) -> Stringtype
-		| Var(v) -> (* FIND IN TABLE *)
-		| Binop(e1, o, e2) -> (* TO DO *)
-		| Assign(a, e) -> Assign(a, e
-		| Call(c, el) -> check_for_main c el
+		| Var(v) -> (try let symbol = List.find (fun s -> s.vname = v) env.symbol_table in
+						symbol.dtype
+					with Not_found -> raise (Except("Symbol '" ^ v ^ "' is uninitialized!")))
+		| Binop(e1, o, e2) -> Inttype (* TO DO *)
+		| Assign(a, e) -> check_type env e
+		| Call(c, el) -> (try let func = List.find (fun f -> f.sname = c) env.function_table in
+							 func.srtype
+						 with Not_found -> raise (Except("Function '" ^ c ^ "' not found!")))
 
-let check_formals formal expression =
+(*let check_formals formal expression =
 	if formal.dtype <> check_type expression then raise (Except("Function parameter type mismatch!"))*)
 
-let analyze_expression env (expression: Ast.expression) = (* DO TYPE CHECKING!!! *)
+let analyze_expression env (expression: Ast.expression) =
 	match expression with
 		Int(i) -> 				Int(i)
 		
 		| String(s) -> 			String(s)
 		
-		| Var(v) -> 			let found = List.exists (fun symbol -> symbol.vname = v) env.symbol_table in
+		| Var(v) -> 			let found = List.exists (fun s -> s.vname = v) env.symbol_table in
 								if found then (Var(v))
 								else raise (Except("Symbol '" ^ v ^ "' is uninitialized!"))
 		
-		| Binop(e1, o, e2) -> 	(*let type1 = check_type env e1
+		| Binop(e1, o, e2) -> 	let type1 = check_type env e1
 							  	and type2 = check_type env e2
 							  	in let sametype = type1 = type2 in
 							  	if sametype then (Binop(e1, o, e2))
-							  	else raise (Except("binop type mismatch!"))*)
-								Binop(e1, o, e2)
-		| Assign(a, e) -> 		(*try let vdecl = List.find (fun s -> s.vname = a) env.symbol_table in
+							  	else raise (Except("binop type mismatch!"))
+
+		| Assign(a, e) -> 		(try let vdecl = List.find (fun s -> s.vname = a) env.symbol_table in
 									let dtype = vdecl.dtype in
 									let etype = check_type env e in
 									let sametype = dtype = etype in
 									if sametype then (Assign(a, e))
-									else raise Except("Symbol '" ^ a ^ "' is of type " ^ dtype ^ ", not of type " ^ etype ^ ".")
-						  		with raise (Except("Symbol '" ^ a ^ "' not initialized!"))*)
-								Assign(a, e)
+									else let dstring = Ast.string_of_data_type dtype
+										 and estring = Ast.string_of_data_type etype in 
+										 raise (Except("Symbol '" ^ a ^ "' is of type " ^ dstring ^ ", not of type " ^ estring ^ "."))
+						  		with Not_found -> raise (Except("Symbol '" ^ a ^ "' not initialized!")))
+
 		| Call(c, el) -> 		(*let name = check_for_main c in
 						 		try let func = List.find (fun f -> f.sname = sname) env.function_table in
 						 			try List.iter2 checkformals func.formals el
