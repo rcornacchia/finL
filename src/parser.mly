@@ -46,7 +46,7 @@ line:
 statement:
   expression SEMI { Expr($1) }
   | vdecl SEMI { Vdecl($1) }
-  | RETURN expression SEMI { Ret($2) }
+  | RETURN expression SEMI { Ret($2) } /* VOID TYPES */
 
 expression:
   INT { Int($1) }

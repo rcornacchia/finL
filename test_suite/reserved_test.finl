@@ -1,0 +1,3 @@
+function int reserved(){
+	return 0;
+};

@@ -1,0 +1,5 @@
+function int main(){
+	return 1;
+};
+
+main(1);

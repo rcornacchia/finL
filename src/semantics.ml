@@ -32,25 +32,25 @@ let root_env = {
 
 let name_to_sname env name =
 	let sname =
-		if name = "reserved" then (raise (Except("'reserved' is a reserved function name!")))
+		if name = "reserved" then (raise (Except("'reserved' is a reserved function name!"))) (* reserved_test.finl *)
 		else 
 			if name = "main" then ("reserved")
 			else name
 	in
 	(try
 		let func = List.find (fun f -> f.sname = sname) env.function_table in
-		if func.builtin then (raise (Except("Function '" ^ func.sname ^ "' is a built in function!")))
-		else raise (Except("Function '" ^ name ^ "' is already defined!"))
+		if func.builtin then (raise (Except("Function '" ^ func.sname ^ "' is a built in function!"))) (* overwrite_print_test.finl *)
+		else raise (Except("Function '" ^ name ^ "' is already defined!")) (* overwrite_function_test.finl *)
 	with Not_found -> sname)
 
 let formal_to_sformal sformals (formal: Ast.var_decl) =
 	let found = List.exists (fun sf -> formal.vname = sf.vname) sformals in
-	if found then raise (Except("Formal parameter '" ^ formal.vname ^ "' is already defined!"))
+	if found then raise (Except("Formal parameter '" ^ formal.vname ^ "' is already defined!")) (* bad_formals_test.finl *)
 	else formal :: sformals
 
 let analyze_vdecl env (vdecl: Ast.var_decl) =
 	let found = List.exists (fun symbol -> symbol.vname = vdecl.vname) env.symbol_table in
-	if found then raise (Except("Variable '" ^ vdecl.vname ^ "' is already defined!"))
+	if found then raise (Except("Variable '" ^ vdecl.vname ^ "' is already defined!")) (* redeclare_variable_test.finl *)
 	else vdecl
 
 let check_for_main name =
@@ -65,12 +65,12 @@ let rec check_type env (expression: Ast.expression) =
 		| String(s) -> Stringtype
 		| Var(v) -> (try let symbol = List.find (fun s -> s.vname = v) env.symbol_table in
 						symbol.dtype
-					with Not_found -> raise (Except("Symbol '" ^ v ^ "' is uninitialized!")))
+					with Not_found -> raise (Except("Symbol '" ^ v ^ "' is uninitialized!"))) (* uninitialized_variable_test.finl *)
 		| Binop(e1, o, e2) -> check_type env e1
 		| Assign(a, e) -> check_type env e
 		| Call(c, el) -> (try let func = List.find (fun f -> f.sname = c) env.function_table in
 							 func.srtype
-						 with Not_found -> raise (Except("Function '" ^ c ^ "' not found!")))
+						 with Not_found -> raise (Except("Function '" ^ c ^ "' not found!"))) (* uninitialized_call_test.finl *)
 
 let rec analyze_expression env (expression: Ast.expression) =
 	match expression with
@@ -80,13 +80,13 @@ let rec analyze_expression env (expression: Ast.expression) =
 		
 		| Var(v) -> 			let found = List.exists (fun s -> s.vname = v) env.symbol_table in
 								if found then (Var(v))
-								else raise (Except("Symbol '" ^ v ^ "' is uninitialized!"))
+								else raise (Except("Symbol '" ^ v ^ "' is uninitialized!")) (* uninitialized_variable_test.finl *)
 		
 		| Binop(e1, o, e2) -> 	let type1 = check_type env (analyze_expression env e1) (* CHECK OPERATIONS ON STRINGS *)
 							  	and type2 = check_type env (analyze_expression env e2)
 							  	in let sametype = type1 = type2 in
 							  	if sametype then (Binop(e1, o, e2))
-							  	else raise (Except("binop type mismatch!"))
+							  	else raise (Except("binop type mismatch!")) (* binop_type_mismatch.finl *)
 
 		| Assign(a, e) -> 		(try let vdecl = List.find (fun s -> s.vname = a) env.symbol_table in
 									let dtype = vdecl.dtype in
@@ -95,23 +95,23 @@ let rec analyze_expression env (expression: Ast.expression) =
 									if sametype then (Assign(a, e))
 									else let dstring = Ast.string_of_data_type dtype
 										 and estring = Ast.string_of_data_type etype in 
-										 raise (Except("Symbol '" ^ a ^ "' is of type '" ^ dstring ^ "', not of type '" ^ estring ^ "'."))
-						  		with Not_found -> raise (Except("Symbol '" ^ a ^ "' not initialized!")))
+										 raise (Except("Symbol '" ^ a ^ "' is of type '" ^ dstring ^ "', not of type '" ^ estring ^ "'.")) (* assign_type_mismatch_test.finl *)
+						  		with Not_found -> raise (Except("Symbol '" ^ a ^ "' not initialized!"))) (* uninitialized_assignment_test.finl *)
 
-		| Call(c, el) -> 		let sname = check_for_main c in
+		| Call(c, el) -> 		let sname = check_for_main c in (* no_return_test.finl *)
 						 		(try let func = List.find (fun f -> f.sname = sname) env.function_table in
 						 			let builtin = func.builtin in (* CHECK # of args to print *)
 						 			if builtin then (Call(sname, List.map (fun e -> analyze_expression env e) el))
 						 			else
-						 				(try List.iter2 (fun f e -> if f.dtype <> check_type env (analyze_expression env e) then raise (Except("Function parameter type mismatch!"))) func.sformals el;
+						 				(try List.iter2 (fun f e -> if f.dtype <> check_type env (analyze_expression env e) then raise (Except("Function parameter type mismatch!"))) func.sformals el; (* parameter_type_mismatch_test.finl *)
 						 			 	Call(sname, el)
-						 				with Invalid_argument _ -> raise (Except("Wrong argument length to function '" ^ func.sname ^ "'.")))
-						 		with Not_found -> raise (Except("Function '" ^ c ^ "' not found!")))
+						 				with Invalid_argument _ -> raise (Except("Wrong argument length to function '" ^ func.sname ^ "'."))) (* arg_length_test.finl *)
+						 		with Not_found -> raise (Except("Function '" ^ c ^ "' not found!"))) (* uninitialized_call_test.finl *)
 
 let check_statement = function
 	Assign(a, e) -> Assign(a, e)
 	| Call(c, el) -> Call(c, el)
-	| _ -> raise (Except("Not a statement!"))
+	| _ -> raise (Except("Not a statement!")) (* statement_test.finl *)
 
 let check_return env (expression: Ast.expression) =
 	let scope = env.env_scope in
@@ -122,8 +122,8 @@ let check_return env (expression: Ast.expression) =
 		let etype = check_type env expression in
 		let sametype = rtype = etype in
 		if sametype then (expression)
-		else raise (Except("Function '" ^ fname ^ "' returns type '" ^ Ast.string_of_data_type rtype ^ "', not type '" ^ Ast.string_of_data_type etype ^ "'.")))
-	else raise (Except("return statements cannot be used outside of functions!"))
+		else raise (Except("Function '" ^ fname ^ "' returns type '" ^ Ast.string_of_data_type rtype ^ "', not type '" ^ Ast.string_of_data_type etype ^ "'."))) (* bad_return_test.finl *)
+	else raise (Except("return statements cannot be used outside of functions!")) (* outside_return_test.finl *)
 
 let analyze_statement env (statement: Ast.statement) =
 	match statement with

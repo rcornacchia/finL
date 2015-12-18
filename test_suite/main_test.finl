@@ -1,2 +1,7 @@
-function int main(){};
-function int main(){};
+function int main(){
+	return 0;
+};
+
+function int main(){
+	return 0;
+};

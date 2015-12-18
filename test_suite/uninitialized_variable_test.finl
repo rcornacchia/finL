@@ -1,7 +1,7 @@
 function int main() {
 	int x;
 	x << 3;
-	x; # not a statement in java -> need to fix
-	y;
+	int y;
+	y << x + z;
 	return 0;
 };
