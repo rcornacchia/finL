@@ -45,8 +45,7 @@ let compile_sfdecl (func: Ast.func_decl) =
   String.concat "\n" (List.map compile_sstatement func.body) ^
   "\n}"
 
-let compile (prog: Ast.program) (filename: string) =
-  prog
+let compile (sprogram: Sast.sprogram) (filename: string) =
   (*"public class " ^ 
   filename ^ 
   " {\n" ^

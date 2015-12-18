@@ -11,7 +11,7 @@ make :
 	ocamlc -c semantics.ml
 	ocamlc -c compile.ml
 	ocamlc -c finlc.ml
-	ocamlc -o finlc sast.cmo ast.cmo parser.cmo scanner.cmo compile.cmo semantics.cmo finlc.cmo
+	ocamlc -o finlc ast.cmo sast.cmo parser.cmo scanner.cmo compile.cmo semantics.cmo finlc.cmo
 
 .PHONY : clean
 clean :

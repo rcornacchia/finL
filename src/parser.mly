@@ -33,11 +33,11 @@
 
 %%
 program:
-  lines EOF { $1 }
+  line_list EOF { { lines = List.rev $1 } }
 
-lines:
-  /* nothing */ { { lines = [] } }
-  | lines line { { lines = $2 :: $1.lines } }
+line_list:
+  /* nothing */ { [] }
+  | line_list line { $2 :: $1 } 
 
 line:
   statement { Stmt($1) }

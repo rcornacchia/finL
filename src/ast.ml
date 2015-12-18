@@ -82,4 +82,4 @@ let string_of_line = function
   | Fdecl(f) -> "fdecl{\n" ^ string_of_fdecl f ^ "\n}"
 
 let string_of_program (prog: program) =
-  "program{\n" ^ String.concat "\n" (List.map string_of_line prog.lines) ^ "\n}\n"
+  "program{\nline{\n" ^ String.concat "\n}\nline{\n" (List.map string_of_line prog.lines) ^ "\n}\n}\n"
