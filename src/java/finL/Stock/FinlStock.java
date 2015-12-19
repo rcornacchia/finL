@@ -12,56 +12,82 @@ import yahoofinance.quotes.fx.FxQuote;
 import yahoofinance.quotes.fx.FxSymbols;
 import yahoofinance.quotes.stock.StockDividend;
 import yahoofinance.quotes.stock.StockQuote;
+import yahoofinance.quotes.stock.StockStats;
 
 public class FinlStock { 
 	
+	public String symbol;
 	
-	/*////ticker////*/
-	private String		symbol; 
-	
-	
-	
-	/*Fundamentals*/
-	public BigDecimal 	bookValuePerShare;
-	public BigDecimal 	ebitda;
-	public BigDecimal	eps;
-	public BigDecimal	epsEstimateCurrentYear;
-	public BigDecimal	epsEstimateNextQuarter;
-	public BigDecimal	epsEstimateNextYear;
-	public BigDecimal	marketCap;
-	public BigDecimal	oneYearTargetPrice; 
-	public BigDecimal	pe; 
-	public BigDecimal	peg;
-	public BigDecimal	priceBook; 
-	public BigDecimal	priceSales;
-	public BigDecimal	revenue;
-	public BigDecimal	roe;
-	public long			sharesFloat; 
-	public long			sharesOutstanding; 
-	public long			sharesOwned;
-	
-	
-	////////////////////////////////////////////
-	//////////////*Constructors*////////////////
-	////////////////////////////////////////////
-	public FinlStock() throws NullTickerException {
-		throw new NullTickerException();
+	public FinlStock(String ticker) { 
+		this.symbol = ticker;
+		Stock yahooStock = new yahoofinance.Stock(symbol);
+		
 	}
 	
-	public FinlStock(String ticker) throws IOException {
-		yahoofinance.Stock stock = YahooFinance.get(ticker);
-		populate(stock);
-	}
 	
-	////////////////////////////////////////////
-	//////////////*Stock Methods*///////////////
-	////////////////////////////////////////////
-	public void populate(Stock stock) throws IOException { 
-		stock.getQuote();
-		System.out.println(stock.toString());
-		stock.print();
+	public class FinlFundamentals {
+		
+		/*Fundamentals Object*/
+		private StockStats fundamentals;
+		
+		/*Fundamentals*/
+		public BigDecimal 	bookValuePerShare;
+		public BigDecimal 	ebitda;
+		public BigDecimal	eps;
+		public BigDecimal	marketCap;
+		public BigDecimal	pe; 
+		public BigDecimal	peg;
+		public BigDecimal	priceBook; 
+		public BigDecimal	priceSales;
+		public BigDecimal	revenue;
+		public BigDecimal	roe;
+		public long			sharesFloat; 
+		public long			sharesOutstanding; 
+		
+		/*Estimates*/
+		public BigDecimal	epsEstimateCurrentYear;
+		public BigDecimal	epsEstimateNextQuarter;
+		public BigDecimal	epsEstimateNextYear;
+		public BigDecimal	oneYearTargetPrice; 
+		
+		////////////////////////////////////////////
+		//////////////*Constructors*////////////////
+		////////////////////////////////////////////
+		public FinlFundamentals(String symbol) {
+			yahoofinance.Stock stock = new Stock(symbol);
+			fundamentals = stock.getStats();
+			this.populateStatistics();
+			this.populateEstimates();
+		}	//end constructor FinlQuote(String symbol)
+		
+		public FinlFundamentals(Stock stock) {
+			fundamentals = stock.getStats();
+			this.populateStatistics();
+			this.populateEstimates();
+		}	//end constructor FinlQuote(String symbol)
+
+		private void populateStatistics() {
+			bookValuePerShare 	= this.fundamentals.getBookValuePerShare();
+			ebitda 				= this.fundamentals.getEBITDA();
+			eps 				= this.fundamentals.getEps();
+			marketCap 			= this.fundamentals.getMarketCap();
+			pe 					= this.fundamentals.getPe();
+			peg 				= this.fundamentals.getPeg();
+			priceBook 			= this.fundamentals.getPriceBook();
+			priceSales 			= this.fundamentals.getPriceSales();
+			revenue 			= this.fundamentals.getRevenue();
+			roe 				= this.fundamentals.getROE();
+			sharesFloat 		= this.fundamentals.getSharesFloat();
+			sharesOutstanding 	= this.fundamentals.getSharesOutstanding();
+		}	//end populateStatistics()
+		
+		private void populateEstimates() {
+			epsEstimateCurrentYear 	= this.fundamentals.getEpsEstimateCurrentYear();
+			epsEstimateNextQuarter 	= this.fundamentals.getEpsEstimateNextQuarter();
+			epsEstimateNextYear		= this.fundamentals.getEpsEstimateNextYear();
+			oneYearTargetPrice		= this.fundamentals.getOneYearTargetPrice();
+		}	//end populateEstimates()
 	}
-	
 	
 	////////////////////////////////////////////
 	////////////*Quotes SubClass*/////////////	
@@ -69,7 +95,7 @@ public class FinlStock {
 	public class FinlQuote { 
 		
 		/*Quote & Prices*/
-		private StockQuote quote;
+		private StockQuote 	quote;
 		/*////Prices////*/
 		public BigDecimal 	price;
 		public BigDecimal 	priceOpen;
@@ -89,8 +115,12 @@ public class FinlStock {
 		public BigDecimal	changeFromYearHigh;
 		public BigDecimal	changeFromYearLow; 
 		
+		
+		////////////////////////////////////////////
+		//////////////*Constructors*////////////////
+		////////////////////////////////////////////
 		public FinlQuote(String symbol) {
-			yahoofinance.Stock stock = new Stock(symbol);
+			Stock stock = new yahoofinance.Stock(symbol);
 			quote = stock.getQuote();
 			this.populatePrice();
 			this.populateMovement();
@@ -102,41 +132,41 @@ public class FinlStock {
 			this.populateMovement();
 		}	//end constructor FinlQuote(String symbol)
 
+		////////////////////////////////////////////
+		/////////////*Populate Methods*/////////////
+		////////////////////////////////////////////
 		private void populatePrice() {
-			price = this.quote.getPrice();
-			priceOpen = this.quote.getOpen();
-			pricePrevClose = this.quote.getPreviousClose();
-			priceMA200 = this.quote.getPriceAvg200();
-			priceMA50 = this.quote.getPriceAvg50();
-			priceDayHigh = this.quote.getDayHigh();
-			priceDayLow = this.quote.getDayLow();
-			bid = this.quote.getBid();
-			ask = this.quote.getAsk();
-			avgVolume = this.quote.getAvgVolume();
+			price 				= this.quote.getPrice();
+			priceOpen 			= this.quote.getOpen();
+			pricePrevClose 		= this.quote.getPreviousClose();
+			priceMA200 			= this.quote.getPriceAvg200();
+			priceMA50 			= this.quote.getPriceAvg50();
+			priceDayHigh 		= this.quote.getDayHigh();
+			priceDayLow 		= this.quote.getDayLow();
+			bid 				= this.quote.getBid();
+			ask 				= this.quote.getAsk();
+			avgVolume 			= this.quote.getAvgVolume();
 		}	//end populatePrice()
 		
 		private void populateMovement() {
-			change = this.quote.getChange();
-			changePercent = this.quote.getChangeInPercent();
-			changeFromMA200 = this.quote.getChangeFromAvg200();
-			changeFromMA50 = this.quote.getChangeFromAvg50();
-			changeFromYearHigh = this.quote.getChangeFromYearHigh();
-			changeFromYearLow = this.quote.getChangeFromYearLow();
+			change 				= this.quote.getChange();
+			changePercent 		= this.quote.getChangeInPercent();
+			changeFromMA200 	= this.quote.getChangeFromAvg200();
+			changeFromMA50 		= this.quote.getChangeFromAvg50();
+			changeFromYearHigh 	= this.quote.getChangeFromYearHigh();
+			changeFromYearLow 	= this.quote.getChangeFromYearLow();
 		}	//end populateMovement()
-
-		
-		
-	}
-	
+	}	//end FinlQuote subclass
 	
 	////////////////////////////////////////////
 	////////////*Dividend SubClass*/////////////	
 	////////////////////////////////////////////
 	public class FinlDividend {
 
-		/*Dividend Data*/
+		/*Dividend Object*/
 		private StockDividend dividend;
 		
+		/*Dividend Data*/
 		public BigDecimal 	annualYield;
 		public BigDecimal 	annualYieldPercent;
 		public Calendar	exDivDate;
@@ -146,7 +176,7 @@ public class FinlStock {
 
 		/*Pass a Stock Object*/
 		public FinlDividend(Stock stock) { 
-			StockDividend dividend 	= stock.getDividend();
+			dividend 				= stock.getDividend();
 			
 			annualYield 			= this.dividend.getAnnualYield();
 			annualYieldPercent 		= this.dividend.getAnnualYieldPercent();
@@ -158,8 +188,8 @@ public class FinlStock {
 		
 		/*Pass a Stock Symbol*/
 		public FinlDividend(String symbol) {
-			yahoofinance.Stock stock = new Stock(symbol);
-			StockDividend dividend 	= stock.getDividend();
+			Stock stock = new yahoofinance.Stock(symbol);
+			dividend 				= stock.getDividend();
 			
 			annualYield 			= this.dividend.getAnnualYield();
 			annualYieldPercent 		= this.dividend.getAnnualYieldPercent();
@@ -168,7 +198,7 @@ public class FinlStock {
 			exDivDate_String 		= this.exDivDate.toString();
 			payDate_String 			= this.payDate.toString();
 		}	//end constructor FinlDividend(String symbol)
-	} 	//end dividend subclass
+	} 	//end FinlDividend subclass
 	
 	
 	
