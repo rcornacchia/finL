@@ -30,9 +30,9 @@ rule token = parse
 	| "-<<"                  { SASSIGN }
 	| "*<<"                  { MASSIGN }
 	| "/<<"                  { DASSIGN }
-	(*| "and"                  { AND }
+	| "and"                  { AND }
 	| "or"                   { OR }
-	| "not"                  { NOT }
+	(*| "not"                  { NOT } UNARY OPERATORS??
 	| '?'                    { IF }
 	| "??"                   { ELSEIF }
 	| '!'                    { ELSE }

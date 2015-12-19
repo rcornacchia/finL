@@ -1,0 +1,6 @@
+print(1 and 1);
+print("\n");
+print(1.0 and 0);
+print("\n");
+print(1 and 0.1);
+print("\n");
