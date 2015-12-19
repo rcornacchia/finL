@@ -2,6 +2,8 @@
 package bin;
 
 
+
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -14,12 +16,12 @@ import yahoofinance.quotes.stock.StockDividend;
 import yahoofinance.quotes.stock.StockQuote;
 import yahoofinance.quotes.stock.StockStats;
 
-public class FinlStock { 
-	
+public class FinlStock {
+
 	public static void main(String[] args) {
 		try {
 			FinlStock stock2 = new FinlStock("AAPL");
-			
+
 			BigDecimal ask = stock2.finlQuote.ask;
 			System.out.println(ask);
 		} catch (NullTickerException NTE) {
@@ -29,63 +31,61 @@ public class FinlStock {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public String symbol;
 	public FinlQuote finlQuote;
 	public FinlFundamentals finlFundamentals;
 	public FinlDividend finlDividend;
-	
+
 	////////////////////////////////////////////
 	//////////*FinlStock Constructor*///////////
 	///////////Gets all sub-objects/////////////
 	public FinlStock(String ticker) throws NullTickerException, IOException {
-		
+
 		/* Check for null ticker */
-		if(ticker == null || ticker.equals(null)) {  
-			throw new NullTickerException();	
+		if(ticker == null || ticker.equals(null)) {
+			throw new NullTickerException();
 		}
-		
-		this.symbol = ticker;
-		System.out.println(symbol);
-		yahoofinance.Stock testStock = YahooFinance.get(symbol);
-		
-		
-		finlQuote 			= new FinlStock.FinlQuote(testStock);
-		finlFundamentals 	= new FinlStock.FinlFundamentals(testStock);
-		finlDividend 		= new FinlStock.FinlDividend(testStock);
+
+		this.symbol 					= ticker;
+		yahoofinance.Stock testStock 	= YahooFinance.get(symbol);
+
+		this.finlQuote 					= new FinlStock.FinlQuote(testStock);
+		this.finlFundamentals 			= new FinlStock.FinlFundamentals(testStock);
+		this.finlDividend 				= new FinlStock.FinlDividend(testStock);
 	}
-	
-	public FinlStock() throws NullTickerException { 
+
+	public FinlStock() throws NullTickerException {
 			throw new NullTickerException();
 	}
-	
-	
-	
+
+
+
 	public class FinlFundamentals {
-		
+
 		/*Fundamentals Object*/
 		private StockStats fundamentals;
-		
+
 		/*Fundamentals*/
 		public BigDecimal 	bookValuePerShare;
 		public BigDecimal 	ebitda;
 		public BigDecimal	eps;
 		public BigDecimal	marketCap;
-		public BigDecimal	pe; 
+		public BigDecimal	pe;
 		public BigDecimal	peg;
-		public BigDecimal	priceBook; 
+		public BigDecimal	priceBook;
 		public BigDecimal	priceSales;
 		public BigDecimal	revenue;
 		public BigDecimal	roe;
-		public long			sharesFloat; 
-		public long			sharesOutstanding; 
-		
+		public long			sharesFloat;
+		public long			sharesOutstanding;
+
 		/*Estimates*/
 		public BigDecimal	epsEstimateCurrentYear;
 		public BigDecimal	epsEstimateNextQuarter;
 		public BigDecimal	epsEstimateNextYear;
-		public BigDecimal	oneYearTargetPrice; 
-		
+		public BigDecimal	oneYearTargetPrice;
+
 		////////////////////////////////////////////
 		//////////////*Constructors*////////////////
 		////////////////////////////////////////////
@@ -95,7 +95,7 @@ public class FinlStock {
 			this.populateStatistics();
 			this.populateEstimates();
 		}	//end constructor FinlQuote(String symbol)
-		
+
 		public FinlFundamentals(yahoofinance.Stock stock) {
 			fundamentals = stock.getStats();
 			this.populateStatistics();
@@ -116,7 +116,7 @@ public class FinlStock {
 			sharesFloat 		= this.fundamentals.getSharesFloat();
 			sharesOutstanding 	= this.fundamentals.getSharesOutstanding();
 		}	//end populateStatistics()
-		
+
 		private void populateEstimates() {
 			epsEstimateCurrentYear 	= this.fundamentals.getEpsEstimateCurrentYear();
 			epsEstimateNextQuarter 	= this.fundamentals.getEpsEstimateNextQuarter();
@@ -124,12 +124,12 @@ public class FinlStock {
 			oneYearTargetPrice		= this.fundamentals.getOneYearTargetPrice();
 		}	//end populateEstimates()
 	}
-	
+
 	////////////////////////////////////////////
-	////////////*Quotes SubClass*/////////////	
+	////////////*Quotes SubClass*/////////////
 	////////////////////////////////////////////
-	public class FinlQuote { 
-		
+	public class FinlQuote {
+
 		/*Quote & Prices*/
 		private StockQuote 	quote;
 		/*////Prices////*/
@@ -139,7 +139,7 @@ public class FinlStock {
 		public BigDecimal	priceMA200;
 		public BigDecimal	priceMA50;
 		public BigDecimal	priceDayHigh;
-		public BigDecimal	priceDayLow;	
+		public BigDecimal	priceDayLow;
 		public BigDecimal	bid;
 		public BigDecimal 	ask;
 		public long	 		avgVolume;
@@ -149,9 +149,9 @@ public class FinlStock {
 		public BigDecimal	changeFromMA200;
 		public BigDecimal	changeFromMA50;
 		public BigDecimal	changeFromYearHigh;
-		public BigDecimal	changeFromYearLow; 
-		
-		
+		public BigDecimal	changeFromYearLow;
+
+
 		////////////////////////////////////////////
 		//////////////*Constructors*////////////////
 		////////////////////////////////////////////
@@ -161,7 +161,7 @@ public class FinlStock {
 			this.populatePrice();
 			this.populateMovement();
 		}	//end constructor FinlQuote(String symbol)
-		
+
 		public FinlQuote(yahoofinance.Stock stock) {
 			quote = stock.getQuote();
 			this.populatePrice();
@@ -183,7 +183,7 @@ public class FinlStock {
 			ask 				= this.quote.getAsk();
 			avgVolume 			= this.quote.getAvgVolume();
 		}	//end populatePrice()
-		
+
 		private void populateMovement() {
 			change 				= this.quote.getChange();
 			changePercent 		= this.quote.getChangeInPercent();
@@ -193,15 +193,15 @@ public class FinlStock {
 			changeFromYearLow 	= this.quote.getChangeFromYearLow();
 		}	//end populateMovement()
 	}	//end FinlQuote subclass
-	
+
 	////////////////////////////////////////////
-	////////////*Dividend SubClass*/////////////	
+	////////////*Dividend SubClass*/////////////
 	////////////////////////////////////////////
 	public class FinlDividend {
 
 		/*Dividend Object*/
 		private StockDividend dividend;
-		
+
 		/*Dividend Data*/
 		public BigDecimal 	annualYield;
 		public BigDecimal 	annualYieldPercent;
@@ -211,9 +211,9 @@ public class FinlStock {
 		public String 		payDate_String;
 
 		/*Pass a Stock Object*/
-		public FinlDividend(yahoofinance.Stock stock) { 
+		public FinlDividend(yahoofinance.Stock stock) {
 			dividend 				= stock.getDividend();
-			
+
 			annualYield 			= this.dividend.getAnnualYield();
 			annualYieldPercent 		= this.dividend.getAnnualYieldPercent();
 			exDivDate 				= this.dividend.getExDate();
@@ -221,12 +221,12 @@ public class FinlStock {
 			exDivDate_String 		= this.exDivDate.toString();
 			payDate_String 			= this.payDate.toString();
 		}	//end constructor FinlDividend(Stock stock)
-		
+
 		/*Pass a Stock Symbol*/
 		public FinlDividend(String symbol) throws IOException {
 			yahoofinance.Stock stock = YahooFinance.get(symbol);
 			dividend 				= stock.getDividend();
-			
+
 			annualYield 			= this.dividend.getAnnualYield();
 			annualYieldPercent 		= this.dividend.getAnnualYieldPercent();
 			exDivDate 				= this.dividend.getExDate();
