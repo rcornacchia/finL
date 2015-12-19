@@ -1,6 +1,4 @@
-
-
-package test;
+package bin.test;
 
 import java.io.IOException;
 import java.math.BigDecimal;

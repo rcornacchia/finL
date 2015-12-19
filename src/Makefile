@@ -1,5 +1,6 @@
 .PHONY : make
 make :
+	javac bin/test/Test.java
 	ocamlc -c ast.ml
 	ocamlc -c sast.ml
 	ocamlyacc -v parser.mly
