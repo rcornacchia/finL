@@ -2,28 +2,54 @@
 
 package finL.test;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+
+import yahoofinance.Stock;
+import yahoofinance.YahooFinance;
+import yahoofinance.quotes.fx.FxQuote;
+import yahoofinance.quotes.fx.FxSymbols;
 
 public class YahooTest { 
 	
 	
 	
 	public static void main(String[] args) { 
-		testStock();
+		try {
+			stockTest();
+			fxTest();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+		
+		
+		
 	}
 	
-	public static void testStock() { 
+	
+	private static void fxTest() throws IOException {
+		FxQuote usdeur = YahooFinance.getFx(FxSymbols.USDEUR);
+		FxQuote usdgbp = YahooFinance.getFx("USDGBP=X");
+		System.out.println(usdeur);
+		System.out.println(usdgbp);
 		
-		YahooStock facebook = YahooFetcher.getStock("FB");
-		System.out.println("Price: " + facebook.getPrice());
-		System.out.println("Volume: " + facebook.getVolume()); 
-		System.out.println("P/E: " + facebook.getPe());
-		System.out.println("EPS: " + facebook.getEps());
-		System.out.println("Year Low: " + facebook.getWeek52low());
-		System.out.println("Year High: " + facebook.getWeek52high());
-		System.out.println("Day Low: " + facebook.getDaylow());
-		System.out.println("Day High: " + facebook.getDayhigh());
-		System.out.println("50 Day Moving Av: " + facebook.getMovingav50day());
-		System.out.println("Market Cap: " + facebook.getMarketcap());
-	} 
+	}
 
+
+	public static void stockTest() throws IOException { 
+			Stock stock = YahooFinance.get("AAPL");
+			BigDecimal price = stock.getQuote().getPrice();
+			BigDecimal change = stock.getQuote().getChangeInPercent();
+			BigDecimal peg = stock.getStats().getPeg();
+			BigDecimal dividend = stock.getDividend().getAnnualYieldPercent();
+			
+			stock.print();
+	}
+
+		
 }
