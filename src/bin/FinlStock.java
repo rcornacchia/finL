@@ -1,5 +1,3 @@
-package bin;
-
 
 
 
@@ -19,19 +17,29 @@ public class FinlStock {
 
 	public static void main(String[] args) {
 		try {
-			FinlStock stock2 = new FinlStock("AAPL");
+			FinlStock apple = new FinlStock("AAPL");
 
-			BigDecimal ask = stock2.finlQuote.ask;
-			System.out.println(ask);
+			BigDecimal ask = apple.finlQuote.ask;
+			BigDecimal change = apple.finlQuote.change;
+			BigDecimal eps = apple.finlFundamentals.eps;
+
+
+
+
+
+			FxQuote usdeur = YahooFinance.getFx(FxSymbols.USDEUR);
+			FxQuote usdgbp = YahooFinance.getFx("USDGBP=X");
 		} catch (NullTickerException NTE) {
 			NTE.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}	//end main()
+
+
 
 	public String symbol;
+
 	public FinlQuote finlQuote;
 	public FinlFundamentals finlFundamentals;
 	public FinlDividend finlDividend;
@@ -59,7 +67,26 @@ public class FinlStock {
 	}
 
 
+	public String getRequest(String request) {
+		String result;
+		/* Fundamentals Checking */
+		if(!this.finlFundamentals.fundamentalCheck(request).equalsIgnoreCase(null))
+			return this.finlFundamentals.fundamentalCheck(request);
+		/* Fundamentals Checking */
+		else if(!this.finlQuote.quoteCheck(request).equalsIgnoreCase(null))
+			return this.finlQuote.quoteCheck(request);
+		/* Fundamentals Checking */
+		else if(!this.finlDividend.dividendCheck(request).equalsIgnoreCase(null))
+			return this.finlDividend.dividendCheck(request);
+		else return null;
+	}
 
+
+
+
+	////////////////////////////////////////////
+	//////////*Fundamentals SubClass*///////////
+	////////////////////////////////////////////
 	public class FinlFundamentals {
 
 		/*Fundamentals Object*/
@@ -122,6 +149,42 @@ public class FinlStock {
 			epsEstimateNextYear		= this.fundamentals.getEpsEstimateNextYear();
 			oneYearTargetPrice		= this.fundamentals.getOneYearTargetPrice();
 		}	//end populateEstimates()
+
+		private String fundamentalCheck(String request) {
+			if(request.equalsIgnoreCase("bookValuePerShare"))
+				return this.bookValuePerShare.toString();
+			else if(request.equalsIgnoreCase("ebitda"))
+				return this.ebitda.toString();
+			else if(request.equalsIgnoreCase("eps"))
+				return this.eps.toString();
+			else if(request.equalsIgnoreCase("marketCap"))
+				return this.marketCap.toString();
+			else if(request.equalsIgnoreCase("pe"))
+				return this.pe.toString();
+			else if(request.equalsIgnoreCase("peg"))
+				return this.peg.toString();
+			else if(request.equalsIgnoreCase("priceBook"))
+				return this.priceBook.toString();
+			else if(request.equalsIgnoreCase("priceSales"))
+				return this.priceSales.toString();
+			else if(request.equalsIgnoreCase("revenue"))
+				return this.revenue.toString();
+			else if(request.equalsIgnoreCase("roe"))
+				return this.roe.toString();
+			else if(request.equalsIgnoreCase("sharesFloat"))
+				return Long.toString(this.sharesFloat);
+			else if(request.equalsIgnoreCase("sharesOutstanding"))
+				return Long.toString(this.sharesOutstanding);
+			else if(request.equalsIgnoreCase("epsEstimateCurrentYear"))
+				return this.epsEstimateCurrentYear.toString();
+			else if(request.equalsIgnoreCase("epsEstimateNextQuarter"))
+				return this.epsEstimateNextQuarter.toString();
+			else if(request.equalsIgnoreCase("epsEstimateNextYear"))
+				return this.epsEstimateNextYear.toString();
+			else if(request.equalsIgnoreCase("oneYearTargetPrice"))
+				return this.oneYearTargetPrice.toString();
+			else return null;
+		}
 	}
 
 	////////////////////////////////////////////
@@ -191,6 +254,11 @@ public class FinlStock {
 			changeFromYearHigh 	= this.quote.getChangeFromYearHigh();
 			changeFromYearLow 	= this.quote.getChangeFromYearLow();
 		}	//end populateMovement()
+
+		public String quoteCheck(String request) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}	//end FinlQuote subclass
 
 	////////////////////////////////////////////
@@ -233,5 +301,19 @@ public class FinlStock {
 			exDivDate_String 		= this.exDivDate.toString();
 			payDate_String 			= this.payDate.toString();
 		}	//end constructor FinlDividend(String symbol)
+
+		public String dividendCheck(String request) {
+
+
+			return null;
+
+
+		}
 	} 	//end FinlDividend subclass
+
+
+
+
+
+
 }
