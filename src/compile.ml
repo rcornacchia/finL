@@ -11,6 +11,8 @@ let string_of_op = function
 	| Leq -> "<="
 	| Greater -> ">"
 	| Geq -> ">="
+  | Mod -> "%"
+  | Pow -> ", "
 
 let check_function name = (* HAVE SOME BUILTIN FUNCTIONALITY HERE *)
   if name = "print" then "System.out.print"
@@ -28,7 +30,9 @@ let rec compile_expression = function
   String(str) -> str
   | Int(i) -> string_of_int i
   | Float(f) -> string_of_float f
-  | Binop(expr1, op, expr2) -> compile_expression expr1 ^ string_of_op op ^ compile_expression expr2
+  | Binop(expr1, op, expr2) -> let pow = op = Pow in
+                               if pow then ("Math.pow(" ^ compile_expression expr1 ^ string_of_op op ^ compile_expression expr2 ^ ")")
+                               else compile_expression expr1 ^ string_of_op op ^ compile_expression expr2 
   | Assign(var, expr) -> var ^ " = " ^ compile_expression expr
   | Aassign(avar, aexpr) -> avar ^ " += " ^ compile_expression aexpr
   | Sassign(svar, sexpr) -> svar ^ " -= " ^ compile_expression sexpr
@@ -55,7 +59,7 @@ let compile_sfdecl (func: Sast.sfunc_decl) =
        "\n}"
 
 let compile (sprogram: Sast.sprogram) (filename: string) =
-  "public class " ^ 
+  "import java.lang.Math;\npublic class " ^ 
   filename ^ 
   " {\n" ^
   String.concat "\n" (List.map compile_sfdecl sprogram.sfunc_decls) ^

@@ -2,14 +2,12 @@
 
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA /*COLON AT*/
-/*%token POWER */
-%token PLUS MINUS TIMES DIVIDE
-/*%token MOD */
+%token PLUS MINUS TIMES DIVIDE POWER MOD
 %token ASSIGN AASSIGN SASSIGN MASSIGN DASSIGN
 %token EQ GEQ GT LEQ LT
 %token RETURN /*WHILE WHEN IF ELSE ELSEIF VOID NULL BREAK*/
 /*%token AND OR NOT */
-%token INTD STRINGD FLOATD /*PERCENT ARRAY STRING CURR STOCK ORDER PF */ FUNC
+%token INTD STRINGD FLOATD /*PERCENT ARRAY CURR STOCK ORDER PF */ FUNC
 %token <int> INT
 %token <float> FLOAT
 %token <string> STRING
@@ -23,7 +21,8 @@
 %left EQ
 %left GEQ GT LEQ LT
 %left PLUS MINUS
-%left TIMES DIVIDE /* MOD POWER */
+%left TIMES DIVIDE MOD
+%left POWER
 /*%left OR*/
 /*%left AND*/
 
@@ -62,12 +61,15 @@ expression:
   | expression LEQ expression { Binop($1, Leq, $3) }
   | expression GT expression { Binop($1, Greater, $3) }
   | expression GEQ expression { Binop($1, Geq, $3) }
+  | expression MOD expression { Binop($1, Mod, $3) }
+  | expression POWER expression { Binop($1, Pow, $3) }
   | VAR ASSIGN expression  { Assign($1, $3) }
   | VAR AASSIGN expression { Aassign($1, $3) }
   | VAR SASSIGN expression { Sassign($1, $3) }
   | VAR MASSIGN expression { Massign($1, $3) }
   | VAR DASSIGN expression { Dassign($1, $3) }
   | VAR LPAREN args RPAREN { Call($1, $3) }
+  | LPAREN expression RPAREN { $2 }
 
 args:
   /* no arguments */ { [] }

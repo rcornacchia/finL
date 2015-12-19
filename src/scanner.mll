@@ -18,8 +18,8 @@ rule token = parse
 	| '-'                    { MINUS }
 	| '*'                    { TIMES }
 	| '/'                    { DIVIDE }
-	(*| '%'                    { MOD }
-	| "**"                   { POWER }*)
+	| '%'                    { MOD }
+	| "**"                   { POWER }
 	| '<'                    { LT }
 	| "<="                   { LEQ }
 	| '>'                    { GT }
@@ -60,4 +60,5 @@ rule token = parse
 
 and comment = parse
 	'\n' { token lexbuf }
+	| eof { EOF }
 	| _  { comment lexbuf }

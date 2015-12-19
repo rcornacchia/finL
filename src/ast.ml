@@ -1,4 +1,4 @@
-type op = Add | Sub | Mult | Div | Equal | Less | Leq | Greater | Geq
+type op = Add | Sub | Mult | Div | Equal | Less | Leq | Greater | Geq | Mod | Pow
 
 type data_type =
   Inttype
@@ -53,6 +53,8 @@ let string_of_op = function
   | Leq -> "<="
   | Greater -> ">" 
   | Geq -> ">="
+  | Mod -> "mod"
+  | Pow -> "power"
 
 let string_of_data_type = function
   Inttype -> "int"

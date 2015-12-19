@@ -67,7 +67,8 @@ let rec check_type env (expression: Ast.expression) =
 		| Var(v) -> (try let symbol = List.find (fun s -> s.vname = v) env.symbol_table in
 						symbol.dtype
 					with Not_found -> raise (Except("Symbol '" ^ v ^ "' is uninitialized!"))) (* uninitialized_variable_test.finl *)
-		| Binop(e1, o, e2) -> check_type env e1
+		| Binop(e1, o, e2) -> let pow = o = Pow in (* NOT CORRECT FOR ALL BINOP *)
+							  if pow then (Floattype) else check_type env e1
 		| Assign(a, e) -> check_type env e
 		| Aassign(aa, e) -> check_type env e
 		| Sassign(sa, e) -> check_type env e
@@ -104,21 +105,26 @@ let rec analyze_expression env (expression: Ast.expression) =
 								if found then (Var(v))
 								else raise (Except("Symbol '" ^ v ^ "' is uninitialized!")) (* uninitialized_variable_test.finl *)
 		
-		| Binop(e1, o, e2) -> 	let type1 = check_type env (analyze_expression env e1) (* CHECK OPERATIONS ON STRINGS *)
-							  	and type2 = check_type env (analyze_expression env e2)
-							  	in let sametype = type1 = type2 in
-							  	if sametype then (Binop(e1, o, e2))
-							  	else raise (Except("binop type mismatch!")) (* binop_type_mismatch.finl *)
+		| Binop(e1, o, e2) -> 	let type1 = check_type env (analyze_expression env e1) in (* CHECK OPERATIONS ON STRINGS *)
+							  	let type2 = check_type env (analyze_expression env e2) in
+								let mod_pow = o = Pow || o = Mod in
+								if mod_pow then (let number_types = [ Inttype; Floattype; ] in
+											let are_number_types = List.exists (fun t1 -> type1 = t1) number_types && List.exists (fun t2 -> type2 = t2) number_types in
+											if are_number_types then (Binop(e1, o, e2))
+											else raise (Except("The " ^ Ast.string_of_op o ^ " operator only takes in number types!")))
+							  	else let sametype = type1 = type2 in
+							  		 if sametype then (Binop(e1, o, e2))
+							  		 else raise (Except("binop type mismatch!")) (* binop_type_mismatch.finl *)
 
 		| Assign(a, e) -> 		check_assign env a (analyze_expression env e); Assign(a, e)
 
-		| Aassign(aa, e) -> 	check_assign env aa (analyze_expression env e); Aassign(aa, e) (* ADD SEMANTIC CHECKING *)
+		| Aassign(aa, e) -> 	check_assign env aa (analyze_expression env e); Aassign(aa, e)
 
-		| Sassign(sa, e) ->		check_assign env sa (analyze_expression env e); Sassign(sa, e) (* ADD SEMANTIC CHECKING *)
+		| Sassign(sa, e) ->		check_assign env sa (analyze_expression env e); Sassign(sa, e)
 
-		| Massign(ma, e) ->		check_assign env ma (analyze_expression env e); Massign(ma, e) (* ADD SEMANTIC CHECKING *)
+		| Massign(ma, e) ->		check_assign env ma (analyze_expression env e); Massign(ma, e)
 
-		| Dassign(da, e) ->		check_assign env da (analyze_expression env e); Dassign(da, e) (* ADD SEMANTIC CHECKING *)
+		| Dassign(da, e) ->		check_assign env da (analyze_expression env e); Dassign(da, e)
 
 		| Call(c, el) -> 		let sname = check_for_main c in (* no_return_test.finl *)
 						 		(try let func = List.find (fun f -> f.sname = sname) env.function_table in
