@@ -1,4 +1,5 @@
 
+package bin;
 
 
 import java.io.IOException;
