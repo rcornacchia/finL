@@ -1,6 +1,5 @@
 
 
-package java.finL.Stock;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -16,13 +15,49 @@ import yahoofinance.quotes.stock.StockStats;
 
 public class FinlStock { 
 	
-	public String symbol;
-	
-	public FinlStock(String ticker) { 
-		this.symbol = ticker;
-		Stock yahooStock = new yahoofinance.Stock(symbol);
-		
+	public static void main(String[] args) {
+		try {
+			FinlStock stock2 = new FinlStock("AAPL");
+			
+			BigDecimal ask = stock2.finlQuote.ask;
+			System.out.println(ask);
+		} catch (NullTickerException NTE) {
+			NTE.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+	
+	public String symbol;
+	public FinlQuote finlQuote;
+	public FinlFundamentals finlFundamentals;
+	public FinlDividend finlDividend;
+	
+	////////////////////////////////////////////
+	//////////*FinlStock Constructor*///////////
+	///////////Gets all sub-objects/////////////
+	public FinlStock(String ticker) throws NullTickerException, IOException {
+		
+		/* Check for null ticker */
+		if(ticker == null || ticker.equals(null)) {  
+			throw new NullTickerException();	
+		}
+		
+		this.symbol = ticker;
+		System.out.println(symbol);
+		yahoofinance.Stock testStock = YahooFinance.get(symbol);
+		
+		
+		finlQuote 			= new FinlStock.FinlQuote(testStock);
+		finlFundamentals 	= new FinlStock.FinlFundamentals(testStock);
+		finlDividend 		= new FinlStock.FinlDividend(testStock);
+	}
+	
+	public FinlStock() throws NullTickerException { 
+			throw new NullTickerException();
+	}
+	
 	
 	
 	public class FinlFundamentals {
@@ -53,14 +88,14 @@ public class FinlStock {
 		////////////////////////////////////////////
 		//////////////*Constructors*////////////////
 		////////////////////////////////////////////
-		public FinlFundamentals(String symbol) {
-			yahoofinance.Stock stock = new Stock(symbol);
+		public FinlFundamentals(String symbol) throws IOException {
+			yahoofinance.Stock stock = YahooFinance.get(symbol);
 			fundamentals = stock.getStats();
 			this.populateStatistics();
 			this.populateEstimates();
 		}	//end constructor FinlQuote(String symbol)
 		
-		public FinlFundamentals(Stock stock) {
+		public FinlFundamentals(yahoofinance.Stock stock) {
 			fundamentals = stock.getStats();
 			this.populateStatistics();
 			this.populateEstimates();
@@ -119,14 +154,14 @@ public class FinlStock {
 		////////////////////////////////////////////
 		//////////////*Constructors*////////////////
 		////////////////////////////////////////////
-		public FinlQuote(String symbol) {
-			Stock stock = new yahoofinance.Stock(symbol);
+		public FinlQuote(String symbol) throws IOException {
+			yahoofinance.Stock stock = YahooFinance.get(symbol);
 			quote = stock.getQuote();
 			this.populatePrice();
 			this.populateMovement();
 		}	//end constructor FinlQuote(String symbol)
 		
-		public FinlQuote(Stock stock) {
+		public FinlQuote(yahoofinance.Stock stock) {
 			quote = stock.getQuote();
 			this.populatePrice();
 			this.populateMovement();
@@ -175,7 +210,7 @@ public class FinlStock {
 		public String 		payDate_String;
 
 		/*Pass a Stock Object*/
-		public FinlDividend(Stock stock) { 
+		public FinlDividend(yahoofinance.Stock stock) { 
 			dividend 				= stock.getDividend();
 			
 			annualYield 			= this.dividend.getAnnualYield();
@@ -187,8 +222,8 @@ public class FinlStock {
 		}	//end constructor FinlDividend(Stock stock)
 		
 		/*Pass a Stock Symbol*/
-		public FinlDividend(String symbol) {
-			Stock stock = new yahoofinance.Stock(symbol);
+		public FinlDividend(String symbol) throws IOException {
+			yahoofinance.Stock stock = YahooFinance.get(symbol);
 			dividend 				= stock.getDividend();
 			
 			annualYield 			= this.dividend.getAnnualYield();
@@ -199,28 +234,4 @@ public class FinlStock {
 			payDate_String 			= this.payDate.toString();
 		}	//end constructor FinlDividend(String symbol)
 	} 	//end FinlDividend subclass
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public static void main(String[] args) {
-		try {
-			FinlStock finlTester = new FinlStock("BAC");
-			FinlStock finlTester2 = new FinlStock();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (NullTickerException NTE) {
-			NTE.printStackTrace();
-		}
-	}
-	
-		
 }

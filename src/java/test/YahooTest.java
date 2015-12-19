@@ -1,6 +1,6 @@
 
 
-package java.test;
+package test;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -10,9 +10,10 @@ import yahoofinance.YahooFinance;
 import yahoofinance.quotes.fx.FxQuote;
 import yahoofinance.quotes.fx.FxSymbols;
 
+
+
+
 public class YahooTest { 
-	
-	
 	
 	public static void main(String[] args) { 
 		try {
@@ -23,6 +24,8 @@ public class YahooTest {
 			e.printStackTrace();
 		}
 	}
+	
+	
 	
 	
 	private static void fxTest() throws IOException {
