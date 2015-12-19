@@ -78,8 +78,6 @@ public class FinlStock {
 	}
 	
 	
-	
-	
 	////////////////////////////////////////////
 	////////////*Dividend SubClass*/////////////	
 	////////////////////////////////////////////
@@ -89,7 +87,6 @@ public class FinlStock {
 		private BigDecimal	exDivDate;
 		private BigDecimal	payDate;
 
-		
 		
 	}
 	
