@@ -29,8 +29,8 @@ rule token = parse
 	| "+<<"                  { AASSIGN }
 	| "-<<"                  { SASSIGN }
 	| "*<<"                  { MASSIGN }
-	(*| "/<<"                  { DASSIGN }
-	| "and"                  { AND }
+	| "/<<"                  { DASSIGN }
+	(*| "and"                  { AND }
 	| "or"                   { OR }
 	| "not"                  { NOT }
 	| '?'                    { IF }

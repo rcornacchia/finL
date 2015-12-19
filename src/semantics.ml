@@ -72,6 +72,7 @@ let rec check_type env (expression: Ast.expression) =
 		| Aassign(aa, e) -> check_type env e
 		| Sassign(sa, e) -> check_type env e
 		| Massign(ma, e) -> check_type env e
+		| Dassign(da, e) -> check_type env e
 		| Call(c, el) -> (try let func = List.find (fun f -> f.sname = c) env.function_table in
 							 func.srtype
 						 with Not_found -> raise (Except("Function '" ^ c ^ "' not found!"))) (* uninitialized_call_test.finl *)
@@ -114,6 +115,8 @@ let rec analyze_expression env (expression: Ast.expression) =
 
 		| Massign(ma, e) ->		Massign(ma, e) (* ADD SEMANTIC CHECKING *)
 
+		| Dassign(da, e) ->		Dassign(da, e) (* ADD SEMANTIC CHECKING *)
+
 		| Call(c, el) -> 		let sname = check_for_main c in (* no_return_test.finl *)
 						 		(try let func = List.find (fun f -> f.sname = sname) env.function_table in
 						 			let builtin = func.builtin in (* CHECK # of args to print *)
@@ -129,6 +132,7 @@ let check_statement = function
 	| Aassign(aa, e1) -> Aassign(aa, e1)
 	| Sassign(sa, e2) -> Sassign(sa, e2)
 	| Massign(ma, e3) -> Massign(ma, e3)
+	| Dassign(da, e4) -> Dassign(da, e4)
 	| Call(c, el) -> Call(c, el)
 	| _ -> raise (Except("Not a statement!")) (* statement_test.finl *)
 

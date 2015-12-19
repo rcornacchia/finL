@@ -1,0 +1,6 @@
+function int main(int x){
+	return x /<< 2;	
+};
+
+print(main(4));
+print("\n");

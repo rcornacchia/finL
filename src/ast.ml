@@ -20,6 +20,7 @@ type expression =
   | Aassign of string * expression
   | Sassign of string * expression
   | Massign of string * expression
+  | Dassign of string * expression
   | Call of string * expression list
 
 type statement =
@@ -68,6 +69,7 @@ let rec string_of_expression = function
   | Aassign(aa, e) -> "Aassign(" ^ aa ^ " = " ^ string_of_expression e ^ ")"
   | Sassign(sa, e) -> "Sassign(" ^ sa ^ " = " ^ string_of_expression e ^ ")"
   | Massign(ma, e) -> "Massign(" ^ ma ^ " = " ^ string_of_expression e ^ ")"
+  | Dassign(da, e) -> "Dassign(" ^ da ^ " = " ^ string_of_expression e ^ ")"
   | Call(c, el) -> c ^ "(" ^ String.concat ", " (List.map string_of_expression el) ^ ")"
 
 let string_of_vdecl (vdecl: var_decl) = 

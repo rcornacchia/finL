@@ -33,6 +33,7 @@ let rec compile_expression = function
   | Aassign(avar, aexpr) -> avar ^ " += " ^ compile_expression aexpr
   | Sassign(svar, sexpr) -> svar ^ " -= " ^ compile_expression sexpr
   | Massign(mvar, mexpr) -> mvar ^ " *= " ^ compile_expression mexpr
+  | Dassign(dvar, dexpr) -> dvar ^ " /= " ^ compile_expression dexpr
   | Var(str) -> str
   | Call(name, exprlst) -> check_function name ^ "(" ^ String.concat ", " (List.map compile_expression exprlst) ^ ")"
 
