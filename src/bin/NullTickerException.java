@@ -1,4 +1,4 @@
-
+package bin;
 
 public class NullTickerException extends Exception {
 	
