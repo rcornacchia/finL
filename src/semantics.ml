@@ -8,7 +8,7 @@ let builtin_functions =
 		sname = "print";
 		sformals = [];
 		sbody = [];
-		srtype = Inttype; (*TEMPORARY*) 
+		srtype = Voidtype; (*TEMPORARY*) 
 		builtin = true; } ]
 
 type scope = {
@@ -27,7 +27,7 @@ let root_env = {
 	function_table = builtin_functions;
 	symbol_table = [];
 	checked_statements = [];
-	env_scope = { scope_name = "reserved"; scope_rtype = Inttype; (* TO CHANGE *) };
+	env_scope = { scope_name = "reserved"; scope_rtype = Voidtype; };
 }
 
 let name_to_sname env name =
@@ -67,8 +67,17 @@ let rec check_type env (expression: Ast.expression) =
 		| Var(v) -> (try let symbol = List.find (fun s -> s.vname = v) env.symbol_table in
 						symbol.dtype
 					with Not_found -> raise (Except("Symbol '" ^ v ^ "' is uninitialized!"))) (* uninitialized_variable_test.finl *)
-		| Binop(e1, o, e2) -> let pow = o = Pow in (* NOT CORRECT FOR ALL BINOP *)
-							  if pow then (Floattype) else check_type env e1
+		| Binop(e1, o, e2) -> (match o with
+								Equal -> Inttype
+								| Less -> Inttype
+								| Leq -> Inttype
+								| Greater -> Inttype
+								| Geq -> Inttype
+								| _ -> (match check_type env e1 with
+											Stringtype -> Stringtype
+											| Floattype -> Floattype
+											| _ -> let is_int = (check_type env e2) = Inttype in
+											 			 if is_int then (Inttype) else Floattype))
 		| Assign(a, e) -> check_type env e
 		| Aassign(aa, e) -> check_type env e
 		| Sassign(sa, e) -> check_type env e
@@ -77,6 +86,7 @@ let rec check_type env (expression: Ast.expression) =
 		| Call(c, el) -> (try let func = List.find (fun f -> f.sname = c) env.function_table in
 							 func.srtype
 						 with Not_found -> raise (Except("Function '" ^ c ^ "' not found!"))) (* uninitialized_call_test.finl *)
+		| Noexpr -> Voidtype
 
 let check_for_reserved sname =
 	let new_name = 
@@ -105,36 +115,39 @@ let rec analyze_expression env (expression: Ast.expression) =
 								if found then (Var(v))
 								else raise (Except("Symbol '" ^ v ^ "' is uninitialized!")) (* uninitialized_variable_test.finl *)
 		
-		| Binop(e1, o, e2) -> 	let type1 = check_type env (analyze_expression env e1) in (* CHECK OPERATIONS ON STRINGS *)
-							  	let type2 = check_type env (analyze_expression env e2) in
-								let mod_pow = o = Pow || o = Mod in
-								if mod_pow then (let number_types = [ Inttype; Floattype; ] in
-											let are_number_types = List.exists (fun t1 -> type1 = t1) number_types && List.exists (fun t2 -> type2 = t2) number_types in
-											if are_number_types then (Binop(e1, o, e2))
-											else raise (Except("The " ^ Ast.string_of_op o ^ " operator only takes in number types!")))
-							  	else let sametype = type1 = type2 in
-							  		 if sametype then (Binop(e1, o, e2))
-							  		 else raise (Except("binop type mismatch!")) (* binop_type_mismatch.finl *)
+		| Binop(e1, o, e2) -> 	(let type1 = check_type env (analyze_expression env e1)
+								and type2 = check_type env (analyze_expression env e2) in
+								match (type1, type2) with
+									(Stringtype, Stringtype) -> Binop(e1, o, e2) (* MUST CHECK STRING OPS!! *)
+									| (t, Stringtype) -> raise (Except("Cannot do binary operation on type '" ^ Ast.string_of_data_type t ^ "' and type 'string'!"))
+									| (Stringtype, t) -> raise (Except("Cannot do binary operatiin on type 'string' and type '" ^ Ast.string_of_data_type t ^ "'."))
+									| (_, _) ->	Binop(e1, o, e2))	  	
 
-		| Assign(a, e) -> 		check_assign env a (analyze_expression env e); Assign(a, e)
+		| Assign(a, e) -> 		let new_expression = analyze_expression env e in
+								check_assign env a new_expression; Assign(a, new_expression)
 
-		| Aassign(aa, e) -> 	check_assign env aa (analyze_expression env e); Aassign(aa, e)
+		| Aassign(aa, e) -> 	let new_expression = analyze_expression env e in
+								check_assign env aa new_expression; Aassign(aa, new_expression)
 
-		| Sassign(sa, e) ->		check_assign env sa (analyze_expression env e); Sassign(sa, e)
+		| Sassign(sa, e) ->		let new_expression = analyze_expression env e in
+								check_assign env sa new_expression; Sassign(sa, new_expression)
 
-		| Massign(ma, e) ->		check_assign env ma (analyze_expression env e); Massign(ma, e)
+		| Massign(ma, e) ->		let new_expression = analyze_expression env e in
+								check_assign env ma new_expression; Massign(ma, new_expression)
 
-		| Dassign(da, e) ->		check_assign env da (analyze_expression env e); Dassign(da, e)
+		| Dassign(da, e) ->		let new_expression = analyze_expression env e in
+								check_assign env da new_expression; Dassign(da, new_expression)
 
 		| Call(c, el) -> 		let sname = check_for_main c in (* no_return_test.finl *)
 						 		(try let func = List.find (fun f -> f.sname = sname) env.function_table in
-						 			let builtin = func.builtin in (* CHECK # of args to print *)
+						 			let builtin = func.builtin in (* CHECK # of args to print!!!!!!! *)
 						 			if builtin then (Call(sname, List.map (fun e -> analyze_expression env e) el))
 						 			else
 						 				(try List.iter2 (fun f e -> if f.dtype <> check_type env (analyze_expression env e) then raise (Except("Function parameter type mismatch!"))) func.sformals el; (* parameter_type_mismatch_test.finl *)
 						 			 	Call(sname, el)
 						 				with Invalid_argument _ -> raise (Except("Wrong argument length to function '" ^ check_for_reserved func.sname ^ "'."))) (* arg_length_test.finl *)
 						 		with Not_found -> raise (Except("Function '" ^ c ^ "' not found!"))) (* uninitialized_call_test.finl *)
+		| Noexpr -> Noexpr
 
 let check_statement = function
 	Assign(a, e) -> Assign(a, e)
@@ -194,8 +207,9 @@ let fdecl_to_sfdecl env (fdecl: Ast.func_decl) = (* multiple_return_test.finl NE
 					 env_scope = { scope_name = fdecl.name; scope_rtype = fdecl.rtype; }; }
 	in 
 	let func_env = List.fold_left analyze_statement func_env fdecl.body in
-	let returns = List.exists check_for_return func_env.checked_statements in
-	if returns then
+	let void = fdecl.rtype = Voidtype
+	and returns = List.exists check_for_return func_env.checked_statements in
+	if (void && not returns) || (not void && returns) then
 		(let sfdecl = { sname = checked_name;
 				   		sformals = List.rev checked_formals;
 				   		sbody = List.rev func_env.checked_statements;
@@ -205,10 +219,11 @@ let fdecl_to_sfdecl env (fdecl: Ast.func_decl) = (* multiple_return_test.finl NE
 		let new_env = { function_table = sfdecl :: env.function_table; 
 						symbol_table = env.symbol_table;
 						checked_statements = env.checked_statements;
-						env_scope = { scope_name = "reserved"; scope_rtype = Inttype; (* TO CHANGE *) }; }
+						env_scope = { scope_name = "reserved"; scope_rtype = Voidtype; }; }
 		in
 		new_env)
-	else raise (Except("Function '" ^ fdecl.name ^ "' does not have a return statement!")) (* no_return_test.finl *)
+	else if void then (raise (Except("Function '" ^ fdecl.name ^ "' should not return!")))
+		 else (raise (Except("Function '" ^ fdecl.name ^ "' does not have a return statement!"))) (* no_return_test.finl *)
 
 let analyze_line env (line: Ast.line) =
 	match line with

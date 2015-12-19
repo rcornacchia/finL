@@ -1,0 +1,7 @@
+function string main(string x){
+	return x + x;
+};
+
+string x;
+x << main("string\n");
+print(x);

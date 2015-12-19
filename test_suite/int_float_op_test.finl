@@ -1,0 +1,18 @@
+print(6 + 3.0);
+print("\n");
+print(6 - 3.0);
+print("\n");
+print(6 * 3.0);
+print("\n");
+print(6 / 3.0);
+print("\n");
+print(6 > 3.0);
+print("\n");
+print(6 < 3.0);
+print("\n");
+print(6 = 3.0);
+print("\n");
+print(6 >= 3.0);
+print("\n");
+print(6 <= 3.0);
+print("\n");

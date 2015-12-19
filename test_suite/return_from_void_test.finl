@@ -1,0 +1,5 @@
+function void main() {
+	return "1\n";
+};
+
+print(main());

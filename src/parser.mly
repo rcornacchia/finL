@@ -5,7 +5,7 @@
 %token PLUS MINUS TIMES DIVIDE POWER MOD
 %token ASSIGN AASSIGN SASSIGN MASSIGN DASSIGN
 %token EQ GEQ GT LEQ LT
-%token RETURN /*WHILE WHEN IF ELSE ELSEIF VOID NULL BREAK*/
+%token RETURN /*WHILE WHEN IF ELSE ELSEIF */ VOID /* NULL BREAK*/
 /*%token AND OR NOT */
 %token INTD STRINGD FLOATD /*PERCENT ARRAY CURR STOCK ORDER PF */ FUNC
 %token <int> INT
@@ -53,7 +53,7 @@ expression:
   | FLOAT { Float($1) }
   | VAR  { Var($1) }
   | expression PLUS expression  { Binop($1, Add, $3) }
-  | expression MINUS  expression { Binop($1, Sub, $3) }
+  | expression_option MINUS  expression { Binop($1, Sub, $3) }
   | expression TIMES expression { Binop($1, Mult, $3 ) }
   | expression DIVIDE expression { Binop($1, Div, $3) }
   | expression EQ expression { Binop($1, Equal, $3) }
@@ -71,6 +71,10 @@ expression:
   | VAR LPAREN args RPAREN { Call($1, $3) }
   | LPAREN expression RPAREN { $2 }
 
+expression_option:
+  /* nothing */ { Noexpr }
+  | expression { $1 }
+
 args:
   /* no arguments */ { [] }
   | arg_list { List.rev $1 }
@@ -86,6 +90,7 @@ dtype:
   INTD { Inttype }
   | STRINGD { Stringtype }
   | FLOATD { Floattype }
+  | VOID { Voidtype }
 
 fdecl:
   FUNC dtype VAR LPAREN params RPAREN

@@ -4,6 +4,7 @@ type data_type =
   Inttype
   | Stringtype
   | Floattype
+  | Voidtype
 
 type var_decl = {
   dtype : data_type;
@@ -22,6 +23,7 @@ type expression =
   | Massign of string * expression
   | Dassign of string * expression
   | Call of string * expression list
+  | Noexpr
 
 type statement =
   Expr of expression
@@ -53,13 +55,14 @@ let string_of_op = function
   | Leq -> "<="
   | Greater -> ">" 
   | Geq -> ">="
-  | Mod -> "mod"
+  | Mod -> "modulus"
   | Pow -> "power"
 
 let string_of_data_type = function
   Inttype -> "int"
   | Stringtype -> "string"
   | Floattype -> "float"
+  | Voidtype -> "void"
 
 let rec string_of_expression = function
   Int(i) -> "Int(" ^ string_of_int i ^ ")"
@@ -73,6 +76,7 @@ let rec string_of_expression = function
   | Massign(ma, e) -> "Massign(" ^ ma ^ " = " ^ string_of_expression e ^ ")"
   | Dassign(da, e) -> "Dassign(" ^ da ^ " = " ^ string_of_expression e ^ ")"
   | Call(c, el) -> c ^ "(" ^ String.concat ", " (List.map string_of_expression el) ^ ")"
+  | Noexpr -> ""
 
 let string_of_vdecl (vdecl: var_decl) = 
   "vdecl{" ^ vdecl.vname ^ " -> " ^ string_of_data_type vdecl.dtype ^ "}"
