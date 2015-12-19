@@ -22,13 +22,6 @@ public class YahooTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
-		
-		
-		
-		
 	}
 	
 	
