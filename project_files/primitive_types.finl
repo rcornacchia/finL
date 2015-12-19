@@ -1,0 +1,4 @@
+# Primitive declarations
+int x;
+float y = 3.45;
+percent fifty = 50;
