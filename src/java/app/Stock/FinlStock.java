@@ -1,6 +1,6 @@
 
 
-package finL.app.Stock;
+package bin.app.Stock;
 
 import java.io.IOException;
 import java.math.BigDecimal;

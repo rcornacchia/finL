@@ -1,4 +1,4 @@
-package finL.app.Stock;
+package bin.app.Stock;
 
 public class NullTickerException extends Exception {
 	
