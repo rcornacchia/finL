@@ -1,13 +1,13 @@
 %{ open Ast %}
 
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA /*COLON AT*/
+%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA /*COLON*/ AT
 %token PLUS MINUS TIMES DIVIDE POWER MOD
 %token ASSIGN AASSIGN SASSIGN MASSIGN DASSIGN
 %token EQ GEQ GT LEQ LT
 %token RETURN /*WHILE WHEN IF ELSE ELSEIF */ VOID /* NULL BREAK*/
 %token AND OR /*NOT */
-%token INTD STRINGD FLOATD /*PERCENT ARRAY CURR STOCK ORDER PF */ FUNC
+%token INTD STRINGD FLOATD /*PERCENT ARRAY CURR */ STOCK /*ORDER PF */ FUNC
 %token <int> INT
 %token <float> FLOAT
 %token <string> STRING
@@ -51,8 +51,9 @@ expression:
   | STRING  { String($1) }
   | FLOAT { Float($1) }
   | VAR  { Var($1) }
+  | AT STRING { Stock($2) }
   | expression PLUS expression  { Binop($1, Add, $3) }
-  | expression_option MINUS  expression { Binop($1, Sub, $3) }
+  | expression_option MINUS expression { Binop($1, Sub, $3) }
   | expression TIMES expression { Binop($1, Mult, $3 ) }
   | expression DIVIDE expression { Binop($1, Div, $3) }
   | expression EQ expression { Binop($1, Equal, $3) }
@@ -91,6 +92,7 @@ dtype:
   INTD { Inttype }
   | STRINGD { Stringtype }
   | FLOATD { Floattype }
+  | STOCK { Stocktype }
   | VOID { Voidtype }
 
 fdecl:

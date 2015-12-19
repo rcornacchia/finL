@@ -4,6 +4,7 @@ type data_type =
   Inttype
   | Stringtype
   | Floattype
+  | Stocktype
   | Voidtype
 
 type var_decl = {
@@ -15,6 +16,7 @@ type expression =
   Int of int
   | String of string
   | Float of float
+  | Stock of string
   | Var of string
   | Binop of expression * op * expression
   | Assign of string * expression
@@ -64,6 +66,7 @@ let string_of_data_type = function
   Inttype -> "int"
   | Stringtype -> "string"
   | Floattype -> "float"
+  | Stocktype -> "stock"
   | Voidtype -> "void"
 
 let rec string_of_expression = function
