@@ -1,5 +1,6 @@
-function int main() { # make more robust
-	int x;
-	x << "string";
-	return x;
-};
+int x;
+#x << "string";
+#x +<< "string";
+#x -<< "string";
+#x *<< "string";
+x /<< "string";

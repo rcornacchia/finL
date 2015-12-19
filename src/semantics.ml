@@ -83,6 +83,17 @@ let check_for_reserved sname =
 		else sname
 	in new_name
 
+let check_assign env var (expr: Ast.expression) =
+	(try let vdecl = List.find (fun s -> s.vname = var) env.symbol_table in
+		let dtype = vdecl.dtype in
+		let etype = check_type env expr in
+		let not_sametype = dtype <> etype in
+			if not_sametype then 
+				(let dstring = Ast.string_of_data_type dtype
+				and estring = Ast.string_of_data_type etype in 
+				raise (Except("Symbol '" ^ var ^ "' is of type '" ^ dstring ^ "', not of type '" ^ estring ^ "'."))) (* assign_type_mismatch_test.finl *)
+	with Not_found -> raise (Except("Symbol '" ^ var ^ "' not initialized!"))) (* uninitialized_assignment_test.finl *)
+
 let rec analyze_expression env (expression: Ast.expression) =
 	match expression with
 		Int(i) -> 				Int(i)
@@ -99,23 +110,15 @@ let rec analyze_expression env (expression: Ast.expression) =
 							  	if sametype then (Binop(e1, o, e2))
 							  	else raise (Except("binop type mismatch!")) (* binop_type_mismatch.finl *)
 
-		| Assign(a, e) -> 		(try let vdecl = List.find (fun s -> s.vname = a) env.symbol_table in
-									let dtype = vdecl.dtype in
-									let etype = check_type env (analyze_expression env e) in
-									let sametype = dtype = etype in
-									if sametype then (Assign(a, e))
-									else let dstring = Ast.string_of_data_type dtype
-										 and estring = Ast.string_of_data_type etype in 
-										 raise (Except("Symbol '" ^ a ^ "' is of type '" ^ dstring ^ "', not of type '" ^ estring ^ "'.")) (* assign_type_mismatch_test.finl *)
-						  		with Not_found -> raise (Except("Symbol '" ^ a ^ "' not initialized!"))) (* uninitialized_assignment_test.finl *)
+		| Assign(a, e) -> 		check_assign env a (analyze_expression env e); Assign(a, e)
 
-		| Aassign(aa, e) -> 	Aassign(aa, e) (* ADD SEMANTIC CHECKING *)
+		| Aassign(aa, e) -> 	check_assign env aa (analyze_expression env e); Aassign(aa, e) (* ADD SEMANTIC CHECKING *)
 
-		| Sassign(sa, e) ->		Sassign(sa, e) (* ADD SEMANTIC CHECKING *)
+		| Sassign(sa, e) ->		check_assign env sa (analyze_expression env e); Sassign(sa, e) (* ADD SEMANTIC CHECKING *)
 
-		| Massign(ma, e) ->		Massign(ma, e) (* ADD SEMANTIC CHECKING *)
+		| Massign(ma, e) ->		check_assign env ma (analyze_expression env e); Massign(ma, e) (* ADD SEMANTIC CHECKING *)
 
-		| Dassign(da, e) ->		Dassign(da, e) (* ADD SEMANTIC CHECKING *)
+		| Dassign(da, e) ->		check_assign env da (analyze_expression env e); Dassign(da, e) (* ADD SEMANTIC CHECKING *)
 
 		| Call(c, el) -> 		let sname = check_for_main c in (* no_return_test.finl *)
 						 		(try let func = List.find (fun f -> f.sname = sname) env.function_table in
