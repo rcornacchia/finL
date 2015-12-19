@@ -14,6 +14,17 @@ let compile_dtype = function
 let compile_vdecl (vdecl: Ast.var_decl) =
   compile_dtype vdecl.dtype ^ " " ^ vdecl.vname
 
+let boolean_to_sexpr bool_string =
+  "Test.boolean_to_int(" ^ bool_string ^ ")"
+
+let sexpr_to_boolean sexpr_string =
+  "Test.num_to_boolean(" ^ sexpr_string ^ ")"
+
+let compile_compare sexpr_string1 op_string sexpr_string2 is_string_compare =
+  let str = if is_string_compare then ("Test.compare_strings(" ^ sexpr_string1 ^ ", \"" ^ op_string ^ "\", " ^ sexpr_string2 ^ ")")
+            else sexpr_string1 ^ " " ^ op_string ^ " " ^ sexpr_string2
+  in boolean_to_sexpr str
+
 let rec compile_sexpression (sexpr: Sast.sexpression) =
   match sexpr.sexpr with 
     Sstring(str) -> str
@@ -21,8 +32,13 @@ let rec compile_sexpression (sexpr: Sast.sexpression) =
     | Sfloat(f) -> string_of_float f
     | Sbinop(expr1, op, expr2) -> (match op with 
                                     Pow -> "Math.pow(" ^ compile_sexpression expr1 ^ Ast.string_of_op op ^ compile_sexpression expr2 ^ ")"
-                                    | And -> compile_sexpression expr1 ^ " " ^ Ast.string_of_op op ^ " " ^ compile_sexpression expr2 (* num to bool!! *)
-                                    | Or -> compile_sexpression expr1 ^ " " ^ Ast.string_of_op op ^ " " ^ compile_sexpression expr2 (* num to bool!! *)
+                                    | Equal -> compile_compare (compile_sexpression expr1) (Ast.string_of_op op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
+                                    | Less -> compile_compare (compile_sexpression expr1) (Ast.string_of_op op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
+                                    | Leq -> compile_compare (compile_sexpression expr1) (Ast.string_of_op op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
+                                    | Greater -> compile_compare (compile_sexpression expr1) (Ast.string_of_op op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
+                                    | Geq -> compile_compare (compile_sexpression expr1) (Ast.string_of_op op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
+                                    | And -> boolean_to_sexpr (sexpr_to_boolean (compile_sexpression expr1) ^ " " ^ Ast.string_of_op op ^ " " ^ sexpr_to_boolean (compile_sexpression expr2))
+                                    | Or -> boolean_to_sexpr (sexpr_to_boolean (compile_sexpression expr1) ^ " " ^ Ast.string_of_op op ^ " " ^ sexpr_to_boolean (compile_sexpression expr2))
                                     | _ -> compile_sexpression expr1 ^ " " ^ Ast.string_of_op op ^ " " ^ compile_sexpression expr2)
     | Sassign(var, expr) -> var ^ " = " ^ compile_sexpression expr
     | Saassign(avar, aexpr) -> avar ^ " += " ^ compile_sexpression aexpr
@@ -51,7 +67,7 @@ let compile_sfdecl (func: Sast.sfunc_decl) =
        "\n}"
 
 let compile (sprogram: Sast.sprogram) (filename: string) =
-  "import java.lang.Math;\npublic class " ^ (* IMPORT FINL JAVA FILES *)
+  "import java.lang.Math;\nimport bin.test.Test;\npublic class " ^ 
   filename ^ 
   " {\n" ^
   String.concat "\n" (List.map compile_sfdecl sprogram.sfunc_decls) ^

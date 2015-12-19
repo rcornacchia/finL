@@ -17,3 +17,5 @@ make :
 clean :
 	rm -f finlc parser.ml parser.mli scanner.ml \
 	*.cmo *.cmi *.output *.class *.java *.log
+
+# compile and move javacode!!!!

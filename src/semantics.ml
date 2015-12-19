@@ -53,37 +53,6 @@ let analyze_vdecl env (vdecl: Ast.var_decl) =
 	if found then raise (Except("Variable '" ^ vdecl.vname ^ "' is already defined!")) (* redeclare_variable_test.finl *)
 	else vdecl
 
-(*let rec check_type env (expression: Ast.expression) =
-	match expression with
-		Int(i) -> Inttype
-		| String(s) -> Stringtype
-		| Float(f) -> Floattype
-		| Var(v) -> (try let symbol = List.find (fun s -> s.vname = v) env.symbol_table in
-						symbol.dtype
-					with Not_found -> raise (Except("Symbol '" ^ v ^ "' is uninitialized!"))) (* uninitialized_variable_test.finl *)
-		| Binop(e1, o, e2) -> (match o with
-								Equal -> Inttype
-								| Less -> Inttype
-								| Leq -> Inttype
-								| Greater -> Inttype
-								| Geq -> Inttype
-								| And -> Inttype
-								| Or -> Inttype
-								| _ -> (match check_type env e1 with
-											Stringtype -> Stringtype
-											| Floattype -> Floattype
-											| _ -> let is_int = (check_type env e2) = Inttype in
-											 			 if is_int then (Inttype) else Floattype))
-		| Assign(a, e) -> check_type env e
-		| Aassign(aa, e) -> check_type env e
-		| Sassign(sa, e) -> check_type env e
-		| Massign(ma, e) -> check_type env e
-		| Dassign(da, e) -> check_type env e
-		| Call(c, el) -> (try let func = List.find (fun f -> f.sname = c) env.function_table in
-							 func.srtype
-						 with Not_found -> raise (Except("Function '" ^ c ^ "' not found!"))) (* uninitialized_call_test.finl *)
-		| Noexpr -> Voidtype*)
-
 let check_for_main name =
 	let new_name = 
 		if name = "main" then "reserved"

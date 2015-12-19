@@ -18,13 +18,13 @@ let _ =
           let checked_program = Semantics.analyze program in
           (match action with
             Sast -> print_string (Sast.string_of_sprogram checked_program)
-            | _ ->
-              let last_slash = try rindex Sys.argv.(1) '/' with Not_found -> -1 in
-              let start = last_slash + 1 in
-              let name = sub Sys.argv.(file_index) start ((length Sys.argv.(file_index)) - 5 - start) in     
-              let write_file = open_out (name ^ ".java") in
-              let compiled_program = Compile.compile checked_program name in
-                fprintf write_file "%s" compiled_program;
-                close_out write_file; 
-                ignore (Sys.command ("javac " ^ name ^ ".java")))
+            | _ ->  close_in read_file;
+                    let last_slash = try rindex Sys.argv.(1) '/' with Not_found -> -1 in
+                    let start = last_slash + 1 in
+                    let name = sub Sys.argv.(file_index) start ((length Sys.argv.(file_index)) - 5 - start) in     
+                    let write_file = open_out (name ^ ".java") in
+                    let compiled_program = Compile.compile checked_program name in
+                    fprintf write_file "%s" compiled_program;
+                    close_out write_file;
+                    ignore (Sys.command ("javac " ^ name ^ ".java")))
 		(*else (*Compile in*) print_endline "Please specify exactly 1 filename."*)
