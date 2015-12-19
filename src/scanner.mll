@@ -13,7 +13,7 @@ rule token = parse
 	(*| ':'                    { COLON }*)
 	| ';'                    { SEMI }
 	| ','                    { COMMA }
-	(*| '@'                    { AT }*)
+	| '@'                    { AT }
 	| '+'                    { PLUS }
 	| '-'                    { MINUS }
 	| '*'                    { TIMES }
@@ -45,9 +45,9 @@ rule token = parse
 	| "null"                 { NULL }
 	| "array"                { ARRAY }*)
 	| "string"               { STRINGD }
-	(*| "currency"             { CURR }
+	(*| "currency"             { CURR }*)
 	| "stock"                { STOCK }
-	| "order"                { ORDER }
+	(*| "order"                { ORDER }
 	| "portfolio"            { PF }*)
 	| "function"             { FUNC }
 	| "return"               { RETURN }

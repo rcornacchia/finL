@@ -1,0 +1,4 @@
+stock apple;
+apple << @AAPL;
+print("success");
+print("\n");

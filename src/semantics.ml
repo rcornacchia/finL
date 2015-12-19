@@ -180,7 +180,7 @@ let check_return env (sexpression: Sast.sexpression) =
 		let sametype = rtype = etype in
 		if sametype then (sexpression)
 		else raise (Except("Function '" ^ fname ^ "' returns type '" ^ Ast.string_of_data_type rtype ^ "', not type '" ^ Ast.string_of_data_type etype ^ "'."))) (* bad_return_test.finl *)
-	else raise (Except("return statements cannot be used outside of functions!")) (* outside_return_test.finl *)
+	else raise (Except("Return statements cannot be used outside of functions!")) (* outside_return_test.finl *)
 
 let statement_to_sstatement env (statement: Ast.statement) =
 	match statement with
