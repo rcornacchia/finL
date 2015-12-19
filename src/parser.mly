@@ -6,7 +6,7 @@
 %token ASSIGN AASSIGN SASSIGN MASSIGN DASSIGN
 %token EQ GEQ GT LEQ LT
 %token RETURN /*WHILE WHEN IF ELSE ELSEIF */ VOID /* NULL BREAK*/
-/*%token AND OR NOT */
+%token AND OR /*NOT */
 %token INTD STRINGD FLOATD /*PERCENT ARRAY CURR STOCK ORDER PF */ FUNC
 %token <int> INT
 %token <float> FLOAT
@@ -18,16 +18,15 @@
 
 /* %nonassoc ELSE */
 %right ASSIGN AASSIGN SASSIGN MASSIGN DASSIGN
+%left AND OR
 %left EQ
 %left GEQ GT LEQ LT
 %left PLUS MINUS
 %left TIMES DIVIDE MOD
 %left POWER
-/*%left OR*/
-/*%left AND*/
 
-%start /*expression*/ program
-%type /*<Ast.expression> expression*/ <Ast.program> program
+%start program
+%type <Ast.program> program
 
 
 %%
@@ -63,6 +62,8 @@ expression:
   | expression GEQ expression { Binop($1, Geq, $3) }
   | expression MOD expression { Binop($1, Mod, $3) }
   | expression POWER expression { Binop($1, Pow, $3) }
+  | expression AND expression { Binop($1, And, $3) }
+  | expression OR expression { Binop($1, Or, $3) }
   | VAR ASSIGN expression  { Assign($1, $3) }
   | VAR AASSIGN expression { Aassign($1, $3) }
   | VAR SASSIGN expression { Sassign($1, $3) }
