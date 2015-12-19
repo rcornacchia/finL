@@ -1,43 +1,9 @@
-<<<<<<< Updated upstream
-package test;
-=======
-<<<<<<< Updated upstream
-package java.test;
-=======
 package bin.test;
->>>>>>> Stashed changes
->>>>>>> Stashed changes
-
-
 
 public class Test { 
-	
-<<<<<<< Updated upstream
-	public Test() { 
-		
-		
-		
-		
-	}
-	
-	
+
 	public static boolean num_to_boolean(int x) {
-		if(x != 0) {
-			return true; 
-		}
-		else return false;
-	}
-	
-	public static boolean num_to_boolean(double x) { 
-		if(x != 0) { 
-			return true;
-		}
-		else return false;
-	}
-	
-=======
-	public static boolean num_to_boolean(int x) {
-		if(x != 0) { return true; }
+		if (x != 0) { return true; }
 		else { return false; }
 	}
 	
@@ -71,6 +37,5 @@ public class Test {
 		}
 		return false;
 	}
->>>>>>> Stashed changes
 	
 }
