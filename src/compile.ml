@@ -38,7 +38,10 @@ let rec compile_sexpression (sexpr: Sast.sexpression) =
     | Sint(i) -> string_of_int i
     | Sfloat(f) -> string_of_float f
     | Sstock(stk) -> string_of_stock stk
-    | Sunop(op, expr) -> Ast.string_of_unop op ^ compile_sexpression expr
+    | Sunop(op, expr) -> (let unop = Ast.string_of_unop op in
+                         match op with
+                          Neg -> unop ^ compile_sexpression expr
+                          | Not -> boolean_to_sexpr (unop ^ sexpr_to_boolean (compile_sexpression expr)))
     | Sbinop(expr1, op, expr2) -> (match op with 
                                     Pow -> "Math.pow(" ^ compile_sexpression expr1 ^ Ast.string_of_binop op ^ compile_sexpression expr2 ^ ")"
                                     | Equal -> compile_compare (compile_sexpression expr1) (Ast.string_of_binop op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
@@ -60,9 +63,9 @@ let rec compile_sexpression (sexpr: Sast.sexpression) =
 
 let rec compile_sstatement = function
   Sexpr(expr) -> compile_sexpression expr ^ ";"
-  | Sif(e, sl) -> "if (Test.num_to_boolean(" ^ 
-                  compile_sexpression e ^ 
-                  ")) {\n" ^
+  | Sif(e, sl) -> "if (" ^ 
+                  sexpr_to_boolean (compile_sexpression e) ^ 
+                  ") {\n" ^
                   String.concat "\n" (List.map compile_sstatement sl) ^
                   "\n}"
   | Svdecl(v) -> compile_vdecl v ^ ";"

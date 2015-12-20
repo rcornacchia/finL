@@ -1,4 +1,4 @@
-not 0 ? {
+not (0) ? {
 	print("dope");
 	print("\n");	
 };

@@ -67,7 +67,7 @@ let string_of_binop = function
 
 let string_of_unop = function
   Neg -> "-"
-  | Not -> "not"
+  | Not -> "!"
 
 let string_of_data_type = function
   Inttype -> "int"
