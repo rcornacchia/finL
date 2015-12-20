@@ -2,6 +2,7 @@ package bin;
 
 
 
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -106,12 +107,6 @@ public class FinlStock {
 		////////////////////////////////////////////
 		//////////////*Constructors*////////////////
 		////////////////////////////////////////////
-		public FinlFundamentals(String symbol) throws IOException {
-			yahoofinance.Stock stock = YahooFinance.get(symbol);
-			fundamentals = stock.getStats();
-			this.populateStatistics();
-			this.populateEstimates();
-		}	//end constructor FinlQuote(String symbol)
 
 		public FinlFundamentals(yahoofinance.Stock stock) {
 			fundamentals = stock.getStats();
@@ -209,12 +204,6 @@ public class FinlStock {
 		////////////////////////////////////////////
 		//////////////*Constructors*////////////////
 		////////////////////////////////////////////
-		public FinlQuote(String symbol) throws IOException {
-			yahoofinance.Stock stock = YahooFinance.get(symbol);
-			quote = stock.getQuote();
-			this.populatePrice();
-			this.populateMovement();
-		}	//end constructor FinlQuote(String symbol)
 
 		public FinlQuote(yahoofinance.Stock stock) {
 			quote = stock.getQuote();
@@ -309,19 +298,6 @@ public class FinlStock {
 			exDivDate_String 		= this.exDivDate.toString();
 			payDate_String 			= this.payDate.toString();
 		}	//end constructor FinlDividend(Stock stock)
-
-		/*Pass a Stock Symbol*/
-		public FinlDividend(String symbol) throws IOException {
-			yahoofinance.Stock stock = YahooFinance.get(symbol);
-			dividend 				= stock.getDividend();
-
-			annualYield 			= this.dividend.getAnnualYield();
-			annualYieldPercent 		= this.dividend.getAnnualYieldPercent();
-			exDivDate 				= this.dividend.getExDate();
-			payDate 				= this.dividend.getPayDate();
-			exDivDate_String 		= this.exDivDate.toString();
-			payDate_String 			= this.payDate.toString();
-		}	//end constructor FinlDividend(String symbol)
 
 		public String dividendCheck(String request) {
 			if(request.equalsIgnoreCase("annualYield"))
