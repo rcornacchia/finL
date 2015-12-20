@@ -1,4 +1,5 @@
-type op = Add | Sub | Mult | Div | Equal | Less | Leq | Greater | Geq | Mod | Pow | And | Or | Not
+type binop = Add | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq | Mod | Pow | And | Or | Sub
+type unop = Neg | Not
 
 type data_type =
   Inttype
@@ -18,8 +19,8 @@ type expression =
   | Float of float
   | Stock of string
   | Var of string
-  | Unop of op * expression
-  | Binop of expression * op * expression
+  | Unop of unop * expression
+  | Binop of expression * binop * expression
   | Assign of string * expression
   | Aassign of string * expression
   | Sassign of string * expression
@@ -30,6 +31,7 @@ type expression =
 
 type statement =
   Expr of expression
+  | While of expression * statement list
   | If of expression * statement list
   | Vdecl of var_decl
   | Ret of expression
@@ -49,12 +51,13 @@ type program = {
     lines : line list;
 }
 
-let string_of_op = function
+let string_of_binop = function
   Add -> "+"
   | Sub -> "-"
   | Mult -> "*"
   | Div -> "/"
   | Equal -> "=="
+  | Neq -> "!="
   | Less -> "<"
   | Leq -> "<="
   | Greater -> ">"
@@ -63,7 +66,10 @@ let string_of_op = function
   | Pow -> ", "
   | And -> "&&"
   | Or -> "||"
-  | Not -> "not"
+
+let string_of_unop = function
+  Neg -> "-"
+  | Not -> "!"
 
 let string_of_data_type = function
   Inttype -> "int"
@@ -78,8 +84,8 @@ let rec string_of_expression = function
   | Float(f) -> "Float(" ^ string_of_float f ^ ")"
   | Stock(stk) -> "Stock(" ^ stk ^ ")"
   | Var(v) -> "Var(" ^ v ^ ")"
-  | Unop(op, e) -> "Unop(" ^ string_of_op op ^ " " ^ string_of_expression e ^ ")"
-  | Binop(e1, o, e2) -> "Binop(" ^ string_of_expression e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expression e2 ^ ")"
+  | Unop(op, e) -> "Unop(" ^ string_of_unop op ^ " " ^ string_of_expression e ^ ")"
+  | Binop(e1, o, e2) -> "Binop(" ^ string_of_expression e1 ^ " " ^ string_of_binop o ^ " " ^ string_of_expression e2 ^ ")"
   | Assign(a, e) -> "Assign(" ^ a ^ " = " ^ string_of_expression e ^ ")"
   | Aassign(aa, e) -> "Aassign(" ^ aa ^ " = " ^ string_of_expression e ^ ")"
   | Sassign(sa, e) -> "Sassign(" ^ sa ^ " = " ^ string_of_expression e ^ ")"
@@ -98,6 +104,11 @@ let rec string_of_statement = function
                       ") statementlist{\nstatement{" ^ 
                       String.concat "}\nstatement{" (List.map string_of_statement slst) ^
                       "}\n}\n}"
+  | While(expr, slst) -> "while{\n(" ^ 
+                         string_of_expression expr ^ 
+                         ") statementlist{\nstatement{" ^ 
+                         String.concat "}\nstatement{" (List.map string_of_statement slst) ^
+                         "}\n}\n}"
   | Vdecl(v) -> string_of_vdecl v
   | Ret(r) -> "return{" ^ string_of_expression r ^ "}"
 

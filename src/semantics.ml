@@ -81,7 +81,7 @@ let var_to_svar env name =
 		{ sexpr = Svar(name); sdtype = var.dtype; }
 	with Not_found -> raise (Except("Symbol '" ^ name ^ "' is uninitialized!"))) (* uninitialized_variable_test.finl *)
 
-let check_string_binop (sexpr1: Sast.sexpression) (op: Ast.op) (sexpr2: Sast.sexpression) =
+let check_string_binop (sexpr1: Sast.sexpression) (op: Ast.binop) (sexpr2: Sast.sexpression) =
 	match op with
 		Add -> { sexpr = Sbinop(sexpr1, op, sexpr2); sdtype = Stringtype; }
 		| Equal -> { sexpr = Sbinop(sexpr1, op, sexpr2); sdtype = Inttype; }
@@ -89,9 +89,9 @@ let check_string_binop (sexpr1: Sast.sexpression) (op: Ast.op) (sexpr2: Sast.sex
 		| Leq -> { sexpr = Sbinop(sexpr1, op, sexpr2); sdtype = Inttype; }
 		| Greater -> { sexpr = Sbinop(sexpr1, op, sexpr2); sdtype = Inttype; }
 		| Geq -> { sexpr = Sbinop(sexpr1, op, sexpr2); sdtype = Inttype; }
-		| _ -> raise (Except("Operator '" ^ Ast.string_of_op op ^ "' is not supported for strings!"))
+		| _ -> raise (Except("Operator '" ^ Ast.string_of_binop op ^ "' is not supported for strings!"))
 
-let check_number_binop (sexpr1: Sast.sexpression) (op: Ast.op) (sexpr2: Sast.sexpression) =
+let check_number_binop (sexpr1: Sast.sexpression) (op: Ast.binop) (sexpr2: Sast.sexpression) =
 	match op with
 		Equal -> { sexpr = Sbinop(sexpr1, op, sexpr2); sdtype = Inttype; }
 		| Less -> { sexpr = Sbinop(sexpr1, op, sexpr2); sdtype = Inttype; }
@@ -106,7 +106,7 @@ let check_number_binop (sexpr1: Sast.sexpression) (op: Ast.op) (sexpr2: Sast.sex
 								   if is_int then (Inttype) else Floattype
 						  in { sexpr = Sbinop(sexpr1, op, sexpr2); sdtype = typ; })
 
-let binop_to_sbinop (sexpr1: Sast.sexpression) (op: Ast.op) (sexpr2: Sast.sexpression) = 
+let binop_to_sbinop (sexpr1: Sast.sexpression) (op: Ast.binop) (sexpr2: Sast.sexpression) = 
 	let type1 = sexpr1.sdtype
 	and type2 = sexpr2.sdtype in
 	match (type1, type2) with
@@ -117,7 +117,12 @@ let binop_to_sbinop (sexpr1: Sast.sexpression) (op: Ast.op) (sexpr2: Sast.sexpre
 		| (t, Stocktype) -> raise (Except("Type 'stock' does not support binary operations!."))
 		| (_, _) ->	check_number_binop sexpr1 op sexpr2
 
-let unop_to_sunop = "f"
+let unop_to_sunop env (u: Ast.unop) (se: Sast.sexpression) =
+		let typ = se.sdtype in
+		match typ with
+			Inttype -> { sexpr = Sunop(u, se); sdtype = Inttype; }
+			| Floattype -> { sexpr = Sunop(u, se); sdtype = Floattype; }
+			| t -> raise (Except("Unary operations are not supported for type '" ^ Ast.string_of_data_type typ ^ "'!"))		
 
 let rec expression_to_sexpression env (expression: Ast.expression) =
 	match expression with
@@ -128,7 +133,7 @@ let rec expression_to_sexpression env (expression: Ast.expression) =
 
 		| Var(v) -> 			var_to_svar env v
 
-		(*| Unop(op, e) -> 		unop_to_sunop env op (expression_to_sexpression env e)*)
+		| Unop(op, e) -> 		unop_to_sunop env op (expression_to_sexpression env e)
 
 		| Binop(e1, o, e2) -> 	let se1 = (expression_to_sexpression env e1) in
 								let se2 = (expression_to_sexpression env e2) in
@@ -206,14 +211,30 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 	match statement with
 		If(ex, sl) -> let checked_expression = expression_to_sexpression env ex in (* handle multiple returns!!! *)
 					  let typ = checked_expression.sdtype in
-					  if typ <> Inttype && typ <> Floattype then (raise (Except("If expression only takes numerical types!")))
+					  if typ <> Inttype && typ <> Floattype then (raise (Except("If expressions only take numerical types!")))
 					  else let if_env = { function_table = env.function_table;
 										  symbol_table = env.symbol_table;
 										  checked_statements = [];
 										  env_scope = env.env_scope; }
 						   in
 					  	   let if_env = List.fold_left statement_to_sstatement if_env sl in
-					  	   let checked_statement = Sif(checked_expression, if_env.checked_statements) in (* carefule here, not sure why we dont need to reverse list *)
+					  	   let checked_statement = Sif(checked_expression, if_env.checked_statements) in
+					  	   let new_env = { function_table = env.function_table;
+								     	   symbol_table = env.symbol_table; 
+								     	   checked_statements = checked_statement :: env.checked_statements; 
+								     	   env_scope = env.env_scope; }
+						   in new_env
+
+		| While(ex, sl) -> let checked_expression = expression_to_sexpression env ex in (* should you be allowed to return from a while? *)
+					  	   let typ = checked_expression.sdtype in
+					  			if typ <> Inttype && typ <> Floattype then (raise (Except("While expressions only take numerical types!")))
+					  			else let while_env = { function_table = env.function_table;
+										  			   symbol_table = env.symbol_table;
+										  			   checked_statements = [];
+										  			   env_scope = env.env_scope; }
+						   in
+					  	   let while_env = List.fold_left statement_to_sstatement while_env sl in
+					  	   let checked_statement = Swhile(checked_expression, while_env.checked_statements) in
 					  	   let new_env = { function_table = env.function_table;
 								     	   symbol_table = env.symbol_table; 
 								     	   checked_statements = checked_statement :: env.checked_statements; 

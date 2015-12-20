@@ -34,9 +34,9 @@ rule token = parse
 	| "not"                  { NOT }
 	| '?'                    { IF }
 	(*| "??"                   { ELSEIF }
-	| '!'                    { ELSE }
+	| '!'                    { ELSE }*)
 	| "while"                { WHILE }
-	| "when"                 { WHEN }
+	(*| "when"                 { WHEN }
 	| "break"                { BREAK }*)
 	| "int"                  { INTD }
 	| "float"                { FLOATD }
