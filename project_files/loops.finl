@@ -1,0 +1,2 @@
+for 1 to 10 by 2 { print(index); }
+# prints 246810

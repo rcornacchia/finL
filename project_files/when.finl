@@ -1,0 +1,16 @@
+stock chill;
+chill << @NFLX;
+chill.populate();
+order netflixOrder;
+netflixOrder.shares << 70;
+netflixOrder.stock << @NFLX;
+
+when (chill.get("FiftydayMovingAverage") > chill.get("TwoHundreddayMovingAverage")) {
+	netflixOrder.execute();
+}
+
+# this mini-program executes the netflixOrder once
+# no matter what and once in the when loop 
+# according to the boolean, the when loop starts a 
+# new thread so the other order can be executed 
+# immediately	
