@@ -6,6 +6,7 @@ package bin;
 
 
 
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -27,16 +28,17 @@ public class FinlPortfolio {
 
 	DateFormat dateFormat 		= new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-	ArrayList<FinlOrder> orders;		//list of all orders
-	ArrayList<FinlOrder> unexecutedOrders;
-	ArrayList<Holding> holdings;		//list of all positions
+	private ArrayList<FinlOrder> orders;		//list of all orders
+	private ArrayList<FinlOrder> unexecutedOrders;
+	private ArrayList<Holding> holdings;		//list of all positions
 
 	double accountCash = 0.0;
 	double accountValue = 0.0;
 
 
 
-	public FinlPortfolio() {
+	public FinlPortfolio(double initialCash) {
+		this.accountCash = initialCash;
 		orders = new ArrayList<FinlOrder>();		//list of all orders
 		unexecutedOrders = new ArrayList<FinlOrder>();	//all unexecuted orders
 		holdings = new ArrayList<Holding>();		//list of all positions
@@ -46,24 +48,42 @@ public class FinlPortfolio {
 	public void order(int size, String ticker, boolean execute) {
 		FinlStock orderStock = new FinlStock(ticker);
 		FinlOrder order = new FinlOrder(size, orderStock, execute);
+		double orderValue = orderStock.finlQuote.price.doubleValue() * size;
 
-		if(execute) {
-			orders.add(order);
-			Holding holding = new FinlPortfolio.Holding(order);
+		if(accountCash < orderValue) {
+			return;
 		}
 		else {
-			unexecutedOrders.add(order);	//if the order is created but not executed,
-											//add it to the unexecuted list
+			if(execute) {
+				orders.add(order);
+				new FinlPortfolio.Holding(order);
+			}
+			else {
+				unexecutedOrders.add(order);	//if the order is created but not executed,
+			}									//add it to the unexecuted list
 		}
 	}	//end execute optional order() method
 
 	public void order(int size, String ticker) {
 		FinlStock orderStock = new FinlStock(ticker);
-		FinlOrder order = new FinlOrder(size, orderStock);
+		double orderValue = orderStock.finlQuote.price.doubleValue() * size;
 
-		orders.add(order);	//add the order to the portfolio's list
-		Holding holding = new FinlPortfolio.Holding(order);
+		if(accountCash < orderValue) {
+			return;
+		}
+		else {
+			FinlOrder order = new FinlOrder(size, orderStock);
+			orders.add(order);	//add the order to the portfolio's list
+			new FinlPortfolio.Holding(order);
+			}
 		}	//end order() method
+
+
+	public void addCash(double amount) {
+		accountCash += amount;
+	}
+
+
 
 	class Holding {
 
@@ -80,10 +100,14 @@ public class FinlPortfolio {
 			else {								//if the portfolio contains the stock being ordered:
 				addToHolding(order);
 			}
+			checkUnexecutedHoldings();			//every time a new holding is added, also check to see
+												//if any unexecuted orders have been executed
+
 		}
 
 		private void addToHolding(FinlOrder order) {
-			this.avgPrice = ((this.positionSize*this.avgPrice)	//weighted avg of holding's price
+
+			this.avgPrice = (((Math.abs(this.positionSize))*this.avgPrice)	//weighted avg of holding's price
 							+ (order.size*order.sharePrice))/2;	//and new order's price
 			this.positionSize += order.size;
 			this.pnl = (this.positionSize*order.sharePrice) 	//difference between the value of our position
@@ -106,6 +130,16 @@ public class FinlPortfolio {
 
 			holdings.add(this);	//add this new holding to the list
 		}
+
+		private void checkUnexecutedHoldings() {
+			for(int i = 0; i < unexecutedOrders.size(); i++) {
+				FinlOrder order = unexecutedOrders.get(i);
+				if(order.getExecuteStatus()) {
+					new FinlPortfolio.Holding(order);
+				}
+			}
+		}
+
 
 		//checks if the stock is in the portfolio
 		private Holding checkHoldings(FinlOrder order) {
