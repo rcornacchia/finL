@@ -6,18 +6,16 @@ http://opam.ocaml.org/doc/Install.html
 
 http://www.typerex.org/ocaml-top.html
 
-## Compiling finL Compiler
+# Compiling finL Compiler
+	$ make
 
-$ make
+# Compiling and Running a Single Program
+	$ ./finlc [filename.finl]
+	$ ./finl.sh [filename]
 
-## Compiling finL Programs
+# Options
+	$ ./finlc -a [filename.finl] #prints ast
+	$ ./finlc -s [filename.finl] #prints sast
 
-$ ./finlc [filename]
-
-## Running finL Programs
-
-$ ./finl.sh [executable]
-
-## Running Test Suite
-
-$ ./regression_test.sh
+# Running Regression Test
+	$ ./regression_test.sh
