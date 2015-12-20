@@ -5,7 +5,6 @@ package bin;
 
 
 
-
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -32,8 +31,10 @@ public class StockTester {
 
 
 	private static void portfolioTest() {
-		FinlPortfolio testPortfolio = new FinlPortfolio();
+		System.out.println("\n\n\n\n");
+		FinlPortfolio testPortfolio = new FinlPortfolio(10000.00);
 
+		testPortfolio.order(10, "AAPL");
 
 	}
 

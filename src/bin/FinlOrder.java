@@ -103,4 +103,9 @@ public class FinlOrder {
 			return;				//do nothing
 		}
 	}
+
+	//gets whether the order has been executed
+	public boolean getExecuteStatus() {
+		return this.execute;
+	}
 }
