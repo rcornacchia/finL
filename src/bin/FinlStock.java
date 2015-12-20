@@ -1,5 +1,6 @@
 package bin;
 
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -25,7 +26,7 @@ public class FinlStock {
 
 			FxQuote usdeur = YahooFinance.getFx(FxSymbols.USDEUR);
 			FxQuote usdgbp = YahooFinance.getFx("USDGBP=X");
-		} catch (NullTickerException NTE) {
+		} catch (NullPointerException NTE) {
 			NTE.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -43,11 +44,11 @@ public class FinlStock {
 	////////////////////////////////////////////
 	//////////*FinlStock Constructor*///////////
 	///////////Gets all sub-objects/////////////
-	public FinlStock(String ticker) throws NullTickerException, IOException {
+	public FinlStock(String ticker) throws NullPointerException, IOException {
 
 		/* Check for null ticker */
 		if(ticker == null || ticker.equals(null)) {
-			throw new NullTickerException();
+			throw new NullPointerException();
 		}
 
 		this.symbol 					= ticker;
@@ -58,8 +59,8 @@ public class FinlStock {
 		this.finlDividend 				= new FinlStock.FinlDividend(testStock);
 	}
 
-	public FinlStock() throws NullTickerException {
-		throw new NullTickerException();
+	public FinlStock() throws NullPointerException {
+		throw new NullPointerException();
 	}
 
 
@@ -349,10 +350,10 @@ public class FinlStock {
 	////////////////////////////////////////////
 	///////*NullTickerException SubClass*///////
 	////////////////////////////////////////////
-	public class NullTickerException extends Exception {
-		public NullTickerException() {
-			System.out.println("\n\nNo Ticker Entered\n\n");
-			this.printStackTrace();
-		} 	//end NullTickerException constructor
-	}	//end NullTickerException
+//	public class NullTickerException extends Exception {
+//		public NullTickerException() {
+//			System.out.println("\n\nNo Ticker Entered\n\n");
+//			this.printStackTrace();
+//		} 	//end NullTickerException constructor
+//	}	//end NullTickerException
 }	//End FinlStock.java
