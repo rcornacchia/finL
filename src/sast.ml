@@ -28,6 +28,8 @@ type sstatement =
   | Swhen of sexpression * sstatement list
   | Svdecl of Ast.var_decl
   | Sret of sexpression
+  | Sbuy of sexpression
+  | Ssell of sexpression
 
 type sfunc_decl = {
   srtype : Ast.data_type;
@@ -68,6 +70,8 @@ let rec string_of_sstatement = function
   | Swhen(sexpr, ssl) -> "swhen{ sstatement{" ^ String.concat "} sstatement{" (List.map string_of_sstatement ssl) ^ "}}"
   | Svdecl(v) -> Ast.string_of_vdecl v
   | Sret(r) -> "sreturn{ sexpression{" ^ string_of_sexpression r ^ "}}"
+  | Sbuy(b) -> "sbuy{ sexpression{" ^ string_of_sexpression b ^ "}}"
+  | Ssell(s) -> "ssell{ sexpression{" ^ string_of_sexpression s ^ "}}"
 
 let string_of_sfdecl (sfdecl: sfunc_decl) =
   "sname{" ^ 

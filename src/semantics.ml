@@ -3,9 +3,9 @@ open Sast
 
 exception Except of string
 
-let builtin_functions = 
+let builtin_functions = (* possibly no builtin funcs??? *)
 	[ {
-		sname = "print";
+		sname = "print"; (* check types for print!!! *)
 		sformals = [];
 		sbody = [];
 		srtype = Voidtype; (*TEMPORARY*) 
@@ -284,6 +284,24 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 									checked_statements = checked_statement :: env.checked_statements; 
 									env_scope = env.env_scope; }
 					in new_env
+
+		| Buy(b) -> let checked_expression = expression_to_sexpression env b in
+					if checked_expression.sdtype <> Ordertype then (raise (Except("'buy' keyword takes type 'order'!")))
+					else let checked_statement = Sbuy(checked_expression) in
+					let new_env = { function_table = env.function_table;
+									symbol_table = env.symbol_table;
+									checked_statements = checked_statement :: env.checked_statements;
+									env_scope = env.env_scope; }
+					in new_env
+
+		| Sell(s) -> let checked_expression = expression_to_sexpression env s in
+					 if checked_expression.sdtype <> Ordertype then (raise (Except("'buy' keyword takes type 'order'!")))
+					 else let checked_statement = Ssell(checked_expression) in
+					 let new_env = { function_table = env.function_table;
+									 symbol_table = env.symbol_table;
+									 checked_statements = checked_statement :: env.checked_statements;
+									 env_scope = env.env_scope; }
+					 in new_env
 					
 let check_for_sreturn = function 
 	Sret(_) -> true

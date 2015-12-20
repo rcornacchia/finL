@@ -84,6 +84,8 @@ let rec compile_sstatement = function
   | Swhen(e, sl) -> "" (* TO DO *)
   | Svdecl(v) -> compile_vdecl v ^ ";"
   | Sret(r) -> "return " ^ compile_sexpression r ^ ";"
+  | Sbuy(b) -> "default_portfolio.buy(" ^ compile_sexpression b ^ ");"
+  | Ssell(s) -> "default_portfolio.sell(" ^ compile_sexpression s ^ ");"
 
 let compile_sfdecl (func: Sast.sfunc_decl) =
   if func.builtin then ("")
@@ -105,5 +107,6 @@ let compile (sprogram: Sast.sprogram) (filename: string) =
   " {\n" ^
   String.concat "\n" (List.map compile_sfdecl sprogram.sfunc_decls) ^
   "\npublic static void main(String[] args) {\n" ^
+  "FinlPortfolio default_portfolio = new FinlPortfolio();\n" ^
   String.concat "\n" (List.map compile_sstatement sprogram.sstatements) ^
   "\n}\n}"

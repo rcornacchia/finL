@@ -1,0 +1,4 @@
+int a;
+a << 1;
+buy a; # comment this out to test bad sells
+sell a;

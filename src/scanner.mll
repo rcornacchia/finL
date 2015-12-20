@@ -34,6 +34,8 @@ rule token = parse
 	| "not"                  { NOT }
 	| '?'                    { IF }
 	| "of"					 { OF }
+	| "buy"					 { BUY }
+	| "sell"				 { SELL }
 	(*| "??"                   { ELSEIF }
 	| '!'                    { ELSE }*)
 	| "while"                { WHILE }
