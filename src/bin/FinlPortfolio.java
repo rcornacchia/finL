@@ -42,27 +42,32 @@ public class FinlPortfolio {
 	}
 
 	public void buy(FinlOrder order) {
-		order.type = "buy";
+		if(order.getExecute() == true) { //order has been executed
+			System.err.println("Order already executed!\nNothing Done.");
+			return;				//do nothing
+		}
+		order.setType("buy");
 		order.stock.refresh();	//refresh stock information
+		order.sharePrice = order.stock.finlQuote.ask.doubleValue();
+		order.date = new Date();
+		order.setExecute(true);
 		orders.add(order);
 		new FinlPortfolio.Holding(order);
 	}
 
 	public void sell(FinlOrder order) {
-		order.type = "sell";
+		if(order.getExecute() == true) { //order has been executed
+			System.err.println("Order already executed!\nNothing Done.");
+			return;				//do nothing
+		}
+		order.setType("sell");
 		order.stock.refresh();
+		order.sharePrice = order.stock.finlQuote.bid.doubleValue();
+		order.date = new Date();
+		order.setExecute(true);
 		orders.add(order);
 		new FinlPortfolio.Holding(order);
 	}
-
-	public void order(int size, String ticker) {
-		FinlStock orderStock = new FinlStock(ticker);
-		double orderValue = orderStock.finlQuote.price.doubleValue() * size;
-
-		FinlOrder order = new FinlOrder(size, orderStock);
-		orders.add(order);	//add the order to the portfolio's list
-		new FinlPortfolio.Holding(order);
-	}	//end order() method
 
 
 	public void setPortfolioName(String name) {
@@ -168,9 +173,16 @@ public class FinlPortfolio {
 
 		private void addToHolding(FinlOrder order) {
 
+			if(order.getType().equals("sell"))
+				this.positionSize -= order.size;
+			else if (order.getType().equals("buy"))
+				this.positionSize += order.size;
+			else System.err.println("Order Type Not Set");
+
+
 			this.avgPrice = (((Math.abs(this.positionSize))*this.avgPrice)	//weighted avg of holding's price
-					+ (order.size*order.sharePrice))/2;	//and new order's price
-			this.positionSize += order.size;
+					+ (order.size*order.sharePrice))/2;						//and new order's price
+
 			this.pnl = (this.positionSize*order.sharePrice) 	//difference between the value of our position
 					- (this.positionSize*this.avgPrice);	//now and what we paid for it
 			this.lastOrder = order.date;
@@ -182,12 +194,16 @@ public class FinlPortfolio {
 		}
 
 		private void generateNewHolding(FinlOrder order) {
-			this.positionSize = order.size;
+			if(order.getType().equals("sell"))
+				this.positionSize -= order.size;
+			else if (order.getType().equals("buy"))
+				this.positionSize += order.size;
+			else System.err.println("Order Type Not Set");
+
 			this.avgPrice = order.sharePrice;
 			this.pnl = 0;
 			this.lastOrder = order.date;
 			this.stock = order.stock;
-
 			accountValue += (this.avgPrice*this.positionSize);
 			this.percentOfPortfolio = this.positionSize/accountValue;
 
