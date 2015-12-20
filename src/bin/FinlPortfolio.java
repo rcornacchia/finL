@@ -94,7 +94,8 @@ public class FinlPortfolio {
 		writer.append("\n\n");
 
 		writer.append("Stock Name"); writer.append(",");
-		writer.append("Total Position Size"); writer.append(",");
+		writer.append("Total Shares"); writer.append(",");
+		writer.append("Total Value"); writer.append(",");
 		writer.append("Average Price"); writer.append(",");
 		writer.append("Position P & L"); writer.append(",");
 		writer.append("Percent of Portfolio"); writer.append(",");
@@ -104,7 +105,9 @@ public class FinlPortfolio {
 			Holding listHolding = holdings.get(i);
 			writer.append(listHolding.stock.symbol);
 			writer.append(",");
-			writer.append(Integer.toString(listHolding.positionSize));
+			writer.append(Integer.toString(listHolding.positionShares));
+			writer.append(",");
+			writer.append(Double.toString(listHolding.positionValue));
 			writer.append(",");
 			writer.append(Double.toString(listHolding.avgPrice));
 			writer.append(",");
@@ -156,7 +159,8 @@ public class FinlPortfolio {
 
 	class Holding {
 
-		public int positionSize;
+		public int positionShares;
+		public double positionValue;
 		public double percentOfPortfolio;
 		public double avgPrice;
 		public double pnl;
@@ -171,38 +175,49 @@ public class FinlPortfolio {
 		}
 
 		private void addToHolding(FinlOrder order) {
+			int tempSize = Math.abs(this.positionShares);
+			double tempAvg = this.avgPrice;
+
+
 			if(order.getType().equals("sell"))
-				this.positionSize -= order.size;
+				this.positionShares -= order.size;
 			else if (order.getType().equals("buy"))
-				this.positionSize = this.positionSize + order.size;
+				this.positionShares = this.positionShares + order.size;
 			else System.err.println("Order Type Not Set");
 
-			this.avgPrice = (((Math.abs(this.positionSize))*this.avgPrice)	//weighted avg of holding's price
-					+ (order.size*order.sharePrice))/2;						//and new order's price
-
-			this.pnl = (this.positionSize*order.sharePrice) 	//difference between the value of our position
-					- (this.positionSize*this.avgPrice);	//now and what we paid for it
+			double weightedAverage = (((tempAvg*tempSize)
+					+ (order.sharePrice*order.size)))/(tempSize+order.size);
+			this.avgPrice = weightedAverage;					//and new order's price
+			this.pnl = (this.positionShares*order.sharePrice) 	//difference between the value of our position
+					- (this.positionShares*this.avgPrice);	//now and what we paid for it
 			this.lastOrder = order.date;
 			this.stock = order.stock;
+			this.positionValue = this.avgPrice*this.positionShares;
+			accountValue += this.positionValue;
+			this.percentOfPortfolio = this.positionShares/accountValue;
 
-			accountValue += (order.size*order.sharePrice);
-			this.percentOfPortfolio = this.positionSize/accountValue;
+			System.out.println("\n" + this.stock.symbol);
+			System.out.println("3: " + this.avgPrice);
+			System.out.println("3: " + order.stock.finlQuote.price);
+
+
 			//no need to add to the list, order already exists and we are just modifying
 		}
 
 		private void generateNewHolding(FinlOrder order) {
 			if(order.getType().equals("sell"))
-				this.positionSize -= order.size;
+				this.positionShares -= order.size;
 			else if (order.getType().equals("buy"))
-				this.positionSize += order.size;
+				this.positionShares += order.size;
 			else System.err.println("Order Type Not Set");
 
 			this.avgPrice = order.sharePrice;
 			this.pnl = 0;
 			this.lastOrder = order.date;
 			this.stock = order.stock;
-			accountValue += (this.avgPrice*this.positionSize);
-			this.percentOfPortfolio = this.positionSize/accountValue;
+			this.positionValue = this.avgPrice*this.positionShares;
+			accountValue += this.positionValue;
+			this.percentOfPortfolio = this.positionShares/accountValue;
 
 			holdings.add(this);	//add this new holding to the list
 		}

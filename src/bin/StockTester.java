@@ -4,17 +4,6 @@ package bin;
 
 
 
-import java.io.IOException;
-import java.math.BigDecimal;
-
-import yahoofinance.Stock;
-import yahoofinance.YahooFinance;
-import yahoofinance.quotes.fx.FxQuote;
-import yahoofinance.quotes.fx.FxSymbols;
-
-
-
-
 public class StockTester {
 
 	public static void main(String[] args) {

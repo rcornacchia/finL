@@ -4,6 +4,8 @@ package bin;
 
 
 
+
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -29,7 +31,7 @@ public class FinlOrder {
 	public FinlStock stock		= null;
 	public double sharePrice 	= 0.0;
 	public Date date 			= null;
-	private String type			= "buy";
+	private String type;
 	private boolean execute		= false;
 
 	////////////////////////////////////////////
