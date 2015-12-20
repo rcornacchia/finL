@@ -1,5 +1,5 @@
 
-package bin;
+
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -185,20 +185,23 @@ public class FinlPortfolio {
 				this.positionShares = this.positionShares + order.size;
 			else System.err.println("Order Type Not Set");
 
-			double weightedAverage = (((tempAvg*tempSize)
-					+ (order.sharePrice*order.size)))/(tempSize+order.size);
+			double weightedAverage = (((tempAvg * tempSize)
+					+ (order.sharePrice * order.size)))/(tempSize + order.size);
 			this.avgPrice = weightedAverage;					//and new order's price
-			this.pnl = (this.positionShares*order.sharePrice) 	//difference between the value of our position
-					- (this.positionShares*this.avgPrice);	//now and what we paid for it
+			this.pnl = (this.positionShares * order.sharePrice) 	//difference between the value of our position
+					- (this.positionShares * this.avgPrice);	//now and what we paid for it
 			this.lastOrder = order.date;
 			this.stock = order.stock;
-			this.positionValue = this.avgPrice*this.positionShares;
-			accountValue += this.positionValue;
+			this.positionValue = this.avgPrice * this.positionShares;
+
+			if(order.getType().equals("buy"))
+				accountValue += (order.size * order.sharePrice);
+			else if (order.getType().equals("sell"))
+				accountValue -= (order.size * order.sharePrice);
+
 			this.percentOfPortfolio = this.positionShares/accountValue;
 
-			System.out.println("\n" + this.stock.symbol);
-			System.out.println("3: " + this.avgPrice);
-			System.out.println("3: " + order.stock.finlQuote.price);
+
 
 
 			//no need to add to the list, order already exists and we are just modifying
@@ -215,8 +218,13 @@ public class FinlPortfolio {
 			this.pnl = 0;
 			this.lastOrder = order.date;
 			this.stock = order.stock;
-			this.positionValue = this.avgPrice*this.positionShares;
-			accountValue += this.positionValue;
+			this.positionValue = this.avgPrice * this.positionShares;
+
+			if(order.getType().equals("buy"))
+				accountValue += (order.size * order.sharePrice);
+			else if (order.getType().equals("sell"))
+				accountValue -= (order.size * order.sharePrice);
+
 			this.percentOfPortfolio = this.positionShares/accountValue;
 
 			holdings.add(this);	//add this new holding to the list
