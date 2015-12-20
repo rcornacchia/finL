@@ -33,6 +33,7 @@ rule token = parse
 	| "or"                   { OR }
 	| "not"                  { NOT }
 	| '?'                    { IF }
+	| "of"					 { OF }
 	(*| "??"                   { ELSEIF }
 	| '!'                    { ELSE }*)
 	| "while"                { WHILE }
@@ -46,8 +47,8 @@ rule token = parse
 	| "string"               { STRINGD }
 	(*| "currency"             { CURR }*)
 	| "stock"                { STOCK }
-	(*| "order"                { ORDER }
-	| "portfolio"            { PF }*)
+	| "order"                { ORDER }
+	(*| "portfolio"            { PF }*)
 	| "function"             { FUNC }
 	| "return"               { RETURN }
 	| "void"                 { VOID }

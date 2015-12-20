@@ -6,6 +6,7 @@ type data_type =
   | Stringtype
   | Floattype
   | Stocktype
+  | Ordertype
   | Voidtype
 
 type var_decl = {
@@ -18,6 +19,7 @@ type expression =
   | String of string
   | Float of float
   | Stock of string
+  | Order of int * string
   | Var of string
   | Unop of unop * expression
   | Binop of expression * binop * expression
@@ -77,6 +79,7 @@ let string_of_data_type = function
   | Stringtype -> "string"
   | Floattype -> "float"
   | Stocktype -> "stock"
+  | Ordertype -> "order"
   | Voidtype -> "void"
 
 let rec string_of_expression = function
@@ -84,6 +87,7 @@ let rec string_of_expression = function
   | String(s) -> "String(" ^ s ^ ")"
   | Float(f) -> "Float(" ^ string_of_float f ^ ")"
   | Stock(stk) -> "Stock(" ^ stk ^ ")"
+  | Order(i, s) -> "Order(" ^ string_of_int i ^ ", " ^ s ^ ")"
   | Var(v) -> "Var(" ^ v ^ ")"
   | Unop(op, e) -> "Unop(" ^ string_of_unop op ^ " " ^ string_of_expression e ^ ")"
   | Binop(e1, o, e2) -> "Binop(" ^ string_of_expression e1 ^ " " ^ string_of_binop o ^ " " ^ string_of_expression e2 ^ ")"

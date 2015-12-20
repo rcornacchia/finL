@@ -7,7 +7,7 @@
 %token EQ GEQ GT LEQ LT
 %token RETURN WHILE WHEN IF /*ELSE ELSEIF */ VOID /* NULL BREAK*/
 %token AND OR NOT
-%token INTD STRINGD FLOATD /*PERCENT ARRAY CURR */ STOCK /*ORDER PF */ FUNC
+%token INTD STRINGD FLOATD /*PERCENT ARRAY CURR */ STOCK ORDER /*PF*/ FUNC OF
 %token <string> TICK
 %token <int> INT
 %token <float> FLOAT
@@ -56,6 +56,7 @@ expression:
   | FLOAT { Float($1) }
   | TICK { Stock($1) }
   | VAR  { Var($1) }
+  | INT OF TICK { Order($1, $3) }
   | MINUS expression { Unop(Neg, $2) }
   | NOT LPAREN expression RPAREN { Unop(Not, $3) }
   | expression PLUS expression  { Binop($1, Add, $3) }
@@ -99,6 +100,7 @@ dtype:
   | STRINGD { Stringtype }
   | FLOATD { Floattype }
   | STOCK { Stocktype }
+  | ORDER  { Ordertype }
 
 fdecl:
   FUNC vdtype VAR LPAREN params RPAREN

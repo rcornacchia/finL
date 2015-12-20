@@ -11,6 +11,7 @@ let compile_dtype = function
   | Stringtype -> "String"
   | Floattype -> "double"
   | Stocktype -> "FinlStock"
+  | Ordertype -> "FinlOrder"
   | Voidtype -> "void"
 
 let compile_vdecl (vdecl: Ast.var_decl) =
