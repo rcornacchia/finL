@@ -29,6 +29,7 @@ type expression =
 
 type statement =
   Expr of expression
+  | If of expression * statement list
   | Vdecl of var_decl
   | Ret of expression
 
@@ -87,8 +88,13 @@ let rec string_of_expression = function
 let string_of_vdecl (vdecl: var_decl) = 
   "vdecl{" ^ vdecl.vname ^ " -> " ^ string_of_data_type vdecl.dtype ^ "}"
 
-let string_of_statement = function
+let rec string_of_statement = function
   Expr(e) -> "expression{" ^ string_of_expression e ^ "}"
+  | If(expr, slst) -> "if{\n(" ^ 
+                      string_of_expression expr ^ 
+                      ") statementlist{\nstatement{" ^ 
+                      String.concat "}\nstatement{" (List.map string_of_statement slst) ^
+                      "}\n}\n}"
   | Vdecl(v) -> string_of_vdecl v
   | Ret(r) -> "return{" ^ string_of_expression r ^ "}"
 

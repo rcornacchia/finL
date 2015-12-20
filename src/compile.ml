@@ -57,8 +57,13 @@ let rec compile_sexpression (sexpr: Sast.sexpression) =
     | Scall(name, exprlst) -> check_function name ^ "(" ^ String.concat ", " (List.map compile_sexpression exprlst) ^ ")"
     | Snoexpr -> ""
 
-let compile_sstatement = function
+let rec compile_sstatement = function
   Sexpr(expr) -> compile_sexpression expr ^ ";"
+  | Sif(e, sl) -> "if (Test.num_to_boolean(" ^ 
+                  compile_sexpression e ^ 
+                  ")) {\n" ^
+                  String.concat "\n" (List.map compile_sstatement sl) ^
+                  "\n}"
   | Svdecl(v) -> compile_vdecl v ^ ";"
   | Sret(r) -> "return " ^ compile_sexpression r ^ ";"
 

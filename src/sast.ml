@@ -21,6 +21,7 @@ and sexpression = {
 
 type sstatement =
   Sexpr of sexpression
+  | Sif of sexpression * sstatement list
   | Svdecl of Ast.var_decl
   | Sret of sexpression
 
@@ -54,10 +55,11 @@ let rec string_of_sexpression (sexpr: sexpression) =
               | Snoexpr -> ""
   in expr ^ " -> " ^ Ast.string_of_data_type sexpr.sdtype
 
-let string_of_sstatement = function
+let rec string_of_sstatement = function
   Sexpr(e) -> "sexpression{" ^ string_of_sexpression e ^ "}"
+  | Sif(sexpr, ssl) -> "sif{ sstatement{" ^ String.concat "} sstatement{" (List.map string_of_sstatement ssl) ^ "}}"
   | Svdecl(v) -> Ast.string_of_vdecl v
-  | Sret(r) -> "sreturn{" ^ string_of_sexpression r ^ "}"
+  | Sret(r) -> "sreturn{ sexpression{" ^ string_of_sexpression r ^ "}}"
 
 let string_of_sfdecl (sfdecl: sfunc_decl) =
   "sname{" ^ 

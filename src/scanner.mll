@@ -31,9 +31,9 @@ rule token = parse
 	| "/<<"                  { DASSIGN }
 	| "and"                  { AND }
 	| "or"                   { OR }
-	(*| "not"                  { NOT } UNARY OPERATORS??
+	(*| "not"                  { NOT } UNARY OPERATORS??*)
 	| '?'                    { IF }
-	| "??"                   { ELSEIF }
+	(*| "??"                   { ELSEIF }
 	| '!'                    { ELSE }
 	| "while"                { WHILE }
 	| "when"                 { WHEN }
