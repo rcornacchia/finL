@@ -73,6 +73,7 @@ let rec string_of_expression = function
   Int(i) -> "Int(" ^ string_of_int i ^ ")"
   | String(s) -> "String(" ^ s ^ ")"
   | Float(f) -> "Float(" ^ string_of_float f ^ ")"
+  | Stock(stk) -> "Stock(" ^ stk ^ ")"
   | Var(v) -> "Var(" ^ v ^ ")"
   | Binop(e1, o, e2) -> "Binop(" ^ string_of_expression e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expression e2 ^ ")"
   | Assign(a, e) -> "Assign(" ^ a ^ " = " ^ string_of_expression e ^ ")"

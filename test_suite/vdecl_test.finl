@@ -1,0 +1,4 @@
+int x_1;
+string w__;
+print("success");
+print("\n");

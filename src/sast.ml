@@ -4,6 +4,7 @@ type expr =
   Sint of int
   | Sstring of string
   | Sfloat of float
+  | Sstock of string
   | Svar of string
   | Sbinop of sexpression * Ast.op * sexpression
   | Sassign of string * sexpression
@@ -41,6 +42,7 @@ let rec string_of_sexpression (sexpr: sexpression) =
               Sint(i) -> "Sint(" ^ string_of_int i ^ ")"
               | Sstring(s) -> "Sstring(" ^ s ^ ")"
               | Sfloat(f) -> "Sfloat(" ^ string_of_float f ^ ")"
+              | Sstock (stk) -> "Sstock(" ^ stk ^ ")"
               | Svar(v) -> "Svar(" ^ v ^ ")"
               | Sbinop(e1, o, e2) -> "Sbinop(" ^ string_of_sexpression e1 ^ " " ^ Ast.string_of_op o ^ " " ^ string_of_sexpression e2 ^ ")"
               | Sassign(a, e) -> "Sassign(" ^ a ^ " = " ^ string_of_sexpression e ^ ")"

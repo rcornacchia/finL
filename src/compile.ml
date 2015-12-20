@@ -1,5 +1,6 @@
 open Ast
 open Sast
+open String
 
 let check_function name = (* HAVE SOME BUILTIN FUNCTIONALITY HERE *)
   if name = "print" then "System.out.print"
@@ -9,6 +10,7 @@ let compile_dtype = function
   Inttype -> "int"
   | Stringtype -> "String"
   | Floattype -> "double"
+  | Stocktype -> "FinlStock"
   | Voidtype -> "void"
 
 let compile_vdecl (vdecl: Ast.var_decl) =
@@ -25,11 +27,17 @@ let compile_compare sexpr_string1 op_string sexpr_string2 is_string_compare =
             else sexpr_string1 ^ " " ^ op_string ^ " " ^ sexpr_string2
   in boolean_to_sexpr str
 
+let string_of_stock ticker =
+  let len = length ticker in
+  let new_ticker = sub ticker 1 (len - 1) in
+  "new FinlStock(\"" ^ new_ticker ^ "\")"
+
 let rec compile_sexpression (sexpr: Sast.sexpression) =
   match sexpr.sexpr with 
     Sstring(str) -> str
     | Sint(i) -> string_of_int i
     | Sfloat(f) -> string_of_float f
+    | Sstock(stk) -> string_of_stock stk
     | Sbinop(expr1, op, expr2) -> (match op with 
                                     Pow -> "Math.pow(" ^ compile_sexpression expr1 ^ Ast.string_of_op op ^ compile_sexpression expr2 ^ ")"
                                     | Equal -> compile_compare (compile_sexpression expr1) (Ast.string_of_op op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
@@ -67,7 +75,10 @@ let compile_sfdecl (func: Sast.sfunc_decl) =
        "\n}"
 
 let compile (sprogram: Sast.sprogram) (filename: string) =
-  "import java.lang.Math;\nimport bin.test.Test;\npublic class " ^ 
+  "import java.lang.Math;\n" ^
+  "import bin.test.Test;\n" ^
+  "import bin.FinlStock;" ^
+  "\npublic class " ^ 
   filename ^ 
   " {\n" ^
   String.concat "\n" (List.map compile_sfdecl sprogram.sfunc_decls) ^

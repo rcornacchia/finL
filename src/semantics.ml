@@ -110,16 +110,19 @@ let binop_to_sbinop (sexpr1: Sast.sexpression) (op: Ast.op) (sexpr2: Sast.sexpre
 	let type1 = sexpr1.sdtype
 	and type2 = sexpr2.sdtype in
 	match (type1, type2) with
-		(Stringtype, Stringtype) -> check_string_binop sexpr1 op sexpr2 (* MUST CHECK STRING OPS!! *)
+		(Stringtype, Stringtype) -> check_string_binop sexpr1 op sexpr2
 		| (t, Stringtype) -> raise (Except("Cannot do binary operation on type '" ^ Ast.string_of_data_type t ^ "' and type 'string'!"))
 		| (Stringtype, t) -> raise (Except("Cannot do binary operation on type 'string' and type '" ^ Ast.string_of_data_type t ^ "'."))
-		| (_, _) ->	check_number_binop sexpr1 op sexpr2 (* MUST CHECK OP!!! *)
+		| (Stocktype, t) -> raise (Except("Type 'stock' does not support binary operations!."))
+		| (t, Stocktype) -> raise (Except("Type 'stock' does not support binary operations!."))
+		| (_, _) ->	check_number_binop sexpr1 op sexpr2
 
 let rec expression_to_sexpression env (expression: Ast.expression) =
 	match expression with
 		Int(i) -> 				{ sexpr = Sint(i); sdtype = Inttype; }
 		| String(s) -> 			{ sexpr = Sstring(s); sdtype = Stringtype; }
 		| Float(f) -> 			{ sexpr = Sfloat(f); sdtype = Floattype; }
+		| Stock(stk) ->			{ sexpr = Sstock(stk); sdtype = Stocktype; }
 
 		| Var(v) -> 			var_to_svar env v
 
@@ -133,19 +136,28 @@ let rec expression_to_sexpression env (expression: Ast.expression) =
 
 		| Aassign(aa, e) -> 	let sexpression = expression_to_sexpression env e in
 								let checked_sexpression = check_assign env aa sexpression in
-								{ sexpr = Saassign(aa, checked_sexpression); sdtype = checked_sexpression.sdtype; }
+								if checked_sexpression.sdtype <> Stocktype then
+									({ sexpr = Saassign(aa, checked_sexpression); sdtype = checked_sexpression.sdtype; })
+								else raise (Except("Add assignment is undefined for type 'stock'!"))
 
 		| Sassign(sa, e) ->		let sexpression = expression_to_sexpression env e in
 								let checked_sexpression = check_assign env sa sexpression in
-								{ sexpr = Ssassign(sa, checked_sexpression); sdtype = checked_sexpression.sdtype; }
+								if checked_sexpression.sdtype <> Stocktype then
+									({ sexpr = Ssassign(sa, checked_sexpression); sdtype = checked_sexpression.sdtype; })
+								else raise (Except("Subtract assignment is undefined for type 'stock'!"))
 
 		| Massign(ma, e) ->		let sexpression = expression_to_sexpression env e in
 								let checked_sexpression = check_assign env ma sexpression in
-								{ sexpr = Smassign(ma, checked_sexpression); sdtype = checked_sexpression.sdtype; }
+								if checked_sexpression.sdtype <> Stocktype then
+									({ sexpr = Smassign(ma, checked_sexpression); sdtype = checked_sexpression.sdtype; })
+								else raise (Except("Multiply assignment is undefined for type 'stock'!"))
 
 		| Dassign(da, e) ->		let sexpression = expression_to_sexpression env e in
 								let checked_sexpression = check_assign env da sexpression in
-								{ sexpr = Sdassign(da, checked_sexpression); sdtype = checked_sexpression.sdtype; }
+								if checked_sexpression.sdtype <> Stocktype then
+									({ sexpr = Sdassign(da, checked_sexpression); sdtype = checked_sexpression.sdtype; })
+								else raise (Except("Divide assignment is undefined for type 'stock'!"))
+
 
 		| Call(c, el) -> 		let sname = check_for_main c in (* no_return_test.finl *)
 						 		(try let func = List.find (fun f -> f.sname = sname) env.function_table in

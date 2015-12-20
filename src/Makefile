@@ -1,6 +1,6 @@
 .PHONY : make
 make :
-	javac bin/test/Test.java
+	javac -cp ../YahooFinanceAPI-2.0.0.jar bin/test/Test.java bin/FinlStock.java
 	ocamlc -c ast.ml
 	ocamlc -c sast.ml
 	ocamlyacc -v parser.mly
