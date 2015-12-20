@@ -54,10 +54,10 @@ expression:
   | FLOAT { Float($1) }
   | TICK { Stock($1) }
   | VAR  { Var($1) }
-  | MINUS expression { Unop(Sub, $2) }
-  | NOT expression { Unop(Not, $2) }
+  | MINUS expression { Unop(Neg, $2) }
+  | NOT LPAREN expression RPAREN { Unop(Not, $3) }   /* ALL SHIFT/REDUCE ERRORS LIVE HERE */
   | expression PLUS expression  { Binop($1, Add, $3) }
-  | expression MINUS expression { Binop($1, Sub, $3) }
+  | expression MINUS expression  { Binop($1, Sub, $3) }
   | expression TIMES expression { Binop($1, Mult, $3 ) }
   | expression DIVIDE expression { Binop($1, Div, $3) }
   | expression EQ expression { Binop($1, Equal, $3) }

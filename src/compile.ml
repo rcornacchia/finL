@@ -38,16 +38,17 @@ let rec compile_sexpression (sexpr: Sast.sexpression) =
     | Sint(i) -> string_of_int i
     | Sfloat(f) -> string_of_float f
     | Sstock(stk) -> string_of_stock stk
+    | Sunop(op, expr) -> Ast.string_of_unop op ^ compile_sexpression expr
     | Sbinop(expr1, op, expr2) -> (match op with 
-                                    Pow -> "Math.pow(" ^ compile_sexpression expr1 ^ Ast.string_of_op op ^ compile_sexpression expr2 ^ ")"
-                                    | Equal -> compile_compare (compile_sexpression expr1) (Ast.string_of_op op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
-                                    | Less -> compile_compare (compile_sexpression expr1) (Ast.string_of_op op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
-                                    | Leq -> compile_compare (compile_sexpression expr1) (Ast.string_of_op op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
-                                    | Greater -> compile_compare (compile_sexpression expr1) (Ast.string_of_op op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
-                                    | Geq -> compile_compare (compile_sexpression expr1) (Ast.string_of_op op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
-                                    | And -> boolean_to_sexpr (sexpr_to_boolean (compile_sexpression expr1) ^ " " ^ Ast.string_of_op op ^ " " ^ sexpr_to_boolean (compile_sexpression expr2))
-                                    | Or -> boolean_to_sexpr (sexpr_to_boolean (compile_sexpression expr1) ^ " " ^ Ast.string_of_op op ^ " " ^ sexpr_to_boolean (compile_sexpression expr2))
-                                    | _ -> compile_sexpression expr1 ^ " " ^ Ast.string_of_op op ^ " " ^ compile_sexpression expr2)
+                                    Pow -> "Math.pow(" ^ compile_sexpression expr1 ^ Ast.string_of_binop op ^ compile_sexpression expr2 ^ ")"
+                                    | Equal -> compile_compare (compile_sexpression expr1) (Ast.string_of_binop op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
+                                    | Less -> compile_compare (compile_sexpression expr1) (Ast.string_of_binop op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
+                                    | Leq -> compile_compare (compile_sexpression expr1) (Ast.string_of_binop op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
+                                    | Greater -> compile_compare (compile_sexpression expr1) (Ast.string_of_binop op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
+                                    | Geq -> compile_compare (compile_sexpression expr1) (Ast.string_of_binop op) (compile_sexpression expr2) (if expr1.sdtype = Stringtype then (true) else false)
+                                    | And -> boolean_to_sexpr (sexpr_to_boolean (compile_sexpression expr1) ^ " " ^ Ast.string_of_binop op ^ " " ^ sexpr_to_boolean (compile_sexpression expr2))
+                                    | Or -> boolean_to_sexpr (sexpr_to_boolean (compile_sexpression expr1) ^ " " ^ Ast.string_of_binop op ^ " " ^ sexpr_to_boolean (compile_sexpression expr2))
+                                    | _ -> compile_sexpression expr1 ^ " " ^ Ast.string_of_binop op ^ " " ^ compile_sexpression expr2)
     | Sassign(var, expr) -> var ^ " = " ^ compile_sexpression expr
     | Saassign(avar, aexpr) -> avar ^ " += " ^ compile_sexpression aexpr
     | Ssassign(svar, sexpr) -> svar ^ " -= " ^ compile_sexpression sexpr

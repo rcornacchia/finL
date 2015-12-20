@@ -1,0 +1,4 @@
+not 0 ? {
+	print("dope");
+	print("\n");	
+};
