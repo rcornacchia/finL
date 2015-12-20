@@ -5,6 +5,7 @@ package bin;
 
 
 
+
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -22,6 +23,7 @@ public class StockTester {
 		try {
 			stockTest();
 			orderTest();
+			portfolioTest();
 		} catch (NullPointerException NPE) {
 			NPE.printStackTrace();
 		}
@@ -29,6 +31,11 @@ public class StockTester {
 
 
 
+	private static void portfolioTest() {
+		FinlPortfolio testPortfolio = new FinlPortfolio();
+
+
+	}
 
 	private static void orderTest() {
 		FinlStock orderStock = new FinlStock("FB");
@@ -53,20 +60,15 @@ public class StockTester {
 		testOrder2.execute();
 		System.out.println("Date: " + testOrder2.date);
 		testOrder2.execute();
-
-
 	}
 
 	private static void stockTest() {
 		FinlStock testStock = new FinlStock("DPZ");
 		String result = testStock.getRequest("price");
 		testStock.printStock();
-
 		//System.out.println(result + "\n\n");
 		//testStock.printStock();
-
-
-		new FinlStock("DPZ");
+		new FinlStock("DPZ").printStock();
 
 	}
 

@@ -5,8 +5,6 @@ package bin;
 
 
 
-
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -49,6 +47,7 @@ public class FinlOrder {
 		else this.execute = false;		//reiterate execute is false
 	}	//end FinlOrder constructor
 
+	/* automatically executes */
 	public FinlOrder(int size, FinlStock stock) {
 		this.execute = true;			//default execute to true
 		this.size = size;
@@ -75,8 +74,6 @@ public class FinlOrder {
 		else if(this.size < 0) {
 			executeSell();
 		}
-
-
 	}
 
 	/* executeSell() method */
