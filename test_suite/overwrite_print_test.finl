@@ -1,6 +1,0 @@
-function int print() {
-	int x;
-	return 0;
-};
-
-print();
