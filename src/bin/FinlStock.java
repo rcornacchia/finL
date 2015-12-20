@@ -1,8 +1,5 @@
 package bin;
 
-
-
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -17,22 +14,9 @@ import yahoofinance.quotes.stock.StockStats;
 
 public class FinlStock {
 
-	public static void main(String[] args) {
-		try {
-			FinlStock testStock = new FinlStock("DPZ");
-			String result = testStock.getRequest("price");
-
-			System.out.println(result);
-
-		} catch (NullPointerException NPE) {
-			NPE.printStackTrace();
-		}
-	}	//end main()
-
-
-
 	public String symbol;
 
+	private yahoofinance.Stock stock;
 	public FinlQuote finlQuote;
 	public FinlFundamentals finlFundamentals;
 	public FinlDividend finlDividend;
@@ -44,19 +28,22 @@ public class FinlStock {
 
 		try {
 			this.symbol 					= ticker;
-			yahoofinance.Stock testStock 	= YahooFinance.get(symbol);
+			this.stock					 	= YahooFinance.get(symbol);
 
-			this.finlQuote 					= new FinlStock.FinlQuote(testStock);
-			this.finlFundamentals 			= new FinlStock.FinlFundamentals(testStock);
-			this.finlDividend 				= new FinlStock.FinlDividend(testStock);
+			this.finlQuote 					= new FinlStock.FinlQuote(stock);
+			this.finlFundamentals 			= new FinlStock.FinlFundamentals(stock);
+			this.finlDividend 				= new FinlStock.FinlDividend(stock);
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
+	public void printStock() {
+		this.stock.print();
+	}
 
+	/* Ocaml request parser */
 	public String getRequest(String request) {
 		String result;
 		try {
@@ -313,4 +300,8 @@ public class FinlStock {
 			else return null;
 		}	//end dividendCheck()
 	} 	//end FinlDividend subclass
+
+
+
+
 }	//End FinlStock.java
