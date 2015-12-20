@@ -43,7 +43,6 @@ public class FinlStock {
 			System.setOut(null);							//redirect console output
 			this.stock = YahooFinance.get(this.symbol);		//assign stock w/ suppressed output
 			System.setOut(defaultOutputStream);				//reset output stream to default
-
 		} catch (IOException IOE) {
 			IOE.printStackTrace();
 		}
@@ -296,8 +295,6 @@ public class FinlStock {
 			annualYieldPercent 		= this.dividend.getAnnualYieldPercent();
 			exDivDate 				= this.dividend.getExDate();
 			payDate 				= this.dividend.getPayDate();
-			exDivDate_String 		= this.exDivDate.toString();
-			payDate_String 			= this.payDate.toString();
 		}	//end constructor FinlDividend(Stock stock)
 
 		public String dividendCheck(String request) {

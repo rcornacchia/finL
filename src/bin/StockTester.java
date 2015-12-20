@@ -60,6 +60,7 @@ public class StockTester {
 	private static void stockTest() {
 		FinlStock testStock = new FinlStock("DPZ");
 		String result = testStock.getRequest("price");
+		testStock.printStock();
 
 		//System.out.println(result + "\n\n");
 		//testStock.printStock();

@@ -5,6 +5,8 @@ package bin;
 
 
 
+
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -33,10 +35,22 @@ public class FinlOrder {
 	private boolean execute;
 
 	////////////////////////////////////////////
-	//////////*FinlOrder Constructor*///////////
+	//////////*FinlOrder Constructors*//////////
 	////////////////////////////////////////////
 	public FinlOrder(int size, FinlStock stock, boolean execute) {
 		this.execute = execute;
+		this.size = size;
+		this.stock = stock;
+
+		if(this.execute) { 				//user wants to execute the order
+			this.execute = false;		//now set execute to false (we havent yet executed)
+			execute();
+		}
+		else this.execute = false;		//reiterate execute is false
+	}	//end FinlOrder constructor
+
+	public FinlOrder(int size, FinlStock stock) {
+		this.execute = true;			//default execute to true
 		this.size = size;
 		this.stock = stock;
 
@@ -51,16 +65,18 @@ public class FinlOrder {
 	/* execute the order */
 	/*    buy or sell    */
 	public void execute() {
-		if(this.size > 0) {
+		if(size == 0) {
+			System.out.println("wtf dude?");
+			return;
+		}
+		else if(this.size > 0) {
 			executeBuy();
 		}
 		else if(this.size < 0) {
 			executeSell();
 		}
-		else if(size == 0) {
-			System.out.println("wtf dude?");
-			return;
-		}
+
+
 	}
 
 	/* executeSell() method */
