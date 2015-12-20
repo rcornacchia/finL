@@ -19,7 +19,7 @@ public class FinlStock {
 		try {
 			FinlStock testStock = new FinlStock("DPZ");
 
-			String result = testStock.getRequest("");
+			String result = testStock.getRequest("price");
 
 			System.out.println(result);
 
@@ -66,7 +66,6 @@ public class FinlStock {
 
 	public String getRequest(String request) {
 		String result;
-		/* Fundamentals Checking */
 		try {
 			result = this.finlFundamentals.fundamentalCheck(request);
 			if(result != null)
@@ -141,6 +140,7 @@ public class FinlStock {
 			roe 				= this.fundamentals.getROE();
 			sharesFloat 		= this.fundamentals.getSharesFloat();
 			sharesOutstanding 	= this.fundamentals.getSharesOutstanding();
+
 		}	//end populateStatistics()
 
 		private void populateEstimates() {
@@ -347,8 +347,13 @@ public class FinlStock {
 	} 	//end FinlDividend subclass
 
 
-
-
-
-
-}
+	////////////////////////////////////////////
+	///////*NullTickerException SubClass*///////
+	////////////////////////////////////////////
+	public class NullTickerException extends Exception {
+		public NullTickerException() {
+			System.out.println("\n\nNo Ticker Entered\n\n");
+			this.printStackTrace();
+		} 	//end NullTickerException constructor
+	}	//end NullTickerException
+}	//End FinlStock.java
