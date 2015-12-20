@@ -1,11 +1,5 @@
 
-
-
 package bin;
-
-
-
-
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -103,6 +97,7 @@ public class FinlPortfolio {
 		writer.append("Total Position Size"); writer.append(",");
 		writer.append("Average Price"); writer.append(",");
 		writer.append("Position P & L"); writer.append(",");
+		writer.append("Percent of Portfolio"); writer.append(",");
 		writer.append("Last Execution Date"); writer.append("\n");
 
 		for(int i = 0; i < holdings.size(); i++) {
@@ -114,6 +109,8 @@ public class FinlPortfolio {
 			writer.append(Double.toString(listHolding.avgPrice));
 			writer.append(",");
 			writer.append(Double.toString(listHolding.pnl));
+			writer.append(",");
+			writer.append(Double.toString(listHolding.percentOfPortfolio));
 			writer.append(",");
 			writer.append(listHolding.lastOrder.toString());
 			writer.append("\n");
@@ -131,6 +128,8 @@ public class FinlPortfolio {
 
 		writer.append("Stock Name");
 		writer.append(",");
+		writer.append("Order Type");
+		writer.append(",");
 		writer.append("Order Size");
 		writer.append(",");
 		writer.append("Execution Price");
@@ -141,6 +140,8 @@ public class FinlPortfolio {
 		for(int i = 0; i < orders.size(); i++) {
 			FinlOrder listOrder = orders.get(i);
 			writer.append(listOrder.stock.symbol);
+			writer.append(",");
+			writer.append(listOrder.getType());
 			writer.append(",");
 			writer.append(Integer.toString(listOrder.size));
 			writer.append(",");
@@ -163,22 +164,18 @@ public class FinlPortfolio {
 		public FinlStock stock;
 
 		public Holding(FinlOrder order) {
-			if(checkHoldings(order) == null) {	//if the portfolio doesnt contain the stock being ordered:
+			Holding position = checkHoldings(order);
+			if(position == null) 				//if the portfolio doesnt contain the stock being ordered:
 				generateNewHolding(order);
-			}
-			else {								//if the portfolio contains the stock being ordered:
-				addToHolding(order);
-			}
+			else position.addToHolding(order);	//if the portfolio contains the stock being ordered:
 		}
 
 		private void addToHolding(FinlOrder order) {
-
 			if(order.getType().equals("sell"))
 				this.positionSize -= order.size;
 			else if (order.getType().equals("buy"))
-				this.positionSize += order.size;
+				this.positionSize = this.positionSize + order.size;
 			else System.err.println("Order Type Not Set");
-
 
 			this.avgPrice = (((Math.abs(this.positionSize))*this.avgPrice)	//weighted avg of holding's price
 					+ (order.size*order.sharePrice))/2;						//and new order's price

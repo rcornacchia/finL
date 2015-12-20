@@ -4,8 +4,6 @@ package bin;
 
 
 
-
-
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -26,8 +24,8 @@ public class StockTester {
 			= {"FB", "AAPL", "MSFT"};
 			for(int i = 0; i < tickers.length; i++) {
 				ticker = tickers[i];
-				stockTest(ticker);
-				orderTest(ticker);
+				//stockTest(ticker);
+				//orderTest(ticker);
 				portfolioTest(ticker);
 			}
 		} catch (NullPointerException NPE) {
@@ -43,11 +41,11 @@ public class StockTester {
 
 
 		FinlOrder testOrder1 = new FinlOrder(10, new FinlStock(ticker));
-		FinlOrder testOrder2 = new FinlOrder(10, new FinlStock(ticker));
+		FinlOrder testOrder2 = new FinlOrder(20, new FinlStock(ticker));
 		FinlOrder testOrder3 = new FinlOrder(10, new FinlStock(ticker));
 		testPortfolio.buy(testOrder1);
 		testPortfolio.buy(testOrder2);
-		testPortfolio.buy(testOrder3);
+		testPortfolio.sell(testOrder3);
 		testPortfolio.buy(testOrder3);
 		testPortfolio.buy(testOrder2);
 		testPortfolio.buy(testOrder1);
