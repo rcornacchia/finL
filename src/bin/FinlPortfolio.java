@@ -230,6 +230,9 @@ public class FinlPortfolio {
 			holdings.add(this);	//add this new holding to the list
 		}
 
+
+
+
 		//checks if the stock is in the portfolio
 		private Holding checkHoldings(FinlOrder order) {
 			for(int i = 0; i < holdings.size(); i++) {
