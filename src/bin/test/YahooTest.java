@@ -11,39 +11,17 @@ import yahoofinance.quotes.fx.FxSymbols;
 
 
 
-public class YahooTest { 
-	
-	public static void main(String[] args) { 
+public class YahooTest {
+
+	public static void main(String[] args) {
 		try {
-			stockTest();
-			fxTest();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			FinlStock testStock = new FinlStock("DPZ");
+			String result = testStock.getRequest("price");
+
+			System.out.println(result + "\n\n");
+			testStock.printStock();
+		} catch (NullPointerException NPE) {
+			NPE.printStackTrace();
 		}
-	}
-	
-	
-	
-	
-	private static void fxTest() throws IOException {
-		FxQuote usdeur = YahooFinance.getFx(FxSymbols.USDEUR);
-		FxQuote usdgbp = YahooFinance.getFx("USDGBP=X");
-		System.out.println(usdeur);
-		System.out.println(usdgbp);
-		
-	}
-
-
-	public static void stockTest() throws IOException { 
-			Stock stock = YahooFinance.get("AAPL");
-			BigDecimal price = stock.getQuote().getPrice();
-			BigDecimal change = stock.getQuote().getChangeInPercent();
-			BigDecimal peg = stock.getStats().getPeg();
-			BigDecimal dividend = stock.getDividend().getAnnualYieldPercent();
-			
-			stock.print();
-	}
-
-		
+	}	//end main()
 }

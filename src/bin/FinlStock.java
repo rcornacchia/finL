@@ -1,6 +1,9 @@
 package bin;
 
+
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.Calendar;
 
@@ -25,21 +28,28 @@ public class FinlStock {
 	//////////*FinlStock Constructor*///////////
 	///////////Gets all sub-objects/////////////
 	public FinlStock(String ticker) {
+		setStock(ticker);
 
-		try {
-			this.symbol 					= ticker;
-			this.stock					 	= YahooFinance.get(symbol);
+		this.finlQuote 					= new FinlStock.FinlQuote(stock);
+		this.finlFundamentals 			= new FinlStock.FinlFundamentals(stock);
+		this.finlDividend 				= new FinlStock.FinlDividend(stock);
+	}
 
-			this.finlQuote 					= new FinlStock.FinlQuote(stock);
-			this.finlFundamentals 			= new FinlStock.FinlFundamentals(stock);
-			this.finlDividend 				= new FinlStock.FinlDividend(stock);
+	private void setStock(String ticker) {
+		try{
+			this.symbol = ticker;
 
-		} catch (IOException e) {
-			e.printStackTrace();
+			PrintStream defaultOutputStream = System.out;	//save output stream
+			System.setOut(null);							//redirect console output
+			this.stock = YahooFinance.get(this.symbol);		//assign stock w/ suppressed output
+			System.setOut(defaultOutputStream);				//reset output stream to default
+
+		} catch (IOException IOE) {
+			IOE.printStackTrace();
 		}
 	}
 
-	public void printStock() {
+	private void printStock() {
 		this.stock.print();
 	}
 
@@ -300,8 +310,4 @@ public class FinlStock {
 			else return null;
 		}	//end dividendCheck()
 	} 	//end FinlDividend subclass
-
-
-
-
 }	//End FinlStock.java
