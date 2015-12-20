@@ -36,8 +36,8 @@ rule token = parse
 	(*| "??"                   { ELSEIF }
 	| '!'                    { ELSE }*)
 	| "while"                { WHILE }
-	(*| "when"                 { WHEN }
-	| "break"                { BREAK }*)
+	| "when"                 { WHEN }
+	(*| "break"                { BREAK }*)
 	| "int"                  { INTD }
 	| "float"                { FLOATD }
 	(*| "percent"              { PERCENT }

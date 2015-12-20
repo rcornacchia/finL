@@ -225,7 +225,7 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 								     	   env_scope = env.env_scope; }
 						   in new_env
 
-		| While(ex, sl) -> let checked_expression = expression_to_sexpression env ex in (* should you be allowed to return from a while? *)
+		| While(ex, sl) -> let checked_expression = expression_to_sexpression env ex in (* should you be allowed to return from a while? YES *)
 					  	   let typ = checked_expression.sdtype in
 					  			if typ <> Inttype && typ <> Floattype then (raise (Except("While expressions only take numerical types!")))
 					  			else let while_env = { function_table = env.function_table;
@@ -240,6 +240,22 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 								     	   checked_statements = checked_statement :: env.checked_statements; 
 								     	   env_scope = env.env_scope; }
 						   in new_env
+
+		| When(ex, sl) -> let checked_expression = expression_to_sexpression env ex in (* should you be allowed to return from a when? *)
+					  	  let typ = checked_expression.sdtype in
+					  		if typ <> Inttype && typ <> Floattype then (raise (Except("When expressions only take numerical types!")))
+					  		else let when_env = { function_table = env.function_table;
+										  		   symbol_table = env.symbol_table;
+										  		   checked_statements = [];
+										  		   env_scope = env.env_scope; }
+							in
+					  	   	let when_env = List.fold_left statement_to_sstatement when_env sl in
+					  	   	let checked_statement = Swhen(checked_expression, when_env.checked_statements) in
+					  	   	let new_env = { function_table = env.function_table;
+								     	   symbol_table = env.symbol_table; 
+								     	   checked_statements = checked_statement :: env.checked_statements; 
+								     	   env_scope = env.env_scope; }
+						   	in new_env
 
 		| Expr(e) -> let checked_expression = expression_to_sexpression env e in
 				   	 let checked_statement = Sexpr(check_statement checked_expression) in

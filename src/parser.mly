@@ -5,7 +5,7 @@
 %token PLUS MINUS TIMES DIVIDE POWER MOD
 %token ASSIGN AASSIGN SASSIGN MASSIGN DASSIGN
 %token EQ GEQ GT LEQ LT
-%token RETURN WHILE /*WHEN*/ IF /*ELSE ELSEIF */ VOID /* NULL BREAK*/
+%token RETURN WHILE WHEN IF /*ELSE ELSEIF */ VOID /* NULL BREAK*/
 %token AND OR NOT
 %token INTD STRINGD FLOATD /*PERCENT ARRAY CURR */ STOCK /*ORDER PF */ FUNC
 %token <string> TICK
@@ -45,6 +45,7 @@ line:
 statement:
   expression SEMI { Expr($1) }
   | WHILE expression LBRACE statement_list RBRACE SEMI { While($2, $4) }
+  | WHEN expression LBRACE statement_list RBRACE SEMI { When($2, $4) }
   | expression IF LBRACE statement_list RBRACE SEMI { If($1, $4) }
   | vdecl SEMI { Vdecl($1) }
   | RETURN expression SEMI { Ret($2) } /* VOID TYPES */

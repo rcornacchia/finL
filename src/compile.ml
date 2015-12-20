@@ -73,6 +73,7 @@ let rec compile_sstatement = function
                   ") {\n" ^
                   String.concat "\n" (List.map compile_sstatement sl) ^
                   "\n}"
+  | Swhen(e, sl) -> "" (* TO DO *)
   | Svdecl(v) -> compile_vdecl v ^ ";"
   | Sret(r) -> "return " ^ compile_sexpression r ^ ";"
 
