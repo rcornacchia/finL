@@ -69,25 +69,14 @@ public class FinlStock {
 		/* Fundamentals Checking */
 		try {
 			result = this.finlFundamentals.fundamentalCheck(request);
-			if(result != null) {
+			if(result != null)
 				return result;
-			}
-		} catch (NullPointerException NTE) {
-			result = null;
-		}
-		try {
 			result = this.finlQuote.quoteCheck(request);
-			if(result != null) {
+			if(result != null)
 				return result;
-			}
-		} catch (NullPointerException NTE) {
-			result = null;
-		}
-		try {
 			result = this.finlDividend.dividendCheck(request);
-			if(result != null) {
+			if(result != null)
 				return result;
-			}
 		} catch (NullPointerException NTE) {
 			result = null;
 		}
