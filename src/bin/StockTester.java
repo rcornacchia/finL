@@ -4,7 +4,6 @@ package bin;
 
 
 
-
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -20,9 +19,15 @@ public class StockTester {
 
 	public static void main(String[] args) {
 		try {
-			stockTest();
-			orderTest();
-			portfolioTest();
+			String ticker;
+			String[] tickers
+					= {"FB", "AAPL", "MSFT"};
+			for(int i = 0; i < tickers.length; i++) {
+				ticker = tickers[i];
+				stockTest(ticker);
+				orderTest(ticker);
+				portfolioTest(ticker);
+			}
 		} catch (NullPointerException NPE) {
 			NPE.printStackTrace();
 		}
@@ -30,18 +35,35 @@ public class StockTester {
 
 
 
-	private static void portfolioTest() {
+	private static void portfolioTest(String ticker) {
 		System.out.println("\n\n\n\n");
-		FinlPortfolio testPortfolio = new FinlPortfolio(10000.00);
+		FinlPortfolio testPortfolio = new FinlPortfolio();
 
-		testPortfolio.order(10, "AAPL");
+		FinlOrder testOrder = new FinlOrder(10, new FinlStock("FB"));
+		testPortfolio.buy(testOrder);
+
+		FinlOrder testOrder2 = new FinlOrder(10, new FinlStock("AAPL"));
+		testPortfolio.sell(testOrder2);
+
+		testPortfolio.order(10, ticker);
+		testPortfolio.order(50, ticker);
+		testPortfolio.order(-20, ticker);
+		testPortfolio.order(10, "FB");
+		testPortfolio.order(50, "FB");
+		testPortfolio.order(-20, "FB");
+
+		try {
+			testPortfolio.csvOrdersExport("test");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
-	private static void orderTest() {
+	private static void orderTest(String ticker) {
 		FinlStock orderStock = new FinlStock("FB");
-		FinlOrder testOrder = new FinlOrder(10, orderStock, false);
-		FinlOrder testOrder2 = new FinlOrder(-10, orderStock, false);
+		FinlOrder testOrder = new FinlOrder(10, orderStock);
 
 		//buy
 		int x = testOrder.size;
@@ -52,18 +74,10 @@ public class StockTester {
 		System.out.println("Date: " + testOrder.date);
 		testOrder.execute();
 		System.out.println("\n\n");
-
-		//sell
-		int y = testOrder2.size;
-		String name2 = testOrder2.stock.symbol;
-		System.out.println(y);
-		System.out.println(name2);
-		testOrder2.execute();
-		System.out.println("Date: " + testOrder2.date);
-		testOrder2.execute();
 	}
 
-	private static void stockTest() {
+
+	private static void stockTest(String ticker) {
 		FinlStock testStock = new FinlStock("DPZ");
 		String result = testStock.getRequest("price");
 		testStock.printStock();

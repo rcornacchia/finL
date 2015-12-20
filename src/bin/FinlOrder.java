@@ -3,8 +3,6 @@ package bin;
 
 
 
-
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -30,35 +28,18 @@ public class FinlOrder {
 	public FinlStock stock		= null;
 	public double sharePrice 	= 0.0;
 	public Date date 			= null;
+	public String type			= "buy";
 	private boolean execute;
 
 	////////////////////////////////////////////
 	//////////*FinlOrder Constructors*//////////
 	////////////////////////////////////////////
-	public FinlOrder(int size, FinlStock stock, boolean execute) {
-		this.execute = execute;
-		this.size = size;
-		this.stock = stock;
 
-		if(this.execute) { 				//user wants to execute the order
-			this.execute = false;		//now set execute to false (we havent yet executed)
-			execute();
-		}
-		else this.execute = false;		//reiterate execute is false
-	}	//end FinlOrder constructor
 
 	/* automatically executes */
 	public FinlOrder(int size, FinlStock stock) {
-		this.execute = true;			//default execute to true
-		this.size = size;
-		this.stock = stock;
 
-		if(this.execute) { 				//user wants to execute the order
-			this.execute = false;		//now set execute to false (we havent yet executed)
-			execute();
-		}
-		else this.execute = false;		//reiterate execute is false
-	}	//end FinlOrder constructor
+	}
 
 
 	/* execute the order */
@@ -79,13 +60,13 @@ public class FinlOrder {
 	/* executeSell() method */
 	private void executeSell() {
 		if(!this.execute) {						//order hasnt been executed
-			this.stock = this.stock.refresh();
+			this.stock = this.stock.refresh();	//refresh the stock info
 			this.sharePrice = this.stock.finlQuote.price.doubleValue();
 			this.date = new Date();
 			this.execute = true;
 		}
 		else if(this.execute) {	//order has been executed
-			System.out.println("Order already executed!");
+			System.err.println("Order already executed!\nNothing Done.");
 			return;				//do nothing
 		}
 	}
@@ -99,7 +80,7 @@ public class FinlOrder {
 			this.execute = true;				//execute to true (we've executed the order)
 		}
 		else if(this.execute) {	//order has been executed
-			System.out.println("Order already executed!");
+			System.err.println("Order already executed!\nNothing Done.");
 			return;				//do nothing
 		}
 	}
