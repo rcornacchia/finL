@@ -2,3 +2,8 @@ not (0) ? {
 	print("dope");
 	print("\n");	
 };
+
+not (1 = 0.0) ? {
+	print("dopedope");
+	print("\n");
+};

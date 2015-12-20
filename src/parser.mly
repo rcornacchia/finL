@@ -61,7 +61,6 @@ expression:
   | expression TIMES expression { Binop($1, Mult, $3 ) }
   | expression DIVIDE expression { Binop($1, Div, $3) }
   | expression EQ expression { Binop($1, Equal, $3) }
-  /*| expression NOT EQ expression { Binop($1, Neq, $4) } SHIFT/REDUCE CONFLICTS LIVE HERE */
   | expression LT expression { Binop($1, Less, $3) }
   | expression LEQ expression { Binop($1, Leq, $3) }
   | expression GT expression { Binop($1, Greater, $3) }
