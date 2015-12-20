@@ -16,7 +16,7 @@ make :
 
 .PHONY : clean
 clean :
-	rm -f finlc parser.ml parser.mli scanner.ml \
-	*.cmo *.cmi *.output *.class *.java *.log
+	rm -f finlc parser.ml parser.mli scanner.ml bin/*.class bin/test/*.class \
+	*.cmo *.cmi *.output *.class *.java *.log 
 
 # compile and move javacode!!!!
