@@ -4,6 +4,7 @@ package bin;
 
 
 
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -31,7 +32,9 @@ public class FinlOrder {
 	public Date date 			= null;
 	private boolean execute;
 
-
+	////////////////////////////////////////////
+	//////////*FinlOrder Constructor*///////////
+	////////////////////////////////////////////
 	public FinlOrder(int size, FinlStock stock, boolean execute) {
 		this.execute = execute;
 		this.size = size;
@@ -42,9 +45,40 @@ public class FinlOrder {
 			execute();
 		}
 		else this.execute = false;		//reiterate execute is false
+	}	//end FinlOrder constructor
+
+
+	/* execute the order */
+	/*    buy or sell    */
+	public void execute() {
+		if(this.size > 0) {
+			executeBuy();
+		}
+		else if(this.size < 0) {
+			executeSell();
+		}
+		else if(size == 0) {
+			System.out.println("wtf dude?");
+			return;
+		}
 	}
 
-	public void execute() {
+	/* executeSell() method */
+	private void executeSell() {
+		if(!this.execute) {						//order hasnt been executed
+			this.stock = this.stock.refresh();
+			this.sharePrice = this.stock.finlQuote.price.doubleValue();
+			this.date = new Date();
+			this.execute = true;
+		}
+		else if(this.execute) {	//order has been executed
+			System.out.println("Order already executed!");
+			return;				//do nothing
+		}
+	}
+
+	/* executeBuy() method */
+	private void executeBuy() {
 		if(!this.execute) {						//order hasnt been executed
 			this.stock = this.stock.refresh();	//refresh stock price info
 			this.sharePrice = this.stock.finlQuote.price.doubleValue();
@@ -53,7 +87,7 @@ public class FinlOrder {
 		}
 		else if(this.execute) {	//order has been executed
 			System.out.println("Order already executed!");
-			return;			//do nothing
+			return;				//do nothing
 		}
 	}
 }

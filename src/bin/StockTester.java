@@ -33,16 +33,26 @@ public class StockTester {
 	private static void orderTest() {
 		FinlStock orderStock = new FinlStock("FB");
 		FinlOrder testOrder = new FinlOrder(10, orderStock, false);
+		FinlOrder testOrder2 = new FinlOrder(-10, orderStock, false);
 
+		//buy
 		int x = testOrder.size;
 		String name = testOrder.stock.symbol;
 		System.out.println(x);
 		System.out.println(name);
-
-
 		testOrder.execute();
 		System.out.println("Date: " + testOrder.date);
 		testOrder.execute();
+		System.out.println("\n\n");
+
+		//sell
+		int y = testOrder2.size;
+		String name2 = testOrder2.stock.symbol;
+		System.out.println(y);
+		System.out.println(name2);
+		testOrder2.execute();
+		System.out.println("Date: " + testOrder2.date);
+		testOrder2.execute();
 
 
 	}
