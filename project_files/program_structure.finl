@@ -1,0 +1,16 @@
+function int add(int x, int y){
+	return x+y;
+};
+
+function int subtract(int x, int y){
+	return x-y;
+};
+
+int two; 
+two << 2;
+int one;
+one << 1;
+int subtracted 
+subtracted << subtract(two, one);
+print(subtracted);
+print("\n"); 

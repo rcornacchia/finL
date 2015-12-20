@@ -1,0 +1,6 @@
+# this function takes in  floats and returns their average
+function float avg(float x, float y){
+	float sum;
+	sum << x+y;
+	return sum/2.0;
+};
