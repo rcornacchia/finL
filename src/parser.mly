@@ -55,12 +55,13 @@ expression:
   | TICK { Stock($1) }
   | VAR  { Var($1) }
   | MINUS expression { Unop(Neg, $2) }
-  | NOT LPAREN expression RPAREN { Unop(Not, $3) }   /* ALL SHIFT/REDUCE ERRORS LIVE HERE */
+  | NOT LPAREN expression RPAREN { Unop(Not, $3) }
   | expression PLUS expression  { Binop($1, Add, $3) }
   | expression MINUS expression  { Binop($1, Sub, $3) }
   | expression TIMES expression { Binop($1, Mult, $3 ) }
   | expression DIVIDE expression { Binop($1, Div, $3) }
   | expression EQ expression { Binop($1, Equal, $3) }
+  /*| expression NOT EQ expression { Binop($1, Neq, $4) } SHIFT/REDUCE CONFLICTS LIVE HERE */
   | expression LT expression { Binop($1, Less, $3) }
   | expression LEQ expression { Binop($1, Leq, $3) }
   | expression GT expression { Binop($1, Greater, $3) }

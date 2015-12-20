@@ -1,4 +1,4 @@
-type binop = Add | Mult | Div | Equal | Less | Leq | Greater | Geq | Mod | Pow | And | Or | Sub
+type binop = Add | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq | Mod | Pow | And | Or | Sub
 type unop = Neg | Not
 
 type data_type =
@@ -56,6 +56,7 @@ let string_of_binop = function
   | Mult -> "*"
   | Div -> "/"
   | Equal -> "=="
+  | Neq -> "!="
   | Less -> "<"
   | Leq -> "<="
   | Greater -> ">"
