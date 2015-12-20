@@ -49,7 +49,11 @@ public class FinlStock {
 		}
 	}
 
-	private void printStock() {
+	public FinlStock refresh() {
+		return new FinlStock(this.symbol);
+	}
+
+	public void printStock() {
 		this.stock.print();
 	}
 
