@@ -211,14 +211,30 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 	match statement with
 		If(ex, sl) -> let checked_expression = expression_to_sexpression env ex in (* handle multiple returns!!! *)
 					  let typ = checked_expression.sdtype in
-					  if typ <> Inttype && typ <> Floattype then (raise (Except("If expression only takes numerical types!")))
+					  if typ <> Inttype && typ <> Floattype then (raise (Except("If expressions only take numerical types!")))
 					  else let if_env = { function_table = env.function_table;
 										  symbol_table = env.symbol_table;
 										  checked_statements = [];
 										  env_scope = env.env_scope; }
 						   in
 					  	   let if_env = List.fold_left statement_to_sstatement if_env sl in
-					  	   let checked_statement = Sif(checked_expression, if_env.checked_statements) in (* carefule here, not sure why we dont need to reverse list *)
+					  	   let checked_statement = Sif(checked_expression, if_env.checked_statements) in
+					  	   let new_env = { function_table = env.function_table;
+								     	   symbol_table = env.symbol_table; 
+								     	   checked_statements = checked_statement :: env.checked_statements; 
+								     	   env_scope = env.env_scope; }
+						   in new_env
+
+		| While(ex, sl) -> let checked_expression = expression_to_sexpression env ex in (* should you be allowed to return from a while? *)
+					  	   let typ = checked_expression.sdtype in
+					  			if typ <> Inttype && typ <> Floattype then (raise (Except("While expressions only take numerical types!")))
+					  			else let while_env = { function_table = env.function_table;
+										  			   symbol_table = env.symbol_table;
+										  			   checked_statements = [];
+										  			   env_scope = env.env_scope; }
+						   in
+					  	   let while_env = List.fold_left statement_to_sstatement while_env sl in
+					  	   let checked_statement = Swhile(checked_expression, while_env.checked_statements) in
 					  	   let new_env = { function_table = env.function_table;
 								     	   symbol_table = env.symbol_table; 
 								     	   checked_statements = checked_statement :: env.checked_statements; 

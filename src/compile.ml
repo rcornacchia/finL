@@ -68,6 +68,11 @@ let rec compile_sstatement = function
                   ") {\n" ^
                   String.concat "\n" (List.map compile_sstatement sl) ^
                   "\n}"
+  | Swhile(e, sl) -> "while (" ^ 
+                  sexpr_to_boolean (compile_sexpression e) ^ 
+                  ") {\n" ^
+                  String.concat "\n" (List.map compile_sstatement sl) ^
+                  "\n}"
   | Svdecl(v) -> compile_vdecl v ^ ";"
   | Sret(r) -> "return " ^ compile_sexpression r ^ ";"
 
