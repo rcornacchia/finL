@@ -1,4 +1,4 @@
-package bin.test;
+package bin;
 
 public class Test { 
 

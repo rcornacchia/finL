@@ -50,13 +50,17 @@ statement:
   | vdecl SEMI { Vdecl($1) }
   | RETURN expression SEMI { Ret($2) } /* VOID TYPES */
 
+stock:
+  VAR { $1 }
+  | TICK { $1 }
+
 expression:
   INT { Int($1) }
   | STRING  { String($1) }
   | FLOAT { Float($1) }
   | TICK { Stock($1) }
   | VAR  { Var($1) }
-  | INT OF TICK { Order($1, $3) }
+  | INT OF stock { Order($1, $3) }
   | MINUS expression { Unop(Neg, $2) }
   | NOT LPAREN expression RPAREN { Unop(Not, $3) }
   | expression PLUS expression  { Binop($1, Add, $3) }

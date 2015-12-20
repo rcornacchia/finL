@@ -1,6 +1,6 @@
 .PHONY : make
 make :
-	javac -cp ../YahooFinanceAPI-2.0.0.jar bin/test/Test.java bin/FinlStock.java
+	javac -cp ../YahooFinanceAPI-2.0.0.jar bin/*
 	ocamlc -c ast.ml
 	ocamlc -c sast.ml
 	ocamlyacc -v parser.mly
@@ -16,7 +16,7 @@ make :
 
 .PHONY : clean
 clean :
-	rm -f finlc parser.ml parser.mli scanner.ml bin/*.class bin/test/*.class \
+	rm -f finlc parser.ml parser.mli scanner.ml bin/*.class \
 	*.cmo *.cmi *.output *.class *.java *.log 
 
 # compile and move javacode!!!!

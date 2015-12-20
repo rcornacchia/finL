@@ -92,8 +92,7 @@ let compile_sfdecl (func: Sast.sfunc_decl) =
 
 let compile (sprogram: Sast.sprogram) (filename: string) =
   "import java.lang.Math;\n" ^
-  "import bin.test.Test;\n" ^
-  "import bin.FinlStock;" ^
+  "import bin.*;\n" ^
   "\npublic class " ^ 
   filename ^ 
   " {\n" ^
