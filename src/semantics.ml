@@ -117,6 +117,8 @@ let binop_to_sbinop (sexpr1: Sast.sexpression) (op: Ast.op) (sexpr2: Sast.sexpre
 		| (t, Stocktype) -> raise (Except("Type 'stock' does not support binary operations!."))
 		| (_, _) ->	check_number_binop sexpr1 op sexpr2
 
+let unop_to_sunop = "f"
+
 let rec expression_to_sexpression env (expression: Ast.expression) =
 	match expression with
 		Int(i) -> 				{ sexpr = Sint(i); sdtype = Inttype; }
@@ -125,6 +127,8 @@ let rec expression_to_sexpression env (expression: Ast.expression) =
 		| Stock(stk) ->			{ sexpr = Sstock(stk); sdtype = Stocktype; }
 
 		| Var(v) -> 			var_to_svar env v
+
+		(*| Unop(op, e) -> 		unop_to_sunop env op (expression_to_sexpression env e)*)
 
 		| Binop(e1, o, e2) -> 	let se1 = (expression_to_sexpression env e1) in
 								let se2 = (expression_to_sexpression env e2) in
@@ -136,27 +140,31 @@ let rec expression_to_sexpression env (expression: Ast.expression) =
 
 		| Aassign(aa, e) -> 	let sexpression = expression_to_sexpression env e in
 								let checked_sexpression = check_assign env aa sexpression in
-								if checked_sexpression.sdtype <> Stocktype then
-									({ sexpr = Saassign(aa, checked_sexpression); sdtype = checked_sexpression.sdtype; })
-								else raise (Except("Add assignment is undefined for type 'stock'!"))
+								let typ = checked_sexpression.sdtype in
+								if typ <> Inttype && typ <> Floattype && typ <> Stringtype then
+									(raise (Except("Add assignment is undefined for type '" ^ Ast.string_of_data_type typ ^ "'!")))
+								else { sexpr = Saassign(aa, checked_sexpression); sdtype = checked_sexpression.sdtype; }
 
 		| Sassign(sa, e) ->		let sexpression = expression_to_sexpression env e in
 								let checked_sexpression = check_assign env sa sexpression in
-								if checked_sexpression.sdtype <> Stocktype then
-									({ sexpr = Ssassign(sa, checked_sexpression); sdtype = checked_sexpression.sdtype; })
-								else raise (Except("Subtract assignment is undefined for type 'stock'!"))
+								let typ = checked_sexpression.sdtype in
+								if typ <> Inttype && typ <> Floattype then
+									(raise (Except("Add assignment is undefined for type '" ^ Ast.string_of_data_type typ ^ "'!")))
+								else { sexpr = Ssassign(sa, checked_sexpression); sdtype = checked_sexpression.sdtype; }
 
 		| Massign(ma, e) ->		let sexpression = expression_to_sexpression env e in
 								let checked_sexpression = check_assign env ma sexpression in
-								if checked_sexpression.sdtype <> Stocktype then
-									({ sexpr = Smassign(ma, checked_sexpression); sdtype = checked_sexpression.sdtype; })
-								else raise (Except("Multiply assignment is undefined for type 'stock'!"))
+								let typ = checked_sexpression.sdtype in
+								if typ <> Inttype && typ <> Floattype then
+									(raise (Except("Add assignment is undefined for type '" ^ Ast.string_of_data_type typ ^ "'!")))
+								else { sexpr = Smassign(ma, checked_sexpression); sdtype = checked_sexpression.sdtype; }
 
 		| Dassign(da, e) ->		let sexpression = expression_to_sexpression env e in
 								let checked_sexpression = check_assign env da sexpression in
-								if checked_sexpression.sdtype <> Stocktype then
-									({ sexpr = Sdassign(da, checked_sexpression); sdtype = checked_sexpression.sdtype; })
-								else raise (Except("Divide assignment is undefined for type 'stock'!"))
+								let typ = checked_sexpression.sdtype in
+								if typ <> Inttype && typ <> Floattype then
+									(raise (Except("Add assignment is undefined for type '" ^ Ast.string_of_data_type typ ^ "'!")))
+								else { sexpr = Sdassign(da, checked_sexpression); sdtype = checked_sexpression.sdtype; }
 
 
 		| Call(c, el) -> 		let sname = check_for_main c in (* no_return_test.finl *)
@@ -226,7 +234,7 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 									  checked_statements = checked_statement :: env.checked_statements; 
 									  env_scope = env.env_scope; } 
 					  in new_env
-		| Ret(r) -> let checked_expression = check_return env (expression_to_sexpression env r) in (* break out of scope when return is found *)
+		| Ret(r) -> let checked_expression = check_return env (expression_to_sexpression env r) in (* break out of scope when return is found FLAG IN ENV?? *)
 					let checked_statement = Sret(checked_expression) in
 					let new_env = { function_table = env.function_table;
 									symbol_table = env.symbol_table;

@@ -4,3 +4,8 @@ function int main(int x) {
 
 print(main(1));
 print("\n");
+string y;
+y << "string";
+y +<< "string";
+print(y);
+print("\n");

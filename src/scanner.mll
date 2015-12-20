@@ -31,7 +31,7 @@ rule token = parse
 	| "/<<"                  { DASSIGN }
 	| "and"                  { AND }
 	| "or"                   { OR }
-	(*| "not"                  { NOT } UNARY OPERATORS??*)
+	| "not"                  { NOT }
 	| '?'                    { IF }
 	(*| "??"                   { ELSEIF }
 	| '!'                    { ELSE }

@@ -1,0 +1,6 @@
+string x;
+x << "string";
+x -<< "string";
+stock s;
+s << @AAPL;
+s *<< @TSLA;

@@ -1,4 +1,4 @@
-type op = Add | Sub | Mult | Div | Equal | Less | Leq | Greater | Geq | Mod | Pow | And | Or
+type op = Add | Sub | Mult | Div | Equal | Less | Leq | Greater | Geq | Mod | Pow | And | Or | Not
 
 type data_type =
   Inttype
@@ -18,6 +18,7 @@ type expression =
   | Float of float
   | Stock of string
   | Var of string
+  | Unop of op * expression
   | Binop of expression * op * expression
   | Assign of string * expression
   | Aassign of string * expression
@@ -25,7 +26,7 @@ type expression =
   | Massign of string * expression
   | Dassign of string * expression
   | Call of string * expression list
-  | Noexpr
+  | Noexpr (* possibly take out *)
 
 type statement =
   Expr of expression
@@ -62,6 +63,7 @@ let string_of_op = function
   | Pow -> ", "
   | And -> "&&"
   | Or -> "||"
+  | Not -> "not"
 
 let string_of_data_type = function
   Inttype -> "int"
@@ -76,6 +78,7 @@ let rec string_of_expression = function
   | Float(f) -> "Float(" ^ string_of_float f ^ ")"
   | Stock(stk) -> "Stock(" ^ stk ^ ")"
   | Var(v) -> "Var(" ^ v ^ ")"
+  | Unop(op, e) -> "Unop(" ^ string_of_op op ^ " " ^ string_of_expression e ^ ")"
   | Binop(e1, o, e2) -> "Binop(" ^ string_of_expression e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expression e2 ^ ")"
   | Assign(a, e) -> "Assign(" ^ a ^ " = " ^ string_of_expression e ^ ")"
   | Aassign(aa, e) -> "Aassign(" ^ aa ^ " = " ^ string_of_expression e ^ ")"
