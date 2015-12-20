@@ -17,14 +17,11 @@ public class FinlStock {
 
 	public static void main(String[] args) {
 		try {
-			FinlStock apple = new FinlStock("AAPL");
+			FinlStock testStock = new FinlStock("DPZ");
 
-			BigDecimal ask = apple.finlQuote.ask;
-			BigDecimal change = apple.finlQuote.change;
-			BigDecimal eps = apple.finlFundamentals.eps;
+			String result = testStock.getRequest("");
 
-
-
+			System.out.println(result);
 
 
 			FxQuote usdeur = YahooFinance.getFx(FxSymbols.USDEUR);
@@ -63,25 +60,39 @@ public class FinlStock {
 	}
 
 	public FinlStock() throws NullTickerException {
-			throw new NullTickerException();
+		throw new NullTickerException();
 	}
 
 
 	public String getRequest(String request) {
 		String result;
 		/* Fundamentals Checking */
-		if(!this.finlFundamentals.fundamentalCheck(request).equalsIgnoreCase(null))
-			return this.finlFundamentals.fundamentalCheck(request);
-		/* Fundamentals Checking */
-		else if(!this.finlQuote.quoteCheck(request).equalsIgnoreCase(null))
-			return this.finlQuote.quoteCheck(request);
-		/* Fundamentals Checking */
-		else if(!this.finlDividend.dividendCheck(request).equalsIgnoreCase(null))
-			return this.finlDividend.dividendCheck(request);
-		else return null;
+		try {
+			result = this.finlFundamentals.fundamentalCheck(request);
+			if(result != null) {
+				return result;
+			}
+		} catch (NullPointerException NTE) {
+			result = null;
+		}
+		try {
+			result = this.finlQuote.quoteCheck(request);
+			if(result != null) {
+				return result;
+			}
+		} catch (NullPointerException NTE) {
+			result = null;
+		}
+		try {
+			result = this.finlDividend.dividendCheck(request);
+			if(result != null) {
+				return result;
+			}
+		} catch (NullPointerException NTE) {
+			result = null;
+		}
+		return result;
 	}
-
-
 
 
 	////////////////////////////////////////////
@@ -184,7 +195,7 @@ public class FinlStock {
 			else if(request.equalsIgnoreCase("oneYearTargetPrice"))
 				return this.oneYearTargetPrice.toString();
 			else return null;
-		}
+		}	//end fundamentalsCheck()
 	}
 
 	////////////////////////////////////////////
@@ -256,9 +267,38 @@ public class FinlStock {
 		}	//end populateMovement()
 
 		public String quoteCheck(String request) {
-			// TODO Auto-generated method stub
-			return null;
-		}
+			if(request.equalsIgnoreCase("price"))
+				return this.price.toString();
+			else if(request.equalsIgnoreCase("priceOpen"))
+				return this.priceOpen.toString();
+			else if(request.equalsIgnoreCase("pricePrevClose"))
+				return this.pricePrevClose.toString();
+			else if(request.equalsIgnoreCase("priceMA200"))
+				return this.priceMA200.toString();
+			else if(request.equalsIgnoreCase("priceMA50"))
+				return this.priceMA50.toString();
+			else if(request.equalsIgnoreCase("priceDayHigh"))
+				return this.priceDayHigh.toString();
+			else if(request.equalsIgnoreCase("priceDayLow"))
+				return this.priceDayLow.toString();
+			else if(request.equalsIgnoreCase("bid"))
+				return this.bid.toString();
+			else if(request.equalsIgnoreCase("avgVolume"))
+				return Long.toString(this.avgVolume);
+			else if(request.equalsIgnoreCase("change"))
+				return this.change.toString();
+			else if(request.equalsIgnoreCase("changePercent"))
+				return this.changePercent.toString();
+			else if(request.equalsIgnoreCase("changeFromMA200"))
+				return this.changeFromMA200.toString();
+			else if(request.equalsIgnoreCase("changeFromMA50"))
+				return this.changeFromMA50.toString();
+			else if(request.equalsIgnoreCase("changeFromYearHigh"))
+				return this.changeFromYearHigh.toString();
+			else if(request.equalsIgnoreCase("changeFromYearLow"))
+				return this.changeFromYearLow.toString();
+			else return null;
+		}	//end quoteCheck()
 	}	//end FinlQuote subclass
 
 	////////////////////////////////////////////
@@ -303,12 +343,18 @@ public class FinlStock {
 		}	//end constructor FinlDividend(String symbol)
 
 		public String dividendCheck(String request) {
-
-
-			return null;
-
-
-		}
+			if(request.equalsIgnoreCase("annualYield"))
+				return this.annualYield.toString();
+			else if(request.equalsIgnoreCase("annualYieldPercent"))
+				return this.annualYieldPercent.toString();
+			else if(request.equalsIgnoreCase("payDate"))
+				return this.payDate.toString();
+			else if(request.equalsIgnoreCase("exDivDate"))
+				return this.exDivDate.toString();
+			else if(request.equalsIgnoreCase("payDate"))
+				return this.payDate.toString();
+			else return null;
+		}	//end dividendCheck()
 	} 	//end FinlDividend subclass
 
 
