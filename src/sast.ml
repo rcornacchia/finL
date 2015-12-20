@@ -5,6 +5,7 @@ type expr =
   | Sstring of string
   | Sfloat of float
   | Sstock of string
+  | Sorder of int * sexpression
   | Svar of string
   | Sunop of Ast.unop * sexpression
   | Sbinop of sexpression * Ast.binop * sexpression
@@ -47,6 +48,7 @@ let rec string_of_sexpression (sexpr: sexpression) =
               | Sstring(s) -> "Sstring(" ^ s ^ ")"
               | Sfloat(f) -> "Sfloat(" ^ string_of_float f ^ ")"
               | Sstock (stk) -> "Sstock(" ^ stk ^ ")"
+              | Sorder (i, ord) -> "Sorder(" ^ string_of_int i ^ " of " ^ string_of_sexpression ord ^ ")"
               | Svar(v) -> "Svar(" ^ v ^ ")"
               | Sunop(op, se) -> "Sunop(" ^ Ast.string_of_unop op ^ " " ^ string_of_sexpression se ^ ")"
               | Sbinop(e1, o, e2) -> "Sbinop(" ^ string_of_sexpression e1 ^ " " ^ Ast.string_of_binop o ^ " " ^ string_of_sexpression e2 ^ ")"

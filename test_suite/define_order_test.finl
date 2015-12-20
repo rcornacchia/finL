@@ -1,0 +1,7 @@
+order o1;
+o1 << 10 of @AAPL;
+stock s1;
+s1 << @TSLA;
+o1 << 100 of s1;
+print("this should work");
+print("\n");

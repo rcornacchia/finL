@@ -19,7 +19,7 @@ type expression =
   | String of string
   | Float of float
   | Stock of string
-  | Order of int * string
+  | Order of int * expression
   | Var of string
   | Unop of unop * expression
   | Binop of expression * binop * expression
@@ -87,7 +87,7 @@ let rec string_of_expression = function
   | String(s) -> "String(" ^ s ^ ")"
   | Float(f) -> "Float(" ^ string_of_float f ^ ")"
   | Stock(stk) -> "Stock(" ^ stk ^ ")"
-  | Order(i, s) -> "Order(" ^ string_of_int i ^ ", " ^ s ^ ")"
+  | Order(i, e) -> "Order(" ^ string_of_int i ^ ", " ^ string_of_expression e ^ ")"
   | Var(v) -> "Var(" ^ v ^ ")"
   | Unop(op, e) -> "Unop(" ^ string_of_unop op ^ " " ^ string_of_expression e ^ ")"
   | Binop(e1, o, e2) -> "Binop(" ^ string_of_expression e1 ^ " " ^ string_of_binop o ^ " " ^ string_of_expression e2 ^ ")"

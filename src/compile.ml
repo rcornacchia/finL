@@ -33,12 +33,19 @@ let string_of_stock ticker =
   let new_ticker = sub ticker 1 (len - 1) in
   "new FinlStock(\"" ^ new_ticker ^ "\")"
 
+let string_of_order amt ord =
+  let new_ord = match ord.sexpr with
+    Svar(var) -> var
+    | Sstock(stk) -> string_of_stock stk
+  in "new FinlOrder(" ^ string_of_int amt ^ ", " ^ new_ord ^ ")"
+
 let rec compile_sexpression (sexpr: Sast.sexpression) =
   match sexpr.sexpr with 
     Sstring(str) -> str
     | Sint(i) -> string_of_int i
     | Sfloat(f) -> string_of_float f
     | Sstock(stk) -> string_of_stock stk
+    | Sorder(i, ord) -> string_of_order i ord
     | Sunop(op, expr) -> (let unop = Ast.string_of_unop op in
                          match op with
                           Neg -> unop ^ compile_sexpression expr

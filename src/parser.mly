@@ -51,8 +51,8 @@ statement:
   | RETURN expression SEMI { Ret($2) } /* VOID TYPES */
 
 stock:
-  VAR { $1 }
-  | TICK { $1 }
+  VAR { Var($1) }
+  | TICK { Stock($1) }
 
 expression:
   INT { Int($1) }

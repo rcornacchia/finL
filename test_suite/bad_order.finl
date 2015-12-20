@@ -1,0 +1,4 @@
+order o;
+string s;
+s << "23";
+o << 10 of s;

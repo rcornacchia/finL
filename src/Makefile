@@ -8,7 +8,6 @@ make :
 	ocamlc -c parser.ml
 	ocamllex scanner.mll
 	ocamlc -c scanner.ml
-	#ocamlc -c interpret.ml
 	ocamlc -c semantics.ml
 	ocamlc -c compile.ml
 	ocamlc -c finlc.ml
@@ -18,5 +17,3 @@ make :
 clean :
 	rm -f finlc parser.ml parser.mli scanner.ml bin/*.class \
 	*.cmo *.cmi *.output *.class *.java *.log 
-
-# compile and move javacode!!!!

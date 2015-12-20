@@ -115,6 +115,8 @@ let binop_to_sbinop (sexpr1: Sast.sexpression) (op: Ast.binop) (sexpr2: Sast.sex
 		| (Stringtype, t) -> raise (Except("Cannot do binary operation on type 'string' and type '" ^ Ast.string_of_data_type t ^ "'."))
 		| (Stocktype, t) -> raise (Except("Type 'stock' does not support binary operations!."))
 		| (t, Stocktype) -> raise (Except("Type 'stock' does not support binary operations!."))
+		| (Ordertype, t) -> raise (Except("Type 'order' does not support binary operations!."))
+		| (t, Ordertype) -> raise (Except("Type 'order' does not support binary operations!."))
 		| (_, _) ->	check_number_binop sexpr1 op sexpr2
 
 let unop_to_sunop env (u: Ast.unop) (se: Sast.sexpression) =
@@ -130,6 +132,10 @@ let rec expression_to_sexpression env (expression: Ast.expression) =
 		| String(s) -> 			{ sexpr = Sstring(s); sdtype = Stringtype; }
 		| Float(f) -> 			{ sexpr = Sfloat(f); sdtype = Floattype; }
 		| Stock(stk) ->			{ sexpr = Sstock(stk); sdtype = Stocktype; }
+		| Order(i, ord) ->		let new_ord = (expression_to_sexpression env ord) in
+								if new_ord.sdtype = Stocktype then
+									({ sexpr = Sorder(i, new_ord); sdtype = Ordertype; })
+								else raise (Except("Invalid order!"))
 
 		| Var(v) -> 			var_to_svar env v
 
@@ -185,7 +191,7 @@ let rec expression_to_sexpression env (expression: Ast.expression) =
 						 		with Not_found -> raise (Except("Function '" ^ c ^ "' not found!"))) (* uninitialized_call_test.finl *)
 		| Noexpr -> { sexpr = Snoexpr; sdtype = Voidtype; }
 
-let check_statement (sexpr: Sast.sexpression) =
+let check_estatement (sexpr: Sast.sexpression) =
 	match sexpr.sexpr with 
 		Sassign(a, e) -> sexpr
 		| Saassign(aa, e1) -> sexpr
@@ -258,7 +264,7 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 						   	in new_env
 
 		| Expr(e) -> let checked_expression = expression_to_sexpression env e in
-				   	 let checked_statement = Sexpr(check_statement checked_expression) in
+				   	 let checked_statement = Sexpr(check_estatement checked_expression) in
 				     let new_env = { function_table = env.function_table;
 								     symbol_table = env.symbol_table; 
 								     checked_statements = checked_statement :: env.checked_statements; 
