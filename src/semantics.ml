@@ -3,14 +3,6 @@ open Sast
 
 exception Except of string
 
-let builtin_functions = (* possibly no builtin funcs??? *)
-	[ {
-		sname = "print"; (* check types for print!!! *)
-		sformals = [];
-		sbody = [];
-		srtype = Voidtype; (*TEMPORARY*) 
-		builtin = true; } ]
-
 type scope = {
 	scope_name : string;
 	scope_rtype : Ast.data_type ;
@@ -24,7 +16,7 @@ type environment = {
 }
 
 let root_env = {
-	function_table = builtin_functions;
+	function_table = [];
 	symbol_table = [];
 	checked_statements = [];
 	env_scope = { scope_name = "reserved"; scope_rtype = Voidtype; };
@@ -37,10 +29,7 @@ let name_to_sname env name =
 			if name = "main" then ("reserved")
 			else name
 	in
-	(try
-		let func = List.find (fun f -> f.sname = sname) env.function_table in
-		if func.builtin then (raise (Except("Function '" ^ func.sname ^ "' is a built in function!"))) (* overwrite_print_test.finl *)
-		else raise (Except("Function '" ^ name ^ "' is already defined!")) (* overwrite_function_test.finl *)
+	(try ignore (List.find (fun f -> f.sname = sname) env.function_table); raise (Except("Function '" ^ name ^ "' is already defined!")) (* overwrite_function_test.finl *)
 	with Not_found -> sname)
 
 let formal_to_sformal sformals (formal: Ast.var_decl) =
@@ -180,14 +169,11 @@ let rec expression_to_sexpression env (expression: Ast.expression) =
 
 		| Call(c, el) -> 		let sname = check_for_main c in (* no_return_test.finl *)
 						 		(try let func = List.find (fun f -> f.sname = sname) env.function_table in
-						 			let builtin = func.builtin in (* CHECK # of args to print!!!!!!! *)
-						 			if builtin then ({ sexpr = Scall(sname, List.map (fun e -> expression_to_sexpression env e) el); sdtype = func.srtype; })
-						 			else
-						 				(try let new_el = List.map2 (fun f e -> let sexpr = expression_to_sexpression env e in 
-						 											if f.dtype <> sexpr.sdtype then (raise (Except("Function parameter type mismatch!"))) (* parameter_type_mismatch_test.finl *)
-						 											else sexpr) func.sformals el
-						 					 in { sexpr = Scall(sname, new_el); sdtype = func.srtype; }
-						 				with Invalid_argument _ -> raise (Except("Wrong argument length to function '" ^ check_for_reserved func.sname ^ "'."))) (* arg_length_test.finl *)
+						 			(try let new_el = List.map2 (fun f e -> let sexpr = expression_to_sexpression env e in 
+						 										if f.dtype <> sexpr.sdtype then (raise (Except("Function parameter type mismatch!"))) (* parameter_type_mismatch_test.finl *)
+						 										else sexpr) func.sformals el
+						 										in { sexpr = Scall(sname, new_el); sdtype = func.srtype; }
+						 			with Invalid_argument _ -> raise (Except("Wrong argument length to function '" ^ check_for_reserved func.sname ^ "'."))) (* arg_length_test.finl *)
 						 		with Not_found -> raise (Except("Function '" ^ c ^ "' not found!"))) (* uninitialized_call_test.finl *)
 		| Noexpr -> { sexpr = Snoexpr; sdtype = Voidtype; }
 
@@ -302,6 +288,14 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 									 checked_statements = checked_statement :: env.checked_statements;
 									 env_scope = env.env_scope; }
 					 in new_env
+		| Print(ex) -> let checked_expression = expression_to_sexpression env ex in
+					   if checked_expression.sdtype = Voidtype then (raise (Except("Cannot print 'void' type!")))
+					   else let checked_statement = Sprint(checked_expression) in
+					   let new_env = { function_table = env.function_table;
+									   symbol_table = env.symbol_table;
+									   checked_statements = checked_statement :: env.checked_statements;
+									   env_scope = env.env_scope; }
+					   in new_env
 					
 let check_for_sreturn = function 
 	Sret(_) -> true
@@ -322,8 +316,7 @@ let fdecl_to_sfdecl env (fdecl: Ast.func_decl) = (* multiple_return_test.finl NE
 		(let sfdecl = { sname = checked_name;
 				   		sformals = List.rev checked_formals;
 				   		sbody = List.rev func_env.checked_statements;
-				   		srtype = fdecl.rtype;
-				   		builtin = false; }
+				   		srtype = fdecl.rtype; }
 		in
 		let new_env = { function_table = sfdecl :: env.function_table; 
 						symbol_table = env.symbol_table;

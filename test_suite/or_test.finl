@@ -1,4 +1,2 @@
-print(1 or 0);
-print("\n");
-print(0.0 or 0);
-print("\n");
+print 1 or 0;
+print 0.0 or 0;

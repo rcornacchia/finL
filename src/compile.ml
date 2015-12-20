@@ -2,10 +2,6 @@ open Ast
 open Sast
 open String
 
-let check_function name = (* HAVE SOME BUILTIN FUNCTIONALITY HERE *)
-  if name = "print" then "System.out.print"
-  else name
-
 let compile_dtype = function
   Inttype -> "int"
   | Stringtype -> "String"
@@ -66,7 +62,7 @@ let rec compile_sexpression (sexpr: Sast.sexpression) =
     | Smassign(mvar, mexpr) -> mvar ^ " *= " ^ compile_sexpression mexpr
     | Sdassign(dvar, dexpr) -> dvar ^ " /= " ^ compile_sexpression dexpr
     | Svar(str) -> str
-    | Scall(name, exprlst) -> check_function name ^ "(" ^ String.concat ", " (List.map compile_sexpression exprlst) ^ ")"
+    | Scall(name, exprlst) -> name ^ "(" ^ String.concat ", " (List.map compile_sexpression exprlst) ^ ")"
     | Snoexpr -> ""
 
 let rec compile_sstatement = function
@@ -86,18 +82,18 @@ let rec compile_sstatement = function
   | Sret(r) -> "return " ^ compile_sexpression r ^ ";"
   | Sbuy(b) -> "default_portfolio.buy(" ^ compile_sexpression b ^ ");"
   | Ssell(s) -> "default_portfolio.sell(" ^ compile_sexpression s ^ ");"
+  | Sprint(e) -> "System.out.println(" ^ compile_sexpression e ^ ");"
 
 let compile_sfdecl (func: Sast.sfunc_decl) =
-  if func.builtin then ("")
-  else "public static " ^
-       compile_dtype func.srtype ^
-       " " ^
-       func.sname ^
-       "(" ^
-       String.concat ", " (List.map compile_vdecl func.sformals) ^
-       ") {\n" ^
-       String.concat "\n" (List.map compile_sstatement func.sbody) ^
-       "\n}"
+  "public static " ^
+  compile_dtype func.srtype ^
+  " " ^
+  func.sname ^
+  "(" ^
+  String.concat ", " (List.map compile_vdecl func.sformals) ^
+  ") {\n" ^
+  String.concat "\n" (List.map compile_sstatement func.sbody) ^
+  "\n}"
 
 let compile (sprogram: Sast.sprogram) (filename: string) =
   "import java.lang.Math;\n" ^

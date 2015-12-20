@@ -1,13 +1,9 @@
 function int main() {
 
-  print(1+1);
-  print("\n");
-  print(3-1);
-  print("\n");
-  print(2*1);
-  print("\n");
-  print(6/3);
-  print("\n");
+  print 1+1;
+  print 3-1;
+  print 2*1;
+  print 6/3;
   return 0;
 };
 

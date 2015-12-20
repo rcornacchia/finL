@@ -1,9 +1,7 @@
 not (0) ? {
-	print("dope");
-	print("\n");	
+	print "dope";
 };
 
 not (1 = 0.0) ? {
-	print("dopedope");
-	print("\n");
+	print "dopedope";
 };

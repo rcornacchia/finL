@@ -36,6 +36,7 @@ rule token = parse
 	| "of"					 { OF }
 	| "buy"					 { BUY }
 	| "sell"				 { SELL }
+	| "print"				 { PRINT }
 	(*| "??"                   { ELSEIF }
 	| '!'                    { ELSE }*)
 	| "while"                { WHILE }

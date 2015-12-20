@@ -1,8 +1,6 @@
 function int main(int x, string y) {
-	print(x);
-	print("\n");
-	print(y);
-	print("\n");
+	print x;
+	print y;
 	return 0;
 };
 

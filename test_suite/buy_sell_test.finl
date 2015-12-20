@@ -2,5 +2,4 @@ buy 10 of @TSLA;
 order o;
 o << 101 of @AAPL;
 sell o;
-print("heyo!");
-print("\n");
+print "heyo!";

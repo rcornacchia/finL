@@ -40,6 +40,7 @@ type statement =
   | Ret of expression
   | Buy of expression
   | Sell of expression
+  | Print of expression
 
 type func_decl = {
   rtype : data_type;
@@ -124,7 +125,8 @@ let rec string_of_statement = function
   | Vdecl(v) -> string_of_vdecl v
   | Ret(r) -> "return{" ^ string_of_expression r ^ "}"
   | Buy(b) -> "buy{" ^ string_of_expression b ^ "}"
-  | Sell(s) -> "buy{" ^ string_of_expression s ^ "}"
+  | Sell(s) -> "sell{" ^ string_of_expression s ^ "}"
+  | Print(e) -> "print{\nexpression{" ^ string_of_expression e ^ "}\n}"
 
 let string_of_fdecl (fdecl: func_decl) =
   "name{" ^ 

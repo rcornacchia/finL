@@ -1,6 +1,5 @@
 int x;
 x << 1;
 x < 2 and x > 0.0 ? {
-	print("yay");
-	print("\n");
+	print "yay";
 };

@@ -2,10 +2,8 @@ function int main(int x) {
 	return x +<< 1;
 };
 
-print(main(1));
-print("\n");
+print main(1);
 string y;
 y << "string";
 y +<< "string";
-print(y);
-print("\n");
+print y;

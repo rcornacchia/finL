@@ -2,5 +2,4 @@ function float main(float f) {
 	return f;	
 };
 
-print(main(3.14));
-print("\n");
+print main(3.14);

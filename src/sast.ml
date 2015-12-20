@@ -30,13 +30,13 @@ type sstatement =
   | Sret of sexpression
   | Sbuy of sexpression
   | Ssell of sexpression
+  | Sprint of sexpression
 
 type sfunc_decl = {
   srtype : Ast.data_type;
   sname : string;
   sformals : Ast.var_decl list;
   sbody : sstatement list;
-  builtin : bool;
 }
 
 type sprogram = { 
@@ -72,6 +72,7 @@ let rec string_of_sstatement = function
   | Sret(r) -> "sreturn{ sexpression{" ^ string_of_sexpression r ^ "}}"
   | Sbuy(b) -> "sbuy{ sexpression{" ^ string_of_sexpression b ^ "}}"
   | Ssell(s) -> "ssell{ sexpression{" ^ string_of_sexpression s ^ "}}"
+  | Sprint(p) -> "sprint{ sexpression{" ^ string_of_sexpression p ^ "}}"
 
 let string_of_sfdecl (sfdecl: sfunc_decl) =
   "sname{" ^ 
@@ -80,8 +81,6 @@ let string_of_sfdecl (sfdecl: sfunc_decl) =
   Ast.string_of_data_type sfdecl.srtype ^
   "} sformals{" ^ 
   String.concat ", " (List.map Ast.string_of_vdecl sfdecl.sformals) ^ 
-  "} builtin {" ^
-  string_of_bool sfdecl.builtin ^
   "}\nsbody{\nsstatement{" ^
   String.concat "}\nsstatement{" (List.map string_of_sstatement sfdecl.sbody) ^
   "}\n}"

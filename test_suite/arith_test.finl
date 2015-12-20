@@ -1,10 +1,8 @@
 function int main() {
 	int i;
 	i << 3 + 3 * 8 / 6;
-	print(i + 3);
-	print("\n");
-	print(3);
-	print("\n");
+	print i + 3;
+	print 3;
 	return 0;
 };
 

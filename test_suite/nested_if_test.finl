@@ -1,8 +1,6 @@
 1 < 2 ? {
-	print("yes");
-	print("\n");
+	print "yes";
 	1 > 2.0 ? {
-		print("no!!!");
-		print("\n");
+		print "no!!!";
 	};
 };

@@ -6,8 +6,8 @@
 %token ASSIGN AASSIGN SASSIGN MASSIGN DASSIGN
 %token EQ GEQ GT LEQ LT
 %token RETURN WHILE WHEN IF /*ELSE ELSEIF */ VOID /* NULL BREAK*/
-%token AND OR 
-%token NOT BUY SELL
+%token AND OR NOT
+%token BUY SELL PRINT
 %token INTD STRINGD FLOATD /*PERCENT ARRAY CURR */ STOCK ORDER /*PF*/ FUNC OF
 %token <string> TICK
 %token <int> INT
@@ -51,6 +51,7 @@ statement:
   | vdecl SEMI { Vdecl($1) }
   | BUY order SEMI { Buy($2) }
   | SELL order SEMI { Sell($2) }
+  | PRINT expression SEMI { Print($2) }
   | RETURN expression SEMI { Ret($2) } /* VOID TYPES */
 
 order:

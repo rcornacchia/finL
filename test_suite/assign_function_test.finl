@@ -3,5 +3,5 @@ function string main(string x){
 };
 
 string x;
-x << main("string\n");
-print(x);
+x << main("string");
+print x;
