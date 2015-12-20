@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Add assignment is undefined for type 'string'!")
+Error: Could not find or load main class bad_type_assign

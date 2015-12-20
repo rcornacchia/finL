@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Return statements cannot be used outside of functions!")
+Error: Could not find or load main class outside_return_test

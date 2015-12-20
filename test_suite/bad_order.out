@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Invalid order!")
+Error: Could not find or load main class bad_order

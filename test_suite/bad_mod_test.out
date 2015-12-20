@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Cannot do binary operation on type 'string' and type 'int'.")
+Error: Could not find or load main class bad_mod_test

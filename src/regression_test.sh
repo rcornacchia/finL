@@ -10,9 +10,9 @@ do
 	FILENAME=${file##*/}
 	printf "${YELLOW}Compiling $FILENAME ...${NC}\n"
 	EXECUTABLE="${FILENAME%.*}"
-	./finlc $file
+	./finlc $file > "$EXECUTABLE.log" 2>&1
 	printf "${YELLOW}Running $EXECUTABLE ...${NC}\n"
-	./finl.sh $EXECUTABLE > "$EXECUTABLE.log"
+	./finl.sh $EXECUTABLE >> "$EXECUTABLE.log" 2>&1
 	DIFF=$(diff $EXECUTABLE.log ../test_suite/$EXECUTABLE.out)
 	if [ "$DIFF" = "" ]
 		then printf "${GREEN}$EXECUTABLE passed.${NC}\n"

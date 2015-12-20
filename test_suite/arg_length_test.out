@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Wrong argument length to function 'main'.")
+Error: Could not find or load main class arg_length_test

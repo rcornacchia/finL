@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Function parameter type mismatch!")
+Error: Could not find or load main class parameter_type_mismatch_test

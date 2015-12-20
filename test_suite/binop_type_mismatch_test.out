@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Cannot do binary operation on type 'int' and type 'string'!")
+Error: Could not find or load main class binop_type_mismatch_test

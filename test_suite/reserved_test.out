@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("'reserved' is a reserved function name!")
+Error: Could not find or load main class reserved_test

@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Function 'main' not found!")
+Error: Could not find or load main class uninitialized_call_test

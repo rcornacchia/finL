@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Function 'main' returns type 'void', not type 'string'.")
+Error: Could not find or load main class return_from_void_test

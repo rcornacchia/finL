@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("'buy' keyword takes type 'order'!")
+Error: Could not find or load main class bad_buy_sell_test

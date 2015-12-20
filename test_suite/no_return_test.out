@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Function 'main' does not have a return statement!")
+Error: Could not find or load main class no_return_test

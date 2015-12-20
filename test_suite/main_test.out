@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Function 'main' is already defined!")
+Error: Could not find or load main class main_test

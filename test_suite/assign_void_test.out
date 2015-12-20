@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Symbol 'x' is of type 'string', not of type 'void'.")
+Error: Could not find or load main class assign_void_test

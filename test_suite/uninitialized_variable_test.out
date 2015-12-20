@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Symbol 'z' is uninitialized!")
+Error: Could not find or load main class uninitialized_variable_test

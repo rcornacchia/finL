@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Function 'm' is already defined!")
+Error: Could not find or load main class overwrite_function_test

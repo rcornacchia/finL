@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Function 'mainn' returns type 'string', not type 'int'.")
+Error: Could not find or load main class bad_return_test

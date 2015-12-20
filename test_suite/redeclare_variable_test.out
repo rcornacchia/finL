@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Variable 'x' is already defined!")
+Error: Could not find or load main class redeclare_variable_test

@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Symbol 'x' is of type 'int', not of type 'string'.")
+Error: Could not find or load main class assign_type_mismatch_test

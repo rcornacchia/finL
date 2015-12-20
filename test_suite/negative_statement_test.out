@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Not a statement!")
+Error: Could not find or load main class negative_statement_test

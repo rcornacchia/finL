@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Symbol 'x' not initialized!")
+Error: Could not find or load main class uninitialized_assignment_test
