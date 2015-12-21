@@ -8,7 +8,7 @@
 %token RETURN WHILE WHEN IF ELSE /*ELSEIF */ VOID /* NULL BREAK*/
 %token AND OR NOT
 %token BUY SELL PRINT
-%token INTD STRINGD FLOATD /*PERCENT ARRAY CURR */ STOCK ORDER /*PF*/ FUNC OF
+%token INTD STRINGD FLOATD /*PERCENT ARRAY CURR */ STOCK ORDER PF FUNC OF
 %token <string> TICK
 %token <string> ACCESS
 %token <int> INT
@@ -55,7 +55,8 @@ statement:
   | BUY order SEMI { Buy($2) }
   | SELL order SEMI { Sell($2) }
   | PRINT expression_option SEMI { Print($2) }
-  | RETURN expression_option SEMI { Ret($2) } /* VOID TYPES -> EXPRESSION OPTION?? */
+  | RETURN expression_option SEMI { Ret($2) }
+  | PF STRING SEMI { Portfolio($2) }
 
 access_expression:
   access EQ access { ($1, Equal, $3) }

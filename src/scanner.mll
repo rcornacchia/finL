@@ -54,7 +54,7 @@ rule token = parse
 	(*| "currency"             { CURR }*)
 	| "stock"                { STOCK }
 	| "order"                { ORDER }
-	(*| "portfolio"            { PF }*)
+	| "portfolio"            { PF }
 	| "function"             { FUNC }
 	| "return"               { RETURN }
 	| "void"                 { VOID }

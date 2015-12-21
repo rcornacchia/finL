@@ -93,13 +93,14 @@ let rec compile_sstatement = function
                                "\nbreak;\n}\ntry{ Thread.sleep(10000); } catch (InterruptedException ie) { System.out.println(\"Program execution interrupted!\"); }\n}\n}\n});\nwhen.start();"
   | Svdecl(v) -> compile_vdecl v ^ ";"
   | Sret(r) -> "return " ^ compile_sexpression r ^ ";"
-  | Sbuy(b) -> "default_portfolio.buy(" ^ compile_sexpression b ^ ");"
-  | Ssell(s) -> "default_portfolio.sell(" ^ compile_sexpression s ^ ");"
+  | Sbuy(b) -> "portfolio.buy(" ^ compile_sexpression b ^ ");"
+  | Ssell(s) -> "portfolio.sell(" ^ compile_sexpression s ^ ");"
   | Sprint(e) -> (match e.sdtype with
                     Stocktype -> compile_sexpression e ^ ".printStock();"
                     | Ordertype -> compile_sexpression e ^ ".printOrder();"
-                    | Voidtype -> "default_portfolio.printHoldings();"
+                    | Voidtype -> "portfolio.printHoldings();"
                     | _ -> "System.out.println(" ^ compile_sexpression e ^ ");")
+  | Sportfolio(str) -> "portfolio.switchWith(\"" ^ str ^ "\");"
 
 let compile_sfdecl (func: Sast.sfunc_decl) =
   "public static " ^
@@ -120,7 +121,9 @@ let compile (sprogram: Sast.sprogram) (filename: string) =
   " {\n" ^
   String.concat "\n" (List.map compile_sfdecl sprogram.sfunc_decls) ^
   "\npublic static void main(String[] args) {\n" ^
-  "try {\n " ^
-  "FinlPortfolio default_portfolio = new FinlPortfolio();\n" ^
+  "try {\nFinlPortfolio portfolio;\n" ^
+  "if (args.length > 0) { portfolio = new FinlPortfolio(args[0]);\n" ^
+  "portfolio.csvPortfolioBuilder(); }\n" ^
+  "else { portfolio = new FinlPortfolio(); }\n" ^
   String.concat "\n" (List.map compile_sstatement sprogram.sstatements) ^
-  "\n} catch (Exception e) { System.out.println(\"Library Error\"); }\n}\n}"
+  "\nportfolio.csvExport(); } catch (Exception e) { System.out.println(\"Library Error\"); }\n}\n}"

@@ -42,6 +42,7 @@ type statement =
   | Buy of expression
   | Sell of expression
   | Print of expression
+  | Portfolio of string
 
 type func_decl = {
   rtype : data_type;
@@ -135,6 +136,7 @@ let rec string_of_statement = function
   | Buy(b) -> "buy{" ^ string_of_expression b ^ "}"
   | Sell(s) -> "sell{" ^ string_of_expression s ^ "}"
   | Print(e) -> "print{\nexpression{" ^ string_of_expression e ^ "}\n}"
+  | Portfolio(str) -> "portfolio{" ^ str ^ "}"
 
 let string_of_fdecl (fdecl: func_decl) =
   "name{" ^ 

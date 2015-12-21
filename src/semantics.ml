@@ -306,6 +306,12 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 									   checked_statements = checked_statement :: env.checked_statements;
 									   env_scope = env.env_scope; }
 					   in new_env
+		| Portfolio(str) -> let checked_portfolio = Sportfolio(str) in
+							let new_env = { function_table = env.function_table;
+									   		symbol_table = env.symbol_table;
+									   		checked_statements = checked_portfolio :: env.checked_statements;
+									   		env_scope = env.env_scope; }
+					   		in new_env
 					
 let check_for_sreturn = function 
 	Sret(_) -> true

@@ -32,6 +32,7 @@ type sstatement =
   | Sbuy of sexpression
   | Ssell of sexpression
   | Sprint of sexpression
+  | Sportfolio of string
 
 type sfunc_decl = {
   srtype : Ast.data_type;
@@ -75,6 +76,7 @@ let rec string_of_sstatement = function
   | Sbuy(b) -> "sbuy{ sexpression{" ^ string_of_sexpression b ^ "}}"
   | Ssell(s) -> "ssell{ sexpression{" ^ string_of_sexpression s ^ "}}"
   | Sprint(p) -> "sprint{ sexpression{" ^ string_of_sexpression p ^ "}}"
+  | Sportfolio(str) -> "sportfolio{" ^ str ^ "}"
 
 let string_of_sfdecl (sfdecl: sfunc_decl) =
   "sname{" ^ 
