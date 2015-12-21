@@ -135,6 +135,7 @@ public class FinlPortfolio {
 
 	public void csvPortfolioBuilder(String name) {
 		this.csvName = name;
+		this.accountValue = 0.0;
 		String csvHoldings = name + "_holdings.csv";
 		String csvOrders = name + "_orders.csv";
 
@@ -204,6 +205,7 @@ public class FinlPortfolio {
 				//calculations above^
 				holdingObject.percentOfPortfolio = weight;								//weight
 				holdingObject.lastOrder = new Date(arrayHolding[6]);
+				this.accountValue += holdingObject.positionValue;
 
 				importedPortfolio.holdings.add(holdingObject);		//add the holding object to the holdings list
 
