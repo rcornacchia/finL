@@ -126,7 +126,7 @@ public class FinlPortfolio {
 			System.out.println("Last Trade:\t" + listStock.lastOrder.toString()
 			+ "\n_______________________________\n\n");
 		}
-		System.out.flush();
+		//System.out.flush();
 	}
 
 	public void csvPortfolioBuilder() {

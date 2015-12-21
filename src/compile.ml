@@ -119,11 +119,12 @@ let compile (sprogram: Sast.sprogram) (filename: string) =
   "\npublic class " ^ 
   filename ^ 
   " {\n" ^
+  "\npublic static FinlPortfolio portfolio;\n\n" ^
   String.concat "\n" (List.map compile_sfdecl sprogram.sfunc_decls) ^
   "\npublic static void main(String[] args) {\n" ^
-  "try {\nFinlPortfolio portfolio;\n" ^
-  "if (args.length > 0) { portfolio = new FinlPortfolio(args[0]);\n" ^
+  "if (args.length > 0) {\n" ^
+  "portfolio = new FinlPortfolio(args[0]);\n" ^
   "portfolio.csvPortfolioBuilder(); }\n" ^
   "else { portfolio = new FinlPortfolio(\"default\"); }\n" ^
   String.concat "\n" (List.map compile_sstatement sprogram.sstatements) ^
-  "\nportfolio.csvExport(); } catch (Exception e) { System.out.println(\"Library Error\"); }\n}\n}"
+  "\nportfolio.csvExport();\n}\n}"

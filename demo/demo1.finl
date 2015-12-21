@@ -1,0 +1,15 @@
+function void main() {
+	stock stk;
+	stk << @TSLA; # set stock variable equal to Tesla stock
+	print stk;
+	order tesla_order; 
+	tesla_order << 1000 of stk; # set order variable equal to 1000 shares of Tesla
+	print tesla_order;
+	when stk[priceMA200] > stk[priceMA50] {
+		buy tesla_order;
+		print;
+	};
+	print; # print portfolio
+};
+
+main();
