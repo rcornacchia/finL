@@ -18,7 +18,8 @@ http://www.typerex.org/ocaml-top.html
 	$ ./finl.sh input my_portfolio
 
 #Options
-./finlc provides two options: -a and -s
+	./finlc provides two options: -a and -s
+
 	$  ./finlc -a input.finl 	# prints the abstract syntax tree to the console
 	$  ./finlc -s input.finl 	# prints the semantically analyzed syntax tree to the console
 
