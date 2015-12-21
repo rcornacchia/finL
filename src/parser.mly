@@ -10,6 +10,7 @@
 %token BUY SELL PRINT
 %token INTD STRINGD FLOATD /*PERCENT ARRAY CURR */ STOCK ORDER /*PF*/ FUNC OF
 %token <string> TICK
+%token <string> ACCESS
 %token <int> INT
 %token <float> FLOAT
 %token <string> STRING
@@ -71,6 +72,7 @@ expression:
   | INT OF stock { Order($1, $3) }
   | MINUS expression { Unop(Neg, $2) }
   | NOT LPAREN expression RPAREN { Unop(Not, $3) }
+  | stock ACCESS { Access($1, $2) }
   | expression PLUS expression  { Binop($1, Add, $3) }
   | expression MINUS expression  { Binop($1, Sub, $3) }
   | expression TIMES expression { Binop($1, Mult, $3 ) }

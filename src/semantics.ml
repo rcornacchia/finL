@@ -1,5 +1,6 @@
 open Ast
 open Sast
+open String
 
 exception Except of string
 
@@ -115,12 +116,16 @@ let unop_to_sunop env (u: Ast.unop) (se: Sast.sexpression) =
 			| Floattype -> { sexpr = Sunop(u, se); sdtype = Floattype; }
 			| t -> raise (Except("Unary operations are not supported for type '" ^ Ast.string_of_data_type typ ^ "'!"))		
 
+let split_access acc =
+	let str = sub acc 2 ((length acc) - 2) in
+	trim str
+
 let rec expression_to_sexpression env (expression: Ast.expression) =
 	match expression with
 		Int(i) -> 				{ sexpr = Sint(i); sdtype = Inttype; }
 		| String(s) -> 			{ sexpr = Sstring(s); sdtype = Stringtype; }
 		| Float(f) -> 			{ sexpr = Sfloat(f); sdtype = Floattype; }
-		| Stock(stk) ->			{ sexpr = Sstock(stk); sdtype = Stocktype; }
+		| Stock(stk) ->			{ sexpr = Sstock(stk); sdtype = Stocktype; } (* CHECK FOR VALID TICKER??? *)
 		| Order(i, ord) ->		let new_ord = (expression_to_sexpression env ord) in
 								if new_ord.sdtype = Stocktype then
 									({ sexpr = Sorder(i, new_ord); sdtype = Ordertype; })
@@ -130,9 +135,13 @@ let rec expression_to_sexpression env (expression: Ast.expression) =
 
 		| Unop(op, e) -> 		unop_to_sunop env op (expression_to_sexpression env e)
 
-		| Binop(e1, o, e2) -> 	let se1 = (expression_to_sexpression env e1) in
-								let se2 = (expression_to_sexpression env e2) in
+		| Binop(e1, o, e2) -> 	let se1 = expression_to_sexpression env e1 in
+								let se2 = expression_to_sexpression env e2 in
 								binop_to_sbinop se1 o se2
+
+		| Access(e, s) ->		let acc = split_access s
+								and checked_expression = expression_to_sexpression env e in
+								{ sexpr = Saccess(checked_expression, acc); sdtype = Stringtype; } (* CHECK RETURN TYPE???/VALID ACCESS? *)
 
 		| Assign(a, e) -> 		let sexpression = expression_to_sexpression env e in
 								let checked_sexpression = check_assign env a sexpression in

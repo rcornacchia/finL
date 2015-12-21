@@ -9,6 +9,7 @@ type expr =
   | Svar of string
   | Sunop of Ast.unop * sexpression
   | Sbinop of sexpression * Ast.binop * sexpression
+  | Saccess of sexpression * string
   | Sassign of string * sexpression
   | Saassign of string * sexpression
   | Ssassign of string * sexpression
@@ -54,6 +55,7 @@ let rec string_of_sexpression (sexpr: sexpression) =
               | Svar(v) -> "Svar(" ^ v ^ ")"
               | Sunop(op, se) -> "Sunop(" ^ Ast.string_of_unop op ^ " " ^ string_of_sexpression se ^ ")"
               | Sbinop(e1, o, e2) -> "Sbinop(" ^ string_of_sexpression e1 ^ " " ^ Ast.string_of_binop o ^ " " ^ string_of_sexpression e2 ^ ")"
+              | Saccess(e, s) -> "Saccess(" ^ string_of_sexpression e ^ " -> " ^ s ^ ")"
               | Sassign(a, e) -> "Sassign(" ^ a ^ " = " ^ string_of_sexpression e ^ ")"
               | Saassign(aa, e) -> "Saassign(" ^ aa ^ " = " ^ string_of_sexpression e ^ ")"
               | Ssassign(sa, e) -> "Ssassign(" ^ sa ^ " = " ^ string_of_sexpression e ^ ")"

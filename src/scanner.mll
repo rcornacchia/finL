@@ -2,6 +2,9 @@
 
 let letter = ['a'-'z' 'A'-'Z']
 let digit = ['0'-'9']
+let ticker = '@'letter+
+let variable = letter(letter|digit|'_')*
+let access = letter(letter|digit)*
 
 rule token = parse
 	[' ' '\t' '\r' '\n']     { token lexbuf }
@@ -32,11 +35,11 @@ rule token = parse
 	| "and"                  { AND }
 	| "or"                   { OR }
 	| "not"                  { NOT }
-	| '?'                    { IF }
 	| "of"					 { OF }
 	| "buy"					 { BUY }
 	| "sell"				 { SELL }
 	| "print"				 { PRINT }
+	| '?'                    { IF }
 	(*| "??"                   { ELSEIF }
 	| '!'                    { ELSE }*)
 	| "while"                { WHILE }
@@ -55,8 +58,9 @@ rule token = parse
 	| "function"             { FUNC }
 	| "return"               { RETURN }
 	| "void"                 { VOID }
-	| '@'letter+ as t		 { TICK(t) }
-	| letter+(letter|digit|'_')* as var   { VAR(var) }
+	| ticker as t		 	 { TICK(t) }
+	| variable as var   	 { VAR(var) }
+	| ">>"' '*access* as a   { ACCESS(a) }
 	| digit+ as i            { INT(int_of_string i) }
 	| digit*'.'digit+ as flt { FLOAT(float_of_string flt) }
 	| '"'('\\'_|[^'"'])*'"' as str   { STRING(str) }
