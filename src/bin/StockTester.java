@@ -27,27 +27,27 @@ public class StockTester {
 		//		s = new FinlStock("AAPL").getRequest("price");
 		//		System.out.println(s);
 
-		stockTest(ticker);
+		//stockTest(ticker);
 
-		FinlPortfolio testPortfolio = new FinlPortfolio();
-
-		testPortfolio.setPortfolioName("testName2");
-
-		testPortfolio.buy(new FinlOrder(10, new FinlStock("AAPL")));
-		testPortfolio.buy(new FinlOrder(10, new FinlStock("FB")));
-		testPortfolio.buy(new FinlOrder(10, new FinlStock("MSFT")));
-		testPortfolio.buy(new FinlOrder(10, new FinlStock("TSLA")));
-		testPortfolio.buy(new FinlOrder(10, new FinlStock("FB")));
-		testPortfolio.buy(new FinlOrder(10, new FinlStock("MBLY")));
-
-		testPortfolio.csvExport();
+//		FinlPortfolio testPortfolio = new FinlPortfolio("testName2");
+//
+//
+//
+//		testPortfolio.buy(new FinlOrder(10, new FinlStock("AAPL")));
+//		testPortfolio.buy(new FinlOrder(10, new FinlStock("FB")));
+//		testPortfolio.buy(new FinlOrder(10, new FinlStock("MSFT")));
+//		testPortfolio.buy(new FinlOrder(10, new FinlStock("TSLA")));
+//		testPortfolio.buy(new FinlOrder(10, new FinlStock("FB")));
+//		testPortfolio.buy(new FinlOrder(10, new FinlStock("MBLY")));
+//
+//		testPortfolio.csvExport();
 
 		FinlPortfolio testPortfolio2 = new FinlPortfolio();
 
-		testPortfolio2.csvPortfolioBuilder(testPortfolio.portfolioName);
+		testPortfolio2.csvPortfolioBuilder();
 
 		testPortfolio2.printHoldings();
-		testPortfolio2.printOrders();
+		//testPortfolio2.printOrders();
 
 
 
@@ -106,7 +106,6 @@ public class StockTester {
 
 	}
 
-
 	private static void stockTest(String ticker) {
 		FinlStock testStock1 = new FinlStock("DPZ");
 		FinlStock testStock2 = new FinlStock("AAPL");
@@ -118,6 +117,4 @@ public class StockTester {
 		}
 		else testStock2.printStock();
 	}
-
-
 }

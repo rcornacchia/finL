@@ -3,7 +3,6 @@ package bin;
 
 
 
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -83,6 +82,18 @@ public class FinlPortfolio {
 			listStock.percentOfPortfolio
 				= Math.abs(listStock.positionValue/accountValue);
 		}
+		this.updatePNL();
+	}
+
+	public void updatePNL() {
+		for(int i = 0; i < this.holdings.size(); i++) {
+			Holding listStock = this.holdings.get(i);
+			listStock.stock.refresh();		//refresh stock info
+			double currentCost = listStock.stock.finlQuote.price.doubleValue() * listStock.positionShares;
+			double executionCost = listStock.avgPrice * listStock.positionShares;
+			listStock.pnl = currentCost - executionCost;
+			listStock.positionValue = currentCost;
+		}
 	}
 
 	public void printOrders() {
@@ -92,7 +103,7 @@ public class FinlPortfolio {
 	}
 
 	public void printHoldings() {
-
+		this.updatePNL();
 		System.out.println("\n\nPortfolio Name:\t" + this.portfolioName
 				+ "\n _______________________________________________________");
 		System.out.format("|Account Value\t|\tPositions\t|\tTrades\t|\n|  $"
@@ -138,9 +149,9 @@ public class FinlPortfolio {
 			holdingImporter(this, holdingReader);
 			orderImporter(this, orderReader);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			System.err.println(".csv File Does Not Exist!");
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println(".csv File Does Not Exist!");
 		} catch (NumberFormatException e) {
 			System.err.println("Date Exception in CSV Importing");
 		} catch (ParseException e) {
@@ -241,6 +252,7 @@ public class FinlPortfolio {
 
 	public void csvExport(){
 		try {
+			this.updatePNL();
 			String fileName = this.csvName;
 			csvOrdersExport(fileName);
 			csvHoldingsExport(fileName);
@@ -290,7 +302,6 @@ public class FinlPortfolio {
 		}
 		writer.flush();
 		writer.close();
-
 	}
 
 	private void csvOrdersExport(String fileName) throws IOException {

@@ -2,9 +2,6 @@ package bin;
 
 
 
-
-
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -80,7 +77,4 @@ public class FinlOrder {
 	public void setExecute(boolean execute) {
 		this.execute = execute;
 	}
-
-
-
 }
