@@ -79,13 +79,15 @@ let rec compile_sstatement = function
                   ") {\n" ^
                   String.concat "\n" (List.map compile_sstatement sl) ^
                   "\n}"
-  | Swhen((e1, op, e2), sl) -> "WhenLoop when = new WhenLoop(" ^
-                                compile_sexpression e1 ^
-                                ", \"" ^
-                                Ast.string_of_binop op ^
-                                "\", " ^
-                                compile_sexpression e2 ^
-                                ");\nThread when_thread = new Thread(when);\nwhen_thread.start();" (* TO DO *)
+  | Swhen((e1, op, e2), sl) -> "Thread when = new Thread(new Runnable() {\npublic void run(){\nwhile (true) {\n if (" ^
+                               compile_sexpression e1 ^
+                               " " ^
+                               Ast.string_of_binop op ^
+                               " " ^
+                               compile_sexpression e2 ^
+                               ") {\n" ^
+                               String.concat "\n" (List.map compile_sstatement sl) ^
+                               "\nbreak;\n}\ntry{ Thread.sleep(10000); } catch (InterruptedException ie) { System.out.println(\"Program execution interrupted!\"); }\n}\n}\n});\nwhen.start();"
   | Svdecl(v) -> compile_vdecl v ^ ";"
   | Sret(r) -> "return " ^ compile_sexpression r ^ ";"
   | Sbuy(b) -> "default_portfolio.buy(" ^ compile_sexpression b ^ ");"
