@@ -1,6 +1,7 @@
 package bin;
 
 
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -79,6 +80,13 @@ public class FinlPortfolio {
 			System.err.println("\n\nSomething is wrong with the file"
 					+ "export\n\n");
 			e.printStackTrace();
+		}
+	}
+
+	public void updateCompositions() {
+		for(int i = 0; i < holdings.size(); i++) {
+			Holding listStock = holdings.get(i);
+			listStock.percentOfPortfolio = Math.abs(listStock.positionValue/accountValue);
 		}
 	}
 
@@ -171,7 +179,10 @@ public class FinlPortfolio {
 			Holding position = checkHoldings(order);
 			if(position == null) 				//if the portfolio doesnt contain the stock being ordered:
 				generateNewHolding(order);
-			else position.addToHolding(order);	//if the portfolio contains the stock being ordered:
+			else {								//if the portfolio contains the stock being ordered:
+				position.addToHolding(order);
+			}
+			updateCompositions();
 		}
 
 		private void addToHolding(FinlOrder order) {
@@ -197,15 +208,12 @@ public class FinlPortfolio {
 			if(order.getType().equals("buy"))
 				accountValue += (order.size * order.sharePrice);
 			else if (order.getType().equals("sell"))
-				accountValue -= (order.size * order.sharePrice);
+				accountValue += (order.size * order.sharePrice);
 
-			this.percentOfPortfolio = this.positionShares/accountValue;
-
-
-
+			this.percentOfPortfolio = Math.abs(this.positionValue/accountValue);
 
 			//no need to add to the list, order already exists and we are just modifying
-		}
+		}	//end addToHoldings()
 
 		private void generateNewHolding(FinlOrder order) {
 			if(order.getType().equals("sell"))
@@ -223,15 +231,11 @@ public class FinlPortfolio {
 			if(order.getType().equals("buy"))
 				accountValue += (order.size * order.sharePrice);
 			else if (order.getType().equals("sell"))
-				accountValue -= (order.size * order.sharePrice);
+				accountValue += (order.size * order.sharePrice);
 
-			this.percentOfPortfolio = this.positionShares/accountValue;
-
+			this.percentOfPortfolio = Math.abs(this.positionValue/accountValue);
 			holdings.add(this);	//add this new holding to the list
-		}
-
-
-
+		}	//end generateNewHolding()
 
 		//checks if the stock is in the portfolio
 		private Holding checkHoldings(FinlOrder order) {

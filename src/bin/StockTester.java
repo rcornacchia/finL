@@ -2,21 +2,31 @@
 package bin;
 
 
+import java.io.IOException;
+import java.math.BigDecimal;
+
+import yahoofinance.Stock;
+import yahoofinance.YahooFinance;
+import yahoofinance.quotes.fx.FxQuote;
+import yahoofinance.quotes.fx.FxSymbols;
+
+
 
 
 public class StockTester {
 
 	public static void main(String[] args) {
 		try {
-			String ticker;
-			String[] tickers
-			= {"FB", "AAPL", "MSFT"};
-			for(int i = 0; i < tickers.length; i++) {
-				ticker = tickers[i];
-				//stockTest(ticker);
-				//orderTest(ticker);
-				portfolioTest(ticker);
-			}
+			String ticker = "MSFT";
+//			String[] tickers
+//			= {"FB", "AAPL", "MSFT"};
+//			for(int i = 0; i < tickers.length; i++) {
+//				ticker = tickers[i];
+//				//stockTest(ticker);
+//				//orderTest(ticker);
+//			}
+			portfolioTest(ticker);
+
 		} catch (NullPointerException NPE) {
 			NPE.printStackTrace();
 		}
@@ -30,14 +40,16 @@ public class StockTester {
 
 
 		FinlOrder testOrder1 = new FinlOrder(10, new FinlStock(ticker));
-		FinlOrder testOrder2 = new FinlOrder(20, new FinlStock(ticker));
-		FinlOrder testOrder3 = new FinlOrder(10, new FinlStock(ticker));
+		FinlOrder testOrder2 = new FinlOrder(10, new FinlStock("FB"));
+		FinlOrder testOrder3 = new FinlOrder(10, new FinlStock("AAPL"));
+		FinlOrder testOrder4 = new FinlOrder(5, new FinlStock("AAPL"));
+
+
+		testPortfolio.buy(testOrder1);
 		testPortfolio.buy(testOrder1);
 		testPortfolio.buy(testOrder2);
 		testPortfolio.sell(testOrder3);
-		testPortfolio.buy(testOrder3);
-		testPortfolio.buy(testOrder2);
-		testPortfolio.buy(testOrder1);
+		testPortfolio.sell(testOrder4);
 
 		testPortfolio.csvExport();
 	}
