@@ -92,7 +92,7 @@ let rec compile_sstatement = function
   | Ssell(s) -> "default_portfolio.sell(" ^ compile_sexpression s ^ ");"
   | Sprint(e) -> (match e.sdtype with
                     Stocktype -> compile_sexpression e ^ ".printStock();"
-                    | Ordertype -> "System.out.println(\"to do\");" (* TO DO *)
+                    | Ordertype -> compile_sexpression e ^ ".printOrder();"
                     | Voidtype -> "default_portfolio.printHoldings();"
                     | _ -> "System.out.println(" ^ compile_sexpression e ^ ");")
 

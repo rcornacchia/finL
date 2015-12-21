@@ -1,0 +1,4 @@
+order o;
+o << 10 of @TSLA;
+buy o;
+buy o;
