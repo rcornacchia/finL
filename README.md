@@ -6,16 +6,21 @@ http://opam.ocaml.org/doc/Install.html
 
 http://www.typerex.org/ocaml-top.html
 
-# Compiling finL Compiler
-	$ make
 
-# Compiling and Running a Single Program
-	$ ./finlc [filename.finl]
-	$ ./finl.sh [filename]
 
-# Options
-	$ ./finlc -a [filename.finl] #prints ast
-	$ ./finlc -s [filename.finl] #prints sast
+#Running a Single File (input.finl)
+	$  make clean
+	$  make
+	$  ./finlc  input.finl
+	$  ./finl.sh input
 
-# Running Regression Test
-	$ ./regression_test.sh
+#To Include a Command-Line CSV Portfolio
+	$ ./finl.sh input my_portfolio
+
+#Options
+./finlc provides two options: -a and -s
+$  ./finlc -a input.finl 	# prints the abstract syntax tree to the console
+$  ./finlc -s input.finl 	# prints the semantically analyzed syntax tree to the console
+
+#Regression Testing
+.$  ./regression_test.sh
