@@ -124,6 +124,6 @@ let compile (sprogram: Sast.sprogram) (filename: string) =
   "try {\nFinlPortfolio portfolio;\n" ^
   "if (args.length > 0) { portfolio = new FinlPortfolio(args[0]);\n" ^
   "portfolio.csvPortfolioBuilder(); }\n" ^
-  "else { portfolio = new FinlPortfolio(); }\n" ^
+  "else { portfolio = new FinlPortfolio(\"default\"); }\n" ^
   String.concat "\n" (List.map compile_sstatement sprogram.sstatements) ^
   "\nportfolio.csvExport(); } catch (Exception e) { System.out.println(\"Library Error\"); }\n}\n}"
