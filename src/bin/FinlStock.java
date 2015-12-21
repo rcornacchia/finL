@@ -1,5 +1,6 @@
 package bin;
 
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigDecimal;
@@ -208,6 +209,7 @@ public class FinlStock {
 		public BigDecimal	changeFromMA50;
 		public BigDecimal	changeFromYearHigh;
 		public BigDecimal	changeFromYearLow;
+
 
 		////////////////////////////////////////////
 		//////////////*Constructors*////////////////

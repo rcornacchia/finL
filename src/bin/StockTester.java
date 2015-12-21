@@ -3,6 +3,7 @@ package bin;
 
 
 
+
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -17,21 +18,16 @@ import yahoofinance.quotes.fx.FxSymbols;
 public class StockTester {
 
 	public static void main(String[] args) {
-		String ticker = "MSFT";
-		//		FinlPortfolio default_portfolio = new FinlPortfolio();
-		//		FinlStock stk;
-		//		stk = new FinlStock("TSLA");
-		//		String s;
-		//		s = stk.getRequest("price");
-		//		s = new FinlStock("AAPL").getRequest("price");
-		//		System.out.println(s);
 
-		//stockTest(ticker);
+		//method1();
+		method2();
+
+	}	//end main()
+
+
+	private static void method1() {
 
 		FinlPortfolio testPortfolio = new FinlPortfolio("test");
-//		testPortfolio.setPortfolioName("test1");
-
-		testPortfolio.csvPortfolioBuilder();
 
 		testPortfolio.buy(new FinlOrder(10, new FinlStock("AAPL")));
 		testPortfolio.buy(new FinlOrder(10, new FinlStock("FB")));
@@ -40,34 +36,25 @@ public class StockTester {
 		testPortfolio.buy(new FinlOrder(10, new FinlStock("FB")));
 		testPortfolio.buy(new FinlOrder(10, new FinlStock("MBLY")));
 
-
-		testPortfolio.switchWith("test2");
-
-//		FinlPortfolio testPortfolio2 = new FinlPortfolio();
-//
-//		testPortfolio2.csvPortfolioBuilder();
-//
-//		testPortfolio2.printHoldings();
-//		//testPortfolio2.printOrders();
+		testPortfolio.printHoldings();
+		testPortfolio.csvExport();
 
 
 
-
-		//
-
+	}
 
 
-		//testPortfolio2.printHoldings();
+	private static void method2() {
+		FinlPortfolio testPortfolio2 = new FinlPortfolio("default");
+		testPortfolio2.csvPortfolioBuilder("test");
+
+		testPortfolio2.printHoldings();
+		//testPortfolio2.csvExport();
+
+	}
 
 
-		//testPortfolio.csvPortfolioBuilder();
-		//
-		//		testPortfolio.printHoldings();
 
-		//portfolioTest(ticker);
-
-
-	}	//end main()
 
 
 

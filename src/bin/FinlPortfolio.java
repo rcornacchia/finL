@@ -1,7 +1,6 @@
 package bin;
 
 
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -197,7 +196,7 @@ public class FinlPortfolio {
 				double weight = Double.parseDouble(weightString.substring(0, weightString.length()-1))/100;
 
 				holdingObject.stock = new FinlStock(arrayHolding[0]);					//stock
-				holdingObject.positionShares = (int) (dollarToDouble(arrayHolding[1]));	//shares
+				holdingObject.positionShares = Integer.parseInt(arrayHolding[1]);	//shares
 				holdingObject.positionValue = dollarToDouble(arrayHolding[2]);			//value
 				holdingObject.avgPrice = dollarToDouble(arrayHolding[3]);				//average price
 				holdingObject.pnl = dollarToDouble(arrayHolding[4]);					//p&l
@@ -205,7 +204,7 @@ public class FinlPortfolio {
 				//calculations above^
 				holdingObject.percentOfPortfolio = weight;								//weight
 				holdingObject.lastOrder = new Date(arrayHolding[6]);
-				this.accountValue += holdingObject.positionValue;
+				//this.accountValue += holdingObject.positionValue;
 
 				importedPortfolio.holdings.add(holdingObject);		//add the holding object to the holdings list
 
