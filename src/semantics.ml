@@ -140,7 +140,7 @@ let rec expression_to_sexpression env (expression: Ast.expression) =
 
 		| Access(e, s) ->		let acc = split_access s
 								and checked_expression = expression_to_sexpression env e in
-								{ sexpr = Saccess(checked_expression, acc); sdtype = Stringtype; } (* CHECK RETURN TYPE???/VALID ACCESS? *)
+								{ sexpr = Saccess(checked_expression, acc); sdtype = Floattype; }
 
 		| Assign(a, e) -> 		let sexpression = expression_to_sexpression env e in
 								let checked_sexpression = check_assign env a sexpression in
