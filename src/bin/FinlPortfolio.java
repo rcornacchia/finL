@@ -3,6 +3,7 @@ package bin;
 
 
 
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -40,7 +41,7 @@ public class FinlPortfolio {
 	public void buy(FinlOrder order) {
 		if(order.getExecute() == true) { //order has been executed
 			if(order.stock.valid)
-				System.err.println("\n" + order.stock.symbol.toUpperCase()
+				System.err.println(order.stock.symbol.toUpperCase()
 						+ " Order already executed! Nothing Done.\n");
 			return;				//do nothing
 		}
@@ -56,7 +57,7 @@ public class FinlPortfolio {
 	public void sell(FinlOrder order) {
 		if(order.getExecute() == true) { //order has been executed
 			if(order.stock.valid)
-				System.err.println("\n" + order.stock.symbol.toUpperCase()
+				System.err.println(order.stock.symbol.toUpperCase()
 						+ "Order already executed! Nothing Done.\n");
 			return;				//do nothing
 		}
