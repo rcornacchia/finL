@@ -62,7 +62,7 @@ public class FinlStock {
 		String result;
 		try {
 
-			if(request.equalsIgnoreCase("symbol") || request.equalsIgnoreCase("ticker") {
+			if(request.equalsIgnoreCase("symbol") || request.equalsIgnoreCase("ticker")) {
 				return this.symbol;
 			}
 			if(request.equalsIgnoreCase("company")) {
