@@ -47,13 +47,13 @@ line:
 statement:
   expression SEMI { Expr($1) }
   | WHILE expression LBRACE statement_list RBRACE SEMI { While($2, $4) }
-  | WHEN expression LBRACE statement_list RBRACE SEMI { When($2, $4) }
+  | WHEN access_expression LBRACE statement_list RBRACE SEMI { When($2, $4) }
   | expression IF LBRACE statement_list RBRACE SEMI { If($1, $4) }
   | vdecl SEMI { Vdecl($1) }
   | BUY order SEMI { Buy($2) }
   | SELL order SEMI { Sell($2) }
   | PRINT expression_option SEMI { Print($2) }
-  | RETURN expression_option SEMI { Ret($2) } /* VOID TYPES -> EXPRESSION OPTION?? */
+  | RETURN expression_option SEMI { Ret($2) }
 
 order:
   VAR { Var($1) }
@@ -67,6 +67,20 @@ expression_option:
   /* nothing */ { Noexpr }
   | expression { $1 }
 
+access_expression:
+  access { $1 }
+  | access_expression EQ access_expression { Abinop($1, Equal, $3) }
+  | access_expression LT access_expression { Abinop($1, Less, $3) }
+  | access_expression LEQ access_expression { Abinop($1, Leq, $3) }
+  | access_expression GT access_expression { Abinop($1, Greater, $3) }
+  | access_expression GEQ access_expression { Abinop($1, Geq, $3) }
+  | access_expression AND access_expression { Abinop($1, And, $3) }
+  | access_expression OR access_expression { Abinop($1, Or, $3) }
+  | LPAREN access_expression RPAREN { $2 }
+
+access:
+  stock ACCESS { Access($1, $2) }
+
 expression:
   INT { Int($1) }
   | STRING  { String($1) }
@@ -76,7 +90,6 @@ expression:
   | INT OF stock { Order($1, $3) }
   | MINUS expression { Unop(Neg, $2) }
   | NOT LPAREN expression RPAREN { Unop(Not, $3) }
-  | stock ACCESS { Access($1, $2) }
   | expression PLUS expression  { Binop($1, Add, $3) }
   | expression MINUS expression  { Binop($1, Sub, $3) }
   | expression TIMES expression { Binop($1, Mult, $3 ) }
@@ -91,6 +104,7 @@ expression:
   | expression AND expression { Binop($1, And, $3) }
   | expression OR expression { Binop($1, Or, $3) }
   | VAR ASSIGN expression  { Assign($1, $3) }
+  | VAR ASSIGN access_expression  { Access_assign($1, $3) }
   | VAR AASSIGN expression { Aassign($1, $3) }
   | VAR SASSIGN expression { Sassign($1, $3) }
   | VAR MASSIGN expression { Massign($1, $3) }

@@ -22,20 +22,23 @@ type expression =
   | Order of int * expression
   | Var of string
   | Unop of unop * expression
-  | Access of expression * string
   | Binop of expression * binop * expression
   | Assign of string * expression
+  | Access_assign of string * access_expression
   | Aassign of string * expression
   | Sassign of string * expression
   | Massign of string * expression
   | Dassign of string * expression
   | Call of string * expression list
   | Noexpr
+and access_expression =
+  Access of expression * string
+  | Abinop of access_expression * binop * access_expression
 
 type statement =
   Expr of expression
   | While of expression * statement list
-  | When of expression * statement list
+  | When of access_expression * statement list
   | If of expression * statement list
   | Vdecl of var_decl
   | Ret of expression
@@ -86,7 +89,10 @@ let string_of_data_type = function
   | Ordertype -> "order"
   | Voidtype -> "void"
 
-let rec string_of_expression = function
+let rec string_of_access_expression = function
+  Access(e, s) -> "Access{" ^ string_of_expression e ^ " -> " ^ s ^ "}"
+  | Abinop(ae1, op, ae2) -> "Abinop{" ^ string_of_access_expression ae1 ^ " " ^ string_of_binop op ^ " " ^ string_of_access_expression ae2 ^ "}"
+and string_of_expression = function
   Int(i) -> "Int(" ^ string_of_int i ^ ")"
   | String(s) -> "String(" ^ s ^ ")"
   | Float(f) -> "Float(" ^ string_of_float f ^ ")"
@@ -95,8 +101,8 @@ let rec string_of_expression = function
   | Var(v) -> "Var(" ^ v ^ ")"
   | Unop(op, e) -> "Unop(" ^ string_of_unop op ^ " " ^ string_of_expression e ^ ")"
   | Binop(e1, o, e2) -> "Binop(" ^ string_of_expression e1 ^ " " ^ string_of_binop o ^ " " ^ string_of_expression e2 ^ ")"
-  | Access(e, s) -> "Access(" ^ string_of_expression e ^ " -> " ^ s ^ ")"
   | Assign(a, e) -> "Assign(" ^ a ^ " = " ^ string_of_expression e ^ ")"
+  | Access_assign(s, ae) -> "Access(" ^ s ^ " = " ^ string_of_access_expression ae ^ ")"
   | Aassign(aa, e) -> "Aassign(" ^ aa ^ " = " ^ string_of_expression e ^ ")"
   | Sassign(sa, e) -> "Sassign(" ^ sa ^ " = " ^ string_of_expression e ^ ")"
   | Massign(ma, e) -> "Massign(" ^ ma ^ " = " ^ string_of_expression e ^ ")"
@@ -119,8 +125,8 @@ let rec string_of_statement = function
                          ") statementlist{\nstatement{" ^ 
                          String.concat "}\nstatement{" (List.map string_of_statement slst) ^
                          "}\n}\n}"
-  | When(expr, slst) -> "when{\n(" ^ 
-                         string_of_expression expr ^ 
+  | When(aexpr, slst) -> "when{\n(" ^ 
+                         string_of_access_expression aexpr ^ 
                          ") statementlist{\nstatement{" ^ 
                          String.concat "}\nstatement{" (List.map string_of_statement slst) ^
                          "}\n}\n}"

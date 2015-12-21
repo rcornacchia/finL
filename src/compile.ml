@@ -30,13 +30,14 @@ let string_of_stock ticker =
   "new FinlStock(\"" ^ new_ticker ^ "\")"
 
 let string_of_order amt ord =
-  let new_ord = match ord.sexpr with
-    Svar(var) -> var
-    | Sstock(stk) -> string_of_stock stk
+  let new_ord = match ord.sexpr with (* parser should never allow an access expression *)
+    Nonaccess_expr(e) -> (match e with (* parser should never allow anything but vars and stocks *)
+                            Svar(var) -> var
+                            | Sstock(stk) -> string_of_stock stk)
   in "new FinlOrder(" ^ string_of_int amt ^ ", " ^ new_ord ^ ")"
 
-let rec compile_sexpression (sexpr: Sast.sexpression) =
-  match sexpr.sexpr with 
+let rec compile_expr (expr: Sast.expr) =
+  match expr with
     Sstring(str) -> str
     | Sint(i) -> string_of_int i
     | Sfloat(f) -> string_of_float f
@@ -56,7 +57,7 @@ let rec compile_sexpression (sexpr: Sast.sexpression) =
                                     | And -> boolean_to_sexpr (sexpr_to_boolean (compile_sexpression expr1) ^ " " ^ Ast.string_of_binop op ^ " " ^ sexpr_to_boolean (compile_sexpression expr2))
                                     | Or -> boolean_to_sexpr (sexpr_to_boolean (compile_sexpression expr1) ^ " " ^ Ast.string_of_binop op ^ " " ^ sexpr_to_boolean (compile_sexpression expr2))
                                     | _ -> compile_sexpression expr1 ^ " " ^ Ast.string_of_binop op ^ " " ^ compile_sexpression expr2)
-    | Saccess(expr, str) -> compile_sexpression expr ^ ".getRequest(\"" ^ str ^ "\")"
+    (*| Saccess_assign(expr, str) -> compile_sexpression expr ^ ".getRequest(\"" ^ str ^ "\")"*)
     | Sassign(var, expr) -> var ^ " = " ^ compile_sexpression expr
     | Saassign(avar, aexpr) -> avar ^ " += " ^ compile_sexpression aexpr
     | Ssassign(svar, sexpr) -> svar ^ " -= " ^ compile_sexpression sexpr
@@ -65,6 +66,10 @@ let rec compile_sexpression (sexpr: Sast.sexpression) =
     | Svar(str) -> str
     | Scall(name, exprlst) -> name ^ "(" ^ String.concat ", " (List.map compile_sexpression exprlst) ^ ")"
     | Snoexpr -> ""
+and compile_sexpression (sexpr: Sast.sexpression) =
+  match sexpr.sexpr with
+    Nonaccess_expr(e) -> compile_expr e
+    (*| Access_expr of saccess_expression*)
 
 let rec compile_sstatement = function
   Sexpr(expr) -> compile_sexpression expr ^ ";"

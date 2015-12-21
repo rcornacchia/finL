@@ -7,8 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-
-
 public class FinlOrder {
 
 	SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
