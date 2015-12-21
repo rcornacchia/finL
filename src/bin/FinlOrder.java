@@ -51,6 +51,31 @@ public class FinlOrder {
 
 	}
 
+	public void printOrder() {
+		if(this.execute) {
+			System.out.println("\n\n" + this.stock.companyName
+					+ " (" + this.type.toUpperCase() + " Order Executed)"
+					+ "\n_______________________________\n");
+			System.out.println("Symbol:\t\t\t" + this.stock.symbol);
+			System.out.println("Order Size Value:\t" + this.size);
+			System.out.format("Execution Price:\t$%.2f\n", this.sharePrice);
+			System.out.println("Trade Date:\t\t" + this.date.toString()
+			+ "\n_______________________________\n\n");
+		}
+		else {
+			System.out.println("\n\n" + this.stock.companyName
+					+ "(Order Not Yet Executed)"
+					+ "\n_______________________________\n");
+			System.out.println("Symbol:\t\t\t" + this.stock.symbol);
+			System.out.println("Order Size Value:\t" + this.size);
+			System.out.println("Order Type:\t\tOrder Not Yet Executed");
+			System.out.println("Execution Price:\tOrder Not Yet Executed");
+			System.out.println("Trade Date:\t\tOrder Not Yet Executed"
+					+ "\n_______________________________\n\n");
+		}
+		System.out.flush();
+	}
+
 	//getters and setters//
 
 	public String getType() {
