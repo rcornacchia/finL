@@ -3,6 +3,7 @@ package bin;
 
 
 
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigDecimal;
@@ -60,6 +61,14 @@ public class FinlStock {
 	public String getRequest(String request) {
 		String result;
 		try {
+
+			if(request.equalsIgnoreCase("symbol") || request.equalsIgnoreCase("ticker") {
+				return this.symbol;
+			}
+			if(request.equalsIgnoreCase("company")) {
+				return this.companyName;
+			}
+
 			result = this.finlFundamentals.fundamentalCheck(request);
 			if(result != null)
 				return result;

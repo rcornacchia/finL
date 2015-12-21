@@ -1,0 +1,129 @@
+
+finL Library Outline:
+
+Stock Class
+	Quotes Subclass
+	Fundamentals Subclass
+	Dividends Subclass
+
+Order Class
+
+Portfolio Class
+	Holding Subclass
+
+
+finL’s library works from the bottom up: a Portfolio object is required to
+properly use an order object.
+
+  To create a Portfolio:
+  FinlPortfolio examplePortfolio = new FinlPortfolio();
+
+  Placing an order is as simple as defining the size and the stock you would
+  like to buy or sell, and then executing it. An order can be created without
+  being directly associated with a Portfolio, but it cannot be executed.
+
+  To create and execute an Order:
+  FinlOrder exampleOrder = new FinlOrder(10, new FinlStock("XMPL"));
+  examplePortfolio.buy(exampleOrder);
+
+    The user can also export their orders and aggregated holdings
+    to a .csv file if they want to keep track of their portfolio between
+    sessions.
+
+    To export:
+    testPortfolio.csvExport();
+
+    This will create two .csv files an build them in the top level directory of
+    project folder.
+    They will be named the name of the portfolio (defaultPortfolio) followed by
+    _orders.csv and _holdings.csv, respectively.
+      for example:
+      "defaultPortfolio_holdings.csv"
+      "defaultPortfolio_orders.csv"
+    The portfolio name can be changed at any point, using the
+    setPortfolioName(String name) method. This will of course cause any
+    newly generated .csv output files to be named as such.
+
+    The user can import _holdings.csv and _orders.csv files (they must be
+    properly formatted – do not change any generated .csv files!)
+
+  Stock objects can be created independently of portfolios and orders, but are
+  obviously instrumental to the proper use of both.
+
+
+  To create a stock object:
+  FinlStock exampleStock = new FinlStock("XMPL");
+
+	Stocks must be passed a string in the constructor
+	Stocks have a symbol, companyName, and a large number of associated variables
+	and statistics. There are 60 variables that can be returned.
+
+	To get these statistics, a user call call:
+	exampleStock.getRequest(String request);
+
+	This returns a string of the requested variable. The request must match one of
+	the 60 variables stored in the stock type:
+
+	for example, if a user would like to see a stock's earnings per share:
+	String earningsPerShare = exampleStock.getRequest("eps");
+
+	The request string must match the associated variable name.
+	See the list below:
+
+	public String symbol;
+	public String companyName;
+
+	/*Fundamentals Object*/
+		private StockStats fundamentals;
+
+		/*Fundamentals*/
+		public BigDecimal 	bookValuePerShare;
+		public BigDecimal 	ebitda;
+		public BigDecimal	eps;
+		public BigDecimal	marketCap;
+		public BigDecimal	pe;
+		public BigDecimal	peg;
+		public BigDecimal	priceBook;
+		public BigDecimal	priceSales;
+		public BigDecimal	revenue;
+		public BigDecimal	roe;
+		public long			sharesFloat;
+		public long			sharesOutstanding;
+
+		/*Estimates*/
+		public BigDecimal	epsEstimateCurrentYear;
+		public BigDecimal	epsEstimateNextQuarter;
+		public BigDecimal	epsEstimateNextYear;
+		public BigDecimal	oneYearTargetPrice;
+
+		/*Quote & Prices*/
+		private StockQuote 	quote;
+		/*////Prices////*/
+		public BigDecimal 	price;
+		public BigDecimal 	priceOpen;
+		public BigDecimal 	pricePrevClose;
+		public BigDecimal	priceMA200;
+		public BigDecimal	priceMA50;
+		public BigDecimal	priceDayHigh;
+		public BigDecimal	priceDayLow;
+		public BigDecimal	bid;
+		public BigDecimal 	ask;
+		public long	 		avgVolume;
+		/*Price Movement*/
+		public BigDecimal	change;
+		public BigDecimal	changePercent;
+		public BigDecimal	changeFromMA200;
+		public BigDecimal	changeFromMA50;
+		public BigDecimal	changeFromYearHigh;
+		public BigDecimal	changeFromYearLow;
+
+		/*Dividend Object*/
+		private StockDividend dividend;
+
+		/*Dividend Data*/
+		public BigDecimal 	annualYield;
+		public BigDecimal 	annualYieldPercent;
+		public Calendar	exDivDate;
+		public Calendar	payDate;
+		public String 		exDivDate_String;
+		public String 		payDate_String;
