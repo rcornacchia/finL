@@ -33,6 +33,7 @@ let string_of_order amt ord =
   let new_ord = match ord.sexpr with
     Svar(var) -> var
     | Sstock(stk) -> string_of_stock stk
+    | _ -> "" (* parser should not allow any other tokens *)
   in "new FinlOrder(" ^ string_of_int amt ^ ", " ^ new_ord ^ ")"
 
 let rec compile_sexpression (sexpr: Sast.sexpression) =
@@ -78,9 +79,13 @@ let rec compile_sstatement = function
                   ") {\n" ^
                   String.concat "\n" (List.map compile_sstatement sl) ^
                   "\n}"
-  | Swhen(e, sl) -> "WhenLoop when = new WhenLoop(" ^
-                    sexpr_to_boolean (compile_sexpression e) ^ 
-                    ");\nThread when_thread = new Thread(when);\nwhen_thread.start();" (* TO DO *)
+  | Swhen((e1, op, e2), sl) -> "WhenLoop when = new WhenLoop(" ^
+                                compile_sexpression e1 ^
+                                ", \"" ^
+                                Ast.string_of_binop op ^
+                                "\", " ^
+                                compile_sexpression e2 ^
+                                ");\nThread when_thread = new Thread(when);\nwhen_thread.start();" (* TO DO *)
   | Svdecl(v) -> compile_vdecl v ^ ";"
   | Sret(r) -> "return " ^ compile_sexpression r ^ ";"
   | Sbuy(b) -> "default_portfolio.buy(" ^ compile_sexpression b ^ ");"

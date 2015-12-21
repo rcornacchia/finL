@@ -47,13 +47,23 @@ line:
 statement:
   expression SEMI { Expr($1) }
   | WHILE expression LBRACE statement_list RBRACE SEMI { While($2, $4) }
-  | WHEN expression LBRACE statement_list RBRACE SEMI { When($2, $4) }
+  | WHEN access_expression LBRACE statement_list RBRACE SEMI { When($2, $4) }
   | expression IF LBRACE statement_list RBRACE SEMI { If($1, $4) }
   | vdecl SEMI { Vdecl($1) }
   | BUY order SEMI { Buy($2) }
   | SELL order SEMI { Sell($2) }
   | PRINT expression_option SEMI { Print($2) }
   | RETURN expression_option SEMI { Ret($2) } /* VOID TYPES -> EXPRESSION OPTION?? */
+
+access_expression:
+  access EQ access { ($1, Equal, $3) }
+  | access LT access { ($1, Less, $3) }
+  | access LEQ access { ($1, Leq, $3) }
+  | access GT access { ($1, Greater, $3) }
+  | access GEQ access { ($1, Geq, $3) }
+
+access:
+  stock ACCESS { Access($1, $2) }
 
 order:
   VAR { Var($1) }

@@ -35,7 +35,7 @@ type expression =
 type statement =
   Expr of expression
   | While of expression * statement list
-  | When of expression * statement list
+  | When of (expression * binop * expression) * statement list
   | If of expression * statement list
   | Vdecl of var_decl
   | Ret of expression
@@ -119,11 +119,15 @@ let rec string_of_statement = function
                          ") statementlist{\nstatement{" ^ 
                          String.concat "}\nstatement{" (List.map string_of_statement slst) ^
                          "}\n}\n}"
-  | When(expr, slst) -> "when{\n(" ^ 
-                         string_of_expression expr ^ 
-                         ") statementlist{\nstatement{" ^ 
-                         String.concat "}\nstatement{" (List.map string_of_statement slst) ^
-                         "}\n}\n}"
+  | When((e1, op, e2), slst) -> "when{\n(" ^ 
+                                string_of_expression e1 ^ 
+                                ", " ^ 
+                                string_of_binop op ^
+                                ", " ^
+                                string_of_expression e2 ^
+                                ") statementlist{\nstatement{" ^ 
+                                String.concat "}\nstatement{" (List.map string_of_statement slst) ^
+                                "}\n}\n}"
   | Vdecl(v) -> string_of_vdecl v
   | Ret(r) -> "return{" ^ string_of_expression r ^ "}"
   | Buy(b) -> "buy{" ^ string_of_expression b ^ "}"

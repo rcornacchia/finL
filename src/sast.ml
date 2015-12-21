@@ -26,7 +26,7 @@ type sstatement =
   Sexpr of sexpression
   | Sif of sexpression * sstatement list
   | Swhile of sexpression * sstatement list
-  | Swhen of sexpression * sstatement list
+  | Swhen of (sexpression * Ast.binop * sexpression) * sstatement list
   | Svdecl of Ast.var_decl
   | Sret of sexpression
   | Sbuy of sexpression
@@ -69,7 +69,7 @@ let rec string_of_sstatement = function
   Sexpr(e) -> "sexpression{" ^ string_of_sexpression e ^ "}"
   | Sif(sexpr, ssl) -> "sif{ sstatement{" ^ String.concat "} sstatement{" (List.map string_of_sstatement ssl) ^ "}}"
   | Swhile(sexpr, ssl) -> "swhile{ sstatement{" ^ String.concat "} sstatement{" (List.map string_of_sstatement ssl) ^ "}}"
-  | Swhen(sexpr, ssl) -> "swhen{ sstatement{" ^ String.concat "} sstatement{" (List.map string_of_sstatement ssl) ^ "}}"
+  | Swhen((se1, op, se2), ssl) -> "swhen{ (" ^ string_of_sexpression se1 ^ " " ^ Ast.string_of_binop op ^ " " ^ string_of_sexpression se2 ^ ") sstatement{" ^ String.concat "} sstatement{" (List.map string_of_sstatement ssl) ^ "}}"
   | Svdecl(v) -> Ast.string_of_vdecl v
   | Sret(r) -> "sreturn{ sexpression{" ^ string_of_sexpression r ^ "}}"
   | Sbuy(b) -> "sbuy{ sexpression{" ^ string_of_sexpression b ^ "}}"
