@@ -1,9 +1,5 @@
 package bin;
 
-
-
-
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -14,7 +10,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
 
 public class FinlPortfolio {
 
@@ -64,7 +59,6 @@ public class FinlPortfolio {
 		orders.add(order);
 		new FinlPortfolio.Holding(order);
 	}
-
 
 	private void setPortfolioName(String name) {
 		this.portfolioName = name;

@@ -14,7 +14,6 @@ public class FinlOrder {
 	//////////*FinlOrder Constructors*//////////
 	////////////////////////////////////////////
 
-
 	/* automatically executes */
 	public FinlOrder(int size, FinlStock stock) {
 		this.size = size;
@@ -54,7 +53,6 @@ public class FinlOrder {
 	}
 
 	//getters and setters//
-
 	public String getType() {
 		return this.type;
 	}
