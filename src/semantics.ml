@@ -322,7 +322,7 @@ let fdecl_to_sfdecl env (fdecl: Ast.func_decl) = (* multiple_return_test.finl NE
 	let func_env = List.fold_left statement_to_sstatement func_env fdecl.body in
 	let void = fdecl.rtype = Voidtype
 	and returns = List.exists check_for_sreturn func_env.checked_statements in
-	if (void && not returns) || (not void && returns) then
+	if (void && not returns) || returns then
 		(let sfdecl = { sname = checked_name;
 				   		sformals = List.rev checked_formals;
 				   		sbody = List.rev func_env.checked_statements;
@@ -334,8 +334,7 @@ let fdecl_to_sfdecl env (fdecl: Ast.func_decl) = (* multiple_return_test.finl NE
 						env_scope = { scope_name = "reserved"; scope_rtype = Voidtype; }; }
 		in
 		new_env)
-	else if void then (raise (Except("Function '" ^ fdecl.name ^ "' should not return!")))
-		 else (raise (Except("Function '" ^ fdecl.name ^ "' does not have a return statement!"))) (* no_return_test.finl *)
+	else (raise (Except("Function '" ^ fdecl.name ^ "' does not have a return statement!"))) (* no_return_test.finl *)
 
 let analyze_line env (line: Ast.line) =
 	match line with

@@ -1,0 +1,7 @@
+function void main() {
+	print "hey!";
+	return;
+};
+
+main();
+print "spalding";

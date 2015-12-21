@@ -53,7 +53,7 @@ statement:
   | BUY order SEMI { Buy($2) }
   | SELL order SEMI { Sell($2) }
   | PRINT expression_option SEMI { Print($2) }
-  | RETURN expression SEMI { Ret($2) } /* VOID TYPES -> EXPRESSION OPTION?? */
+  | RETURN expression_option SEMI { Ret($2) } /* VOID TYPES -> EXPRESSION OPTION?? */
 
 order:
   VAR { Var($1) }
