@@ -3,6 +3,8 @@ package bin;
 
 
 
+
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -11,7 +13,6 @@ import java.util.Date;
 
 public class FinlOrder {
 
-	SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
 	public int size				= 0;
 	public FinlStock stock		= null;
 	public double sharePrice 	= 0.0;
@@ -28,6 +29,9 @@ public class FinlOrder {
 	public FinlOrder(int size, FinlStock stock) {
 		this.size = size;
 		this.stock = stock;
+		if(!this.stock.valid) {		//stock is not a valid stock
+			this.execute = true;	//order cannot be executed
+		}
 	}
 
 	public FinlOrder()	{	//constructor for building from PDF
@@ -76,4 +80,7 @@ public class FinlOrder {
 	public void setExecute(boolean execute) {
 		this.execute = execute;
 	}
+
+
+
 }

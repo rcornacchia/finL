@@ -4,6 +4,7 @@ package bin;
 
 
 
+
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -27,15 +28,15 @@ public class StockTester {
 //		s = new FinlStock("AAPL").getRequest("price");
 //		System.out.println(s);
 
-		orderTest(ticker);
+		//orderTest(ticker);
 
-		FinlPortfolio testPortfolio = new FinlPortfolio();
+//		FinlPortfolio testPortfolio = new FinlPortfolio();
+//
+//		testPortfolio.csvPortfolioBuilder();
+//
+//		testPortfolio.printHoldings();
 
-		testPortfolio.csvPortfolioBuilder();
-
-		testPortfolio.printHoldings();
-
-		//portfolioTest(ticker);
+		portfolioTest(ticker);
 
 
 	}	//end main()
@@ -49,7 +50,7 @@ public class StockTester {
 
 		FinlOrder testOrder1 = new FinlOrder(10, new FinlStock(ticker));
 		FinlOrder testOrder3 = new FinlOrder(20, new FinlStock(ticker));
-		FinlOrder testOrder2 = new FinlOrder(10, new FinlStock("FB"));
+		FinlOrder testOrder2 = new FinlOrder(10, new FinlStock("FBs"));
 
 
 		testPortfolio.buy(testOrder1);

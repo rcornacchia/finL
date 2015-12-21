@@ -2,8 +2,6 @@
 package bin;
 
 
-
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigDecimal;
@@ -18,6 +16,7 @@ public class FinlStock {
 
 	public String symbol;
 	public String companyName;
+	public boolean valid = true;	//valid stock
 
 	private yahoofinance.Stock stock;
 	public FinlQuote finlQuote;
@@ -29,6 +28,10 @@ public class FinlStock {
 	///////////Gets all sub-objects/////////////
 	public FinlStock(String ticker) {
 		setStock(ticker);
+		if(this.stock.getName().equals("N/A")) {
+			System.err.println(ticker + " Not Found!");
+			this.valid = false;
+		}
 
 		this.finlQuote 					= new FinlStock.FinlQuote(stock);
 		this.finlFundamentals 			= new FinlStock.FinlFundamentals(stock);
@@ -44,6 +47,7 @@ public class FinlStock {
 			this.stock = YahooFinance.get(this.symbol);		//assign stock w/ suppressed output
 			this.companyName = this.stock.getName();
 			System.setOut(defaultOutputStream);				//reset output stream to default
+
 		} catch (IOException IOE) {
 			IOE.printStackTrace();
 		}

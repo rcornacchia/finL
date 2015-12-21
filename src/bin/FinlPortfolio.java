@@ -3,7 +3,6 @@ package bin;
 
 
 
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -40,7 +39,9 @@ public class FinlPortfolio {
 
 	public void buy(FinlOrder order) {
 		if(order.getExecute() == true) { //order has been executed
-			System.err.println("Order already executed!\nNothing Done.");
+			if(order.stock.valid)
+				System.err.println("\n" + order.stock.symbol.toUpperCase()
+						+ " Order already executed! Nothing Done.\n");
 			return;				//do nothing
 		}
 		order.setType("buy");
@@ -54,7 +55,9 @@ public class FinlPortfolio {
 
 	public void sell(FinlOrder order) {
 		if(order.getExecute() == true) { //order has been executed
-			System.err.println("Order already executed!\nNothing Done.");
+			if(order.stock.valid)
+				System.err.println("\n" + order.stock.symbol.toUpperCase()
+						+ "Order already executed! Nothing Done.\n");
 			return;				//do nothing
 		}
 		order.setType("sell");
@@ -157,6 +160,7 @@ public class FinlPortfolio {
 
 		//build Portfolio: Holdings
 		while ((line = holdingReader.readLine()) != null) {
+
 			if(!(lineNum++ < 5)) {		//if the line is a header line, do this
 
 				//create new holding object to put into Portfolio
@@ -179,7 +183,11 @@ public class FinlPortfolio {
 
 				importedPortfolio.holdings.add(holdingObject);		//add the holding object to the holdings list
 
-			}	//end build object
+			}	//end holdings object
+			if(lineNum == 3) {
+				String[] arrayHolding = line.split(cvsSplitBy);							// use comma as separator
+				this.accountValue = dollarToDouble(arrayHolding[1]);
+			}
 		}	//end holdings lister
 		return holdingReader;
 	}
@@ -339,7 +347,7 @@ public class FinlPortfolio {
 					+ (order.sharePrice * order.size)))/(tempSize + order.size);
 			this.avgPrice = weightedAverage;					//and new order's price
 			this.pnl = (this.positionShares * order.sharePrice) 	//difference between the value of our position
-					- (this.positionShares * this.avgPrice);	//now and what we paid for it
+					- (this.positionShares * this.avgPrice);		//now and what we paid for it
 			this.lastOrder = order.date;
 			this.stock = order.stock;
 			this.positionValue = this.avgPrice * this.positionShares;
