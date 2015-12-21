@@ -83,7 +83,10 @@ let rec compile_sstatement = function
   | Sret(r) -> "return " ^ compile_sexpression r ^ ";"
   | Sbuy(b) -> "default_portfolio.buy(" ^ compile_sexpression b ^ ");"
   | Ssell(s) -> "default_portfolio.sell(" ^ compile_sexpression s ^ ");"
-  | Sprint(e) -> "System.out.println(" ^ compile_sexpression e ^ ");"
+  | Sprint(e) -> (match e.sdtype with
+                    Stocktype -> compile_sexpression e ^ ".printStock();"
+                    | Ordertype -> "System.out.println(\"to do\");" (* TO DO *)
+                    | _ -> "System.out.println(" ^ compile_sexpression e ^ ");")
 
 let compile_sfdecl (func: Sast.sfunc_decl) =
   "public static " ^

@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Cannot print 'void' type!")
+Error: Could not find or load main class print_void_test
