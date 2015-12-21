@@ -3,6 +3,7 @@ package bin;
 
 
 
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -41,8 +42,6 @@ public class FinlStock {
 	private void setStock(String ticker) {
 		try{
 			this.symbol = ticker;
-
-			System.out.println(ticker);
 
 			PrintStream defaultOutputStream = System.out;	//save output stream
 			System.setOut(null);							//redirect console output

@@ -6,6 +6,8 @@ package bin;
 
 
 
+
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -26,11 +28,11 @@ import yahoofinance.quotes.stock.StockStats;
 
 public class FinlOrder {
 
-	DateFormat dateFormat 		= new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
 	public int size				= 0;
 	public FinlStock stock		= null;
 	public double sharePrice 	= 0.0;
-	public Date date 			= null;
+	public Date date = null;
 	private String type;
 	private boolean execute		= false;
 
@@ -43,6 +45,10 @@ public class FinlOrder {
 	public FinlOrder(int size, FinlStock stock) {
 		this.size = size;
 		this.stock = stock;
+	}
+
+	public FinlOrder()	{	//constructor for building from PDF
+
 	}
 
 	//getters and setters//

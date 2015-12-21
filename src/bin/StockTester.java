@@ -2,8 +2,6 @@
 package bin;
 
 
-
-
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -18,7 +16,7 @@ import yahoofinance.quotes.fx.FxSymbols;
 public class StockTester {
 
 	public static void main(String[] args) {
-//		String ticker = "MSFT";
+		String ticker = "MSFT";
 //		FinlPortfolio default_portfolio = new FinlPortfolio();
 //		FinlStock stk;
 //		stk = new FinlStock("TSLA");
@@ -31,7 +29,7 @@ public class StockTester {
 
 		testPortfolio.csvPortfolioBuilder();
 
-
+		testPortfolio.printHoldings();
 
 		//portfolioTest(ticker);
 
