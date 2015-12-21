@@ -3,6 +3,7 @@ package bin;
 
 
 
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -82,14 +83,12 @@ public class FinlPortfolio {
 	public void printHoldings() {
 
 		System.out.println("\n\n" + this.portfolioName
-				+ "\n_______________________________");
-		System.out.format("Account Value\t|\tPositions\t|\tTrades\n$"
+				+ "\n _______________________________________________________");
+		System.out.format("|Account Value\t|\tPositions\t|\tTrades\t|\n|  $"
 				+ "%.2f" + "\t|\t"
-				+ this.holdings.size() + "\t\t|\t"
-				+ this.orders.size() +
-				"\n---------\n"
-				+ "Holdings:\n"
-				+ "---------\n\n",
+				+ this.holdings.size() + "\t\t|\t" + this.orders.size() +
+				"\t|\n ––––––––––––––––––––––––––––––––––––––––––––––––––––––"
+				+ "\n\n\n---------\nHoldings:\n---------\n",
 				this.accountValue);
 
 		for(int i = 0; i < holdings.size(); i++) {
@@ -101,7 +100,7 @@ public class FinlPortfolio {
 			System.out.format("Total Value:\t$%.2f\n", listStock.positionValue);
 			System.out.format("Average Price:\t$%.2f\n", listStock.avgPrice);
 			System.out.format("Position P&L:\t$%.2f\n", listStock.pnl);
-			System.out.format("Weight:\t\t$%.2f\n", listStock.percentOfPortfolio);
+			System.out.format("Weight:\t\t%.2f%%\n", listStock.percentOfPortfolio*100);
 			System.out.println("Last Trade:\t" + listStock.lastOrder.toString()
 					+ "\n_______________________________\n\n");
 		}
@@ -133,7 +132,7 @@ public class FinlPortfolio {
 		writer.append("Portfolio Name: "); writer.append(",");
 		writer.append(this.portfolioName); writer.append("\n");
 		writer.append("Account Value: "); writer.append(",");
-		writer.append(Double.toString(this.accountValue));
+		writer.append("$" + Double.toString(this.accountValue));
 		writer.append("\n\n");
 
 		writer.append("Stock Name"); writer.append(",");
@@ -150,13 +149,13 @@ public class FinlPortfolio {
 			writer.append(",");
 			writer.append(Integer.toString(listHolding.positionShares));
 			writer.append(",");
-			writer.append(Double.toString(listHolding.positionValue));
+			writer.append("$" + Double.toString(listHolding.positionValue));
 			writer.append(",");
-			writer.append(Double.toString(listHolding.avgPrice));
+			writer.append("$" + Double.toString(listHolding.avgPrice));
 			writer.append(",");
-			writer.append(Double.toString(listHolding.pnl));
+			writer.append("$" + Double.toString(listHolding.pnl));
 			writer.append(",");
-			writer.append(Double.toString(listHolding.percentOfPortfolio));
+			writer.append(Double.toString((listHolding.percentOfPortfolio)*100) + "%");
 			writer.append(",");
 			writer.append(listHolding.lastOrder.toString());
 			writer.append("\n");
@@ -171,14 +170,10 @@ public class FinlPortfolio {
 
 		FileWriter writer = new FileWriter(fileName);
 
-		writer.append("Stock Name");
-		writer.append(",");
-		writer.append("Order Type");
-		writer.append(",");
-		writer.append("Order Size");
-		writer.append(",");
-		writer.append("Execution Price");
-		writer.append(",");
+		writer.append("Stock Name"); writer.append(",");
+		writer.append("Order Type"); writer.append(",");
+		writer.append("Order Size"); writer.append(",");
+		writer.append("Execution Price"); writer.append(",");
 		writer.append("Execution Date");
 		writer.append("\n");
 
@@ -190,7 +185,7 @@ public class FinlPortfolio {
 			writer.append(",");
 			writer.append(Integer.toString(listOrder.size));
 			writer.append(",");
-			writer.append(Double.toString(listOrder.sharePrice));
+			writer.append("$" + Double.toString(listOrder.sharePrice));
 			writer.append(",");
 			writer.append(listOrder.date.toString());
 			writer.append("\n");
@@ -198,6 +193,9 @@ public class FinlPortfolio {
 		writer.flush();
 		writer.close();
 	}
+
+
+
 
 
 

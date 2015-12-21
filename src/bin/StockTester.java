@@ -4,6 +4,7 @@ package bin;
 
 
 
+
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -42,14 +43,16 @@ public class StockTester {
 
 
 		FinlOrder testOrder1 = new FinlOrder(10, new FinlStock(ticker));
+		FinlOrder testOrder3 = new FinlOrder(20, new FinlStock(ticker));
 		FinlOrder testOrder2 = new FinlOrder(10, new FinlStock("FB"));
 
 
 		testPortfolio.buy(testOrder1);
 		testPortfolio.buy(testOrder1);
 		testPortfolio.buy(testOrder2);
+		testPortfolio.buy(testOrder3);
 
-		//testPortfolio.csvExport();
+		testPortfolio.csvExport();
 		testPortfolio.printHoldings();
 
 
