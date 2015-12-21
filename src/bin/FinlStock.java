@@ -20,6 +20,7 @@ import yahoofinance.quotes.stock.StockStats;
 public class FinlStock {
 
 	public String symbol;
+	public String companyName;
 
 	private yahoofinance.Stock stock;
 	public FinlQuote finlQuote;
@@ -44,6 +45,7 @@ public class FinlStock {
 			PrintStream defaultOutputStream = System.out;	//save output stream
 			System.setOut(null);							//redirect console output
 			this.stock = YahooFinance.get(this.symbol);		//assign stock w/ suppressed output
+			this.companyName = this.stock.getName();
 			System.setOut(defaultOutputStream);				//reset output stream to default
 		} catch (IOException IOE) {
 			IOE.printStackTrace();
@@ -72,6 +74,7 @@ public class FinlStock {
 			if(result != null)
 				return result;
 		} catch (NullPointerException NTE) {
+			System.err.println("Error!");
 			result = null;
 		}
 		return result;
