@@ -78,7 +78,9 @@ let rec compile_sstatement = function
                   ") {\n" ^
                   String.concat "\n" (List.map compile_sstatement sl) ^
                   "\n}"
-  | Swhen(e, sl) -> "" (* TO DO *)
+  | Swhen(e, sl) -> "WhenLoop when = new WhenLoop(" ^
+                    sexpr_to_boolean (compile_sexpression e) ^ 
+                    ");\nThread when_thread = new Thread(when);\nwhen_thread.start();" (* TO DO *)
   | Svdecl(v) -> compile_vdecl v ^ ";"
   | Sret(r) -> "return " ^ compile_sexpression r ^ ";"
   | Sbuy(b) -> "default_portfolio.buy(" ^ compile_sexpression b ^ ");"

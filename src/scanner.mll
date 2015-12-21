@@ -60,7 +60,7 @@ rule token = parse
 	| "void"                 { VOID }
 	| ticker as t		 	 { TICK(t) }
 	| variable as var   	 { VAR(var) }
-	| ">>"' '*access* as a   { ACCESS(a) }
+	| '['access*']' as a     { ACCESS(a) }
 	| digit+ as i            { INT(int_of_string i) }
 	| digit*'.'digit+ as flt { FLOAT(float_of_string flt) }
 	| '"'('\\'_|[^'"'])*'"' as str   { STRING(str) }

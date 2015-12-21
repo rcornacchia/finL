@@ -1,0 +1,3 @@
+when @TSLA[priceMA200] > @TSLA[priceMA50] {
+	print;
+};

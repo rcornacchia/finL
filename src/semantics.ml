@@ -117,8 +117,7 @@ let unop_to_sunop env (u: Ast.unop) (se: Sast.sexpression) =
 			| t -> raise (Except("Unary operations are not supported for type '" ^ Ast.string_of_data_type typ ^ "'!"))		
 
 let split_access acc =
-	let str = sub acc 2 ((length acc) - 2) in
-	trim str
+	sub acc 1 ((length acc) - 2)
 
 let rec expression_to_sexpression env (expression: Ast.expression) =
 	match expression with

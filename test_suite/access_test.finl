@@ -1,6 +1,6 @@
 stock stk;
 stk << @TSLA;
 string s; 
-s << stk >> price;
-s << @AAPL >> price;
+s << stk[price];
+s << @AAPL[price];
 print "yay!";
