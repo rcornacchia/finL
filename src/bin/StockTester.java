@@ -2,6 +2,8 @@
 package bin;
 
 
+
+
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -41,17 +43,17 @@ public class StockTester {
 
 		FinlOrder testOrder1 = new FinlOrder(10, new FinlStock(ticker));
 		FinlOrder testOrder2 = new FinlOrder(10, new FinlStock("FB"));
-		FinlOrder testOrder3 = new FinlOrder(10, new FinlStock("AAPL"));
-		FinlOrder testOrder4 = new FinlOrder(5, new FinlStock("AAPL"));
 
 
 		testPortfolio.buy(testOrder1);
 		testPortfolio.buy(testOrder1);
 		testPortfolio.buy(testOrder2);
-		testPortfolio.sell(testOrder3);
-		testPortfolio.sell(testOrder4);
 
-		testPortfolio.csvExport();
+		//testPortfolio.csvExport();
+		testPortfolio.printHoldings();
+
+
+		//new FinlStock("AAPL").printStock();
 	}
 
 	private static void orderTest(String ticker) {

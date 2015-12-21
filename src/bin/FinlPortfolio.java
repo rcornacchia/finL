@@ -2,6 +2,7 @@ package bin;
 
 
 
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -69,6 +70,47 @@ public class FinlPortfolio {
 		this.portfolioName = name;
 	}
 
+	public void updateCompositions() {
+		for(int i = 0; i < holdings.size(); i++) {
+			Holding listStock = holdings.get(i);
+			listStock.percentOfPortfolio
+				= Math.abs(listStock.positionValue/accountValue);
+		}
+	}
+
+
+	public void printHoldings() {
+
+		System.out.println("\n\n" + this.portfolioName
+				+ "\n_______________________________");
+		System.out.format("Account Value\t|\tPositions\t|\tTrades\n$"
+				+ "%.2f" + "\t|\t"
+				+ this.holdings.size() + "\t\t|\t"
+				+ this.orders.size() +
+				"\n---------\n"
+				+ "Holdings:\n"
+				+ "---------\n\n",
+				this.accountValue);
+
+		for(int i = 0; i < holdings.size(); i++) {
+			Holding listStock = holdings.get(i);
+			System.out.println(listStock.stock.companyName
+					+ "\n_______________________________");
+			System.out.println("Symbol:\t\t" + listStock.stock.symbol);
+			System.out.println("Total Shares:\t" + listStock.positionShares);
+			System.out.format("Total Value:\t$%.2f\n", listStock.positionValue);
+			System.out.format("Average Price:\t$%.2f\n", listStock.avgPrice);
+			System.out.format("Position P&L:\t$%.2f\n", listStock.pnl);
+			System.out.format("Weight:\t\t$%.2f\n", listStock.percentOfPortfolio);
+			System.out.println("Last Trade:\t" + listStock.lastOrder.toString()
+					+ "\n_______________________________\n\n");
+		}
+		System.out.flush();
+	}
+
+
+
+
 	public void csvExport(){
 		try {
 			String fileName = this.portfolioName;
@@ -80,13 +122,6 @@ public class FinlPortfolio {
 			System.err.println("\n\nSomething is wrong with the file"
 					+ "export\n\n");
 			e.printStackTrace();
-		}
-	}
-
-	public void updateCompositions() {
-		for(int i = 0; i < holdings.size(); i++) {
-			Holding listStock = holdings.get(i);
-			listStock.percentOfPortfolio = Math.abs(listStock.positionValue/accountValue);
 		}
 	}
 
@@ -131,8 +166,7 @@ public class FinlPortfolio {
 
 	}
 
-
-	public void csvOrdersExport(String fileName) throws IOException {
+	private void csvOrdersExport(String fileName) throws IOException {
 		fileName += "_orders.csv";
 
 		FileWriter writer = new FileWriter(fileName);
@@ -165,6 +199,8 @@ public class FinlPortfolio {
 		writer.close();
 	}
 
+
+
 	class Holding {
 
 		public int positionShares;
@@ -175,7 +211,7 @@ public class FinlPortfolio {
 		public Date lastOrder;
 		public FinlStock stock;
 
-		public Holding(FinlOrder order) {
+		private Holding(FinlOrder order) {
 			Holding position = checkHoldings(order);
 			if(position == null) 				//if the portfolio doesnt contain the stock being ordered:
 				generateNewHolding(order);
