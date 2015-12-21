@@ -3,6 +3,8 @@ package bin;
 
 
 
+
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -25,12 +27,6 @@ public class FinlPortfolio {
 	private double accountValue = 0.0;
 	public String portfolioName = "defaultPortfolio";
 	private String csvName = this.portfolioName;
-
-	public FinlPortfolio() {
-
-		orders = new ArrayList<FinlOrder>();		//list of all orders
-		holdings = new ArrayList<Holding>();		//list of all positions
-	}
 
 	public FinlPortfolio(String name) {
 		this.setPortfolioName(name);
@@ -71,7 +67,7 @@ public class FinlPortfolio {
 	}
 
 
-	public void setPortfolioName(String name) {
+	private void setPortfolioName(String name) {
 		this.portfolioName = name;
 		this.csvName = this.portfolioName;
 	}
@@ -83,6 +79,13 @@ public class FinlPortfolio {
 				= Math.abs(listStock.positionValue/accountValue);
 		}
 		this.updatePNL();
+	}
+
+	public FinlPortfolio switchWith(String csvName) {
+		this.csvExport();
+		FinlPortfolio test2 = new FinlPortfolio(csvName);
+		test2.csvPortfolioBuilder();
+		return test2;
 	}
 
 	public void updatePNL() {
@@ -153,9 +156,9 @@ public class FinlPortfolio {
 		} catch (IOException e) {
 			System.err.println(".csv File Does Not Exist!");
 		} catch (NumberFormatException e) {
-			System.err.println("Date Exception in CSV Importing");
+			System.err.println("Date Exception in .csv Importing");
 		} catch (ParseException e) {
-			System.err.println("Date Exception in CSV Importing");
+			System.err.println("Date Exception in .csv Importing");
 		} finally {
 			if (holdingReader != null) {
 				try {

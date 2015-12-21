@@ -3,7 +3,6 @@ package bin;
 
 
 
-
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -29,25 +28,27 @@ public class StockTester {
 
 		//stockTest(ticker);
 
-//		FinlPortfolio testPortfolio = new FinlPortfolio("testName2");
-//
-//
-//
-//		testPortfolio.buy(new FinlOrder(10, new FinlStock("AAPL")));
-//		testPortfolio.buy(new FinlOrder(10, new FinlStock("FB")));
-//		testPortfolio.buy(new FinlOrder(10, new FinlStock("MSFT")));
-//		testPortfolio.buy(new FinlOrder(10, new FinlStock("TSLA")));
-//		testPortfolio.buy(new FinlOrder(10, new FinlStock("FB")));
-//		testPortfolio.buy(new FinlOrder(10, new FinlStock("MBLY")));
-//
-//		testPortfolio.csvExport();
+		FinlPortfolio testPortfolio = new FinlPortfolio("test");
+//		testPortfolio.setPortfolioName("test1");
 
-		FinlPortfolio testPortfolio2 = new FinlPortfolio();
+		testPortfolio.csvPortfolioBuilder();
 
-		testPortfolio2.csvPortfolioBuilder();
+		testPortfolio.buy(new FinlOrder(10, new FinlStock("AAPL")));
+		testPortfolio.buy(new FinlOrder(10, new FinlStock("FB")));
+		testPortfolio.buy(new FinlOrder(10, new FinlStock("MSFT")));
+		testPortfolio.buy(new FinlOrder(10, new FinlStock("TSLA")));
+		testPortfolio.buy(new FinlOrder(10, new FinlStock("FB")));
+		testPortfolio.buy(new FinlOrder(10, new FinlStock("MBLY")));
 
-		testPortfolio2.printHoldings();
-		//testPortfolio2.printOrders();
+
+		testPortfolio.switchWith("test2");
+
+//		FinlPortfolio testPortfolio2 = new FinlPortfolio();
+//
+//		testPortfolio2.csvPortfolioBuilder();
+//
+//		testPortfolio2.printHoldings();
+//		//testPortfolio2.printOrders();
 
 
 
@@ -72,7 +73,7 @@ public class StockTester {
 
 	private static void portfolioTest(String ticker) {
 		System.out.println("\n\n\n\n");
-		FinlPortfolio testPortfolio = new FinlPortfolio();
+		FinlPortfolio testPortfolio = new FinlPortfolio("test2");
 
 
 		FinlOrder testOrder1 = new FinlOrder(10, new FinlStock(ticker));
@@ -97,7 +98,7 @@ public class StockTester {
 		System.out.println(orderStock.symbol + "\n");
 
 		FinlOrder testOrder1 = new FinlOrder(10, orderStock);
-		FinlPortfolio testPortfolio = new FinlPortfolio();
+		FinlPortfolio testPortfolio = new FinlPortfolio("test3");
 
 		testPortfolio.buy(testOrder1);
 
