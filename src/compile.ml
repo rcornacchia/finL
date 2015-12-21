@@ -56,6 +56,7 @@ let rec compile_sexpression (sexpr: Sast.sexpression) =
                                     | And -> boolean_to_sexpr (sexpr_to_boolean (compile_sexpression expr1) ^ " " ^ Ast.string_of_binop op ^ " " ^ sexpr_to_boolean (compile_sexpression expr2))
                                     | Or -> boolean_to_sexpr (sexpr_to_boolean (compile_sexpression expr1) ^ " " ^ Ast.string_of_binop op ^ " " ^ sexpr_to_boolean (compile_sexpression expr2))
                                     | _ -> compile_sexpression expr1 ^ " " ^ Ast.string_of_binop op ^ " " ^ compile_sexpression expr2)
+    | Saccess(expr, str) -> compile_sexpression expr ^ ".getRequest(\"" ^ str ^ "\")"
     | Sassign(var, expr) -> var ^ " = " ^ compile_sexpression expr
     | Saassign(avar, aexpr) -> avar ^ " += " ^ compile_sexpression aexpr
     | Ssassign(svar, sexpr) -> svar ^ " -= " ^ compile_sexpression sexpr

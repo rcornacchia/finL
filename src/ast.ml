@@ -22,6 +22,7 @@ type expression =
   | Order of int * expression
   | Var of string
   | Unop of unop * expression
+  | Access of expression * string
   | Binop of expression * binop * expression
   | Assign of string * expression
   | Aassign of string * expression
@@ -94,6 +95,7 @@ let rec string_of_expression = function
   | Var(v) -> "Var(" ^ v ^ ")"
   | Unop(op, e) -> "Unop(" ^ string_of_unop op ^ " " ^ string_of_expression e ^ ")"
   | Binop(e1, o, e2) -> "Binop(" ^ string_of_expression e1 ^ " " ^ string_of_binop o ^ " " ^ string_of_expression e2 ^ ")"
+  | Access(e, s) -> "Access(" ^ string_of_expression e ^ " -> " ^ s ^ ")"
   | Assign(a, e) -> "Assign(" ^ a ^ " = " ^ string_of_expression e ^ ")"
   | Aassign(aa, e) -> "Aassign(" ^ aa ^ " = " ^ string_of_expression e ^ ")"
   | Sassign(sa, e) -> "Sassign(" ^ sa ^ " = " ^ string_of_expression e ^ ")"
