@@ -1,6 +1,6 @@
 package bin;
 
-public class Test { 
+public class FinlLib { 
 
 	public static boolean num_to_boolean(int x) {
 		if (x != 0) { return true; } else { return false; }

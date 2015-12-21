@@ -14,13 +14,13 @@ let compile_vdecl (vdecl: Ast.var_decl) =
   compile_dtype vdecl.dtype ^ " " ^ vdecl.vname
 
 let boolean_to_sexpr bool_string =
-  "Test.boolean_to_int(" ^ bool_string ^ ")"
+  "FinlLib.boolean_to_int(" ^ bool_string ^ ")"
 
 let sexpr_to_boolean sexpr_string =
-  "Test.num_to_boolean(" ^ sexpr_string ^ ")"
+  "FinlLib.num_to_boolean(" ^ sexpr_string ^ ")"
 
 let compile_compare sexpr_string1 op_string sexpr_string2 is_string_compare =
-  let str = if is_string_compare then ("Test.compare_strings(" ^ sexpr_string1 ^ ", \"" ^ op_string ^ "\", " ^ sexpr_string2 ^ ")")
+  let str = if is_string_compare then ("FinlLib.compare_strings(" ^ sexpr_string1 ^ ", \"" ^ op_string ^ "\", " ^ sexpr_string2 ^ ")")
             else sexpr_string1 ^ " " ^ op_string ^ " " ^ sexpr_string2
   in boolean_to_sexpr str
 
