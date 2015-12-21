@@ -62,29 +62,26 @@ public class FinlStock {
 	}
 
 	/* Ocaml request parser */
-	public String getRequest(String request) {
-		String result;
+	public double getRequest(String request) {
+		if(!this.valid) {
+			System.err.println("Stock Is Not Valid!");
+			return 0;
+		}
+		double result;
 		try {
-
-			if(request.equalsIgnoreCase("symbol") || request.equalsIgnoreCase("ticker")) {
-				return this.symbol;
-			}
-			if(request.equalsIgnoreCase("company")) {
-				return this.companyName;
-			}
-
 			result = this.finlFundamentals.fundamentalCheck(request);
-			if(result != null)
+			if(result != 0)
 				return result;
 			result = this.finlQuote.quoteCheck(request);
-			if(result != null)
+			if(result != 0)
 				return result;
 			result = this.finlDividend.dividendCheck(request);
-			if(result != null)
+			if(result != 0)
 				return result;
 		} catch (NullPointerException NTE) {
 			System.err.println("Error!");
-			result = null;
+			NTE.printStackTrace();
+			return 0.0;
 		}
 		return result;
 	}
@@ -109,8 +106,8 @@ public class FinlStock {
 		public BigDecimal	priceSales;
 		public BigDecimal	revenue;
 		public BigDecimal	roe;
-		public long			sharesFloat;
-		public long			sharesOutstanding;
+		public BigDecimal	sharesFloat;
+		public BigDecimal	sharesOutstanding;
 
 		/*Estimates*/
 		public BigDecimal	epsEstimateCurrentYear;
@@ -139,8 +136,8 @@ public class FinlStock {
 			priceSales 			= this.fundamentals.getPriceSales();
 			revenue 			= this.fundamentals.getRevenue();
 			roe 				= this.fundamentals.getROE();
-			sharesFloat 		= this.fundamentals.getSharesFloat();
-			sharesOutstanding 	= this.fundamentals.getSharesOutstanding();
+			sharesFloat 		= BigDecimal.valueOf(this.fundamentals.getSharesFloat());
+			sharesOutstanding 	= BigDecimal.valueOf(this.fundamentals.getSharesOutstanding());
 
 		}	//end populateStatistics()
 
@@ -151,40 +148,40 @@ public class FinlStock {
 			oneYearTargetPrice		= this.fundamentals.getOneYearTargetPrice();
 		}	//end populateEstimates()
 
-		private String fundamentalCheck(String request) {
+		private double fundamentalCheck(String request) {
 			if(request.equalsIgnoreCase("bookValuePerShare"))
-				return this.bookValuePerShare.toString();
+				return this.bookValuePerShare.doubleValue();
 			else if(request.equalsIgnoreCase("ebitda"))
-				return this.ebitda.toString();
+				return this.ebitda.doubleValue();
 			else if(request.equalsIgnoreCase("eps"))
-				return this.eps.toString();
+				return this.eps.doubleValue();
 			else if(request.equalsIgnoreCase("marketCap"))
-				return this.marketCap.toString();
+				return this.marketCap.doubleValue();
 			else if(request.equalsIgnoreCase("pe"))
-				return this.pe.toString();
+				return this.pe.doubleValue();
 			else if(request.equalsIgnoreCase("peg"))
-				return this.peg.toString();
+				return this.peg.doubleValue();
 			else if(request.equalsIgnoreCase("priceBook"))
-				return this.priceBook.toString();
+				return this.priceBook.doubleValue();
 			else if(request.equalsIgnoreCase("priceSales"))
-				return this.priceSales.toString();
+				return this.priceSales.doubleValue();
 			else if(request.equalsIgnoreCase("revenue"))
-				return this.revenue.toString();
+				return this.revenue.doubleValue();
 			else if(request.equalsIgnoreCase("roe"))
-				return this.roe.toString();
+				return this.roe.doubleValue();
 			else if(request.equalsIgnoreCase("sharesFloat"))
-				return Long.toString(this.sharesFloat);
+				return this.sharesFloat.doubleValue();
 			else if(request.equalsIgnoreCase("sharesOutstanding"))
-				return Long.toString(this.sharesOutstanding);
+				return this.sharesOutstanding.doubleValue();
 			else if(request.equalsIgnoreCase("epsEstimateCurrentYear"))
-				return this.epsEstimateCurrentYear.toString();
+				return this.epsEstimateCurrentYear.doubleValue();
 			else if(request.equalsIgnoreCase("epsEstimateNextQuarter"))
-				return this.epsEstimateNextQuarter.toString();
+				return this.epsEstimateNextQuarter.doubleValue();
 			else if(request.equalsIgnoreCase("epsEstimateNextYear"))
-				return this.epsEstimateNextYear.toString();
+				return this.epsEstimateNextYear.doubleValue();
 			else if(request.equalsIgnoreCase("oneYearTargetPrice"))
-				return this.oneYearTargetPrice.toString();
-			else return null;
+				return this.oneYearTargetPrice.doubleValue();
+			else return 0.0;
 		}	//end fundamentalsCheck()
 	}
 
@@ -205,7 +202,7 @@ public class FinlStock {
 		public BigDecimal	priceDayLow;
 		public BigDecimal	bid;
 		public BigDecimal 	ask;
-		public long	 		avgVolume;
+		public BigDecimal	avgVolume;
 		/*Price Movement*/
 		public BigDecimal	change;			//change from current price to previous close
 		public BigDecimal	changePercent;	//change from current price to previous close, in percent
@@ -238,7 +235,7 @@ public class FinlStock {
 			priceDayLow 		= this.quote.getDayLow();
 			bid 				= this.quote.getBid();
 			ask 				= this.quote.getAsk();
-			avgVolume 			= this.quote.getAvgVolume();
+			avgVolume 			= BigDecimal.valueOf(this.quote.getAvgVolume());
 		}	//end populatePrice()
 
 		private void populateMovement() {
@@ -250,38 +247,38 @@ public class FinlStock {
 			changeFromYearLow 	= this.quote.getChangeFromYearLow();
 		}	//end populateMovement()
 
-		public String quoteCheck(String request) {
+		public double quoteCheck(String request) {
 			if(request.equalsIgnoreCase("price"))
-				return this.price.toString();
+				return this.price.doubleValue();
 			else if(request.equalsIgnoreCase("priceOpen"))
-				return this.priceOpen.toString();
+				return this.priceOpen.doubleValue();
 			else if(request.equalsIgnoreCase("pricePrevClose"))
-				return this.pricePrevClose.toString();
+				return this.pricePrevClose.doubleValue();
 			else if(request.equalsIgnoreCase("priceMA200"))
-				return this.priceMA200.toString();
+				return this.priceMA200.doubleValue();
 			else if(request.equalsIgnoreCase("priceMA50"))
-				return this.priceMA50.toString();
+				return this.priceMA50.doubleValue();
 			else if(request.equalsIgnoreCase("priceDayHigh"))
-				return this.priceDayHigh.toString();
+				return this.priceDayHigh.doubleValue();
 			else if(request.equalsIgnoreCase("priceDayLow"))
-				return this.priceDayLow.toString();
+				return this.priceDayLow.doubleValue();
 			else if(request.equalsIgnoreCase("bid"))
-				return this.bid.toString();
+				return this.bid.doubleValue();
 			else if(request.equalsIgnoreCase("avgVolume"))
-				return Long.toString(this.avgVolume);
+				return this.avgVolume.doubleValue();
 			else if(request.equalsIgnoreCase("change"))
-				return this.change.toString();
+				return this.change.doubleValue();
 			else if(request.equalsIgnoreCase("changePercent"))
-				return this.changePercent.toString();
+				return this.changePercent.doubleValue();
 			else if(request.equalsIgnoreCase("changeFromMA200"))
-				return this.changeFromMA200.toString();
+				return this.changeFromMA200.doubleValue();
 			else if(request.equalsIgnoreCase("changeFromMA50"))
-				return this.changeFromMA50.toString();
+				return this.changeFromMA50.doubleValue();
 			else if(request.equalsIgnoreCase("changeFromYearHigh"))
-				return this.changeFromYearHigh.toString();
+				return this.changeFromYearHigh.doubleValue();
 			else if(request.equalsIgnoreCase("changeFromYearLow"))
-				return this.changeFromYearLow.toString();
-			else return null;
+				return this.changeFromYearLow.doubleValue();
+			else return 0.0;
 		}	//end quoteCheck()
 	}	//end FinlQuote subclass
 
@@ -311,18 +308,16 @@ public class FinlStock {
 			payDate 				= this.dividend.getPayDate();
 		}	//end constructor FinlDividend(Stock stock)
 
-		public String dividendCheck(String request) {
+		public double dividendCheck(String request) {
 			if(request.equalsIgnoreCase("annualYield"))
-				return this.annualYield.toString();
+				return this.annualYield.doubleValue();
 			else if(request.equalsIgnoreCase("annualYieldPercent"))
-				return this.annualYieldPercent.toString();
-			else if(request.equalsIgnoreCase("payDate"))
-				return this.payDate.toString();
-			else if(request.equalsIgnoreCase("exDivDate"))
-				return this.exDivDate.toString();
-			else if(request.equalsIgnoreCase("payDate"))
-				return this.payDate.toString();
-			else return null;
+				return this.annualYieldPercent.doubleValue();
+//			else if(request.equalsIgnoreCase("payDate"))
+//				return this.payDate.toString();
+//			else if(request.equalsIgnoreCase("exDivDate"))
+//				return this.exDivDate.toString();
+			else return 0.0;
 		}	//end dividendCheck()
 	} 	//end FinlDividend subclass
 }	//End FinlStock.java

@@ -24,7 +24,8 @@ public class FinlPortfolio {
 	private ArrayList<Holding> holdings;		//list of all positions
 
 	private double accountValue = 0.0;
-	private String portfolioName = "defaultPortfolio";
+	public String portfolioName = "defaultPortfolio";
+	private String csvName = this.portfolioName;
 
 	public FinlPortfolio() {
 
@@ -73,6 +74,7 @@ public class FinlPortfolio {
 
 	public void setPortfolioName(String name) {
 		this.portfolioName = name;
+		this.csvName = this.portfolioName;
 	}
 
 	public void updateCompositions() {
@@ -83,10 +85,15 @@ public class FinlPortfolio {
 		}
 	}
 
+	public void printOrders() {
+		for(int i = 0; i < orders.size(); i++) {
+			orders.get(i).printOrder();
+		}
+	}
 
 	public void printHoldings() {
 
-		System.out.println("\n\n" + this.portfolioName
+		System.out.println("\n\nPortfolio Name:\t" + this.portfolioName
 				+ "\n _______________________________________________________");
 		System.out.format("|Account Value\t|\tPositions\t|\tTrades\t|\n|  $"
 				+ "%.2f" + "\t|\t"
@@ -112,8 +119,13 @@ public class FinlPortfolio {
 	}
 
 	public void csvPortfolioBuilder() {
-		String csvHoldings = "./defaultPortfolio_holdings.csv";
-		String csvOrders = "./defaultPortfolio_orders.csv";
+		csvPortfolioBuilder(this.portfolioName);
+	}
+
+	public void csvPortfolioBuilder(String name) {
+		this.csvName = name;
+		String csvHoldings = name + "_holdings.csv";
+		String csvOrders = name + "_orders.csv";
 
 		BufferedReader holdingReader = null;
 		BufferedReader orderReader = null;
@@ -214,6 +226,7 @@ public class FinlPortfolio {
 				orderObject.sharePrice = dollarToDouble(arrayOrder[3]);		//execution price
 				orderObject.date = new Date(arrayOrder[4]);
 
+				orderObject.setExecute(true);
 				importedPortfolio.orders.add(orderObject);
 			}
 		}
@@ -228,7 +241,7 @@ public class FinlPortfolio {
 
 	public void csvExport(){
 		try {
-			String fileName = this.portfolioName;
+			String fileName = this.csvName;
 			csvOrdersExport(fileName);
 			csvHoldingsExport(fileName);
 
