@@ -1,0 +1,29 @@
+portfolio "demo";
+
+function void f() {
+	stock stk1;
+	stk1 << @FB;
+
+	stock stk2;
+	stk2 << @AAPL;
+
+	order order0;
+	order0 << 20 of stk1;
+	order order1;
+	order1 << 10 of stk1;
+
+	order order2;
+	order2 << 10 of stk2;
+
+	order order3;
+	order3 << 10 of @NFLX;
+
+	buy order1;
+	sell order2;
+	buy order3;
+	buy order0;
+};
+
+print;
+f();
+print;

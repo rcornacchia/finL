@@ -100,7 +100,7 @@ let rec compile_sstatement = function
                     | Ordertype -> compile_sexpression e ^ ".printOrder();"
                     | Voidtype -> "portfolio.printHoldings();"
                     | _ -> "System.out.println(" ^ compile_sexpression e ^ ");")
-  | Sportfolio(str) -> "portfolio.switchWith(\"" ^ str ^ "\");"
+  | Sportfolio(str) -> "portfolio = portfolio.switchWith(" ^ str ^ ");"
 
 let compile_sfdecl (func: Sast.sfunc_decl) =
   "public static " ^

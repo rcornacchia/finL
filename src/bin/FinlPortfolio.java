@@ -254,7 +254,7 @@ public class FinlPortfolio {
 		try {
 			this.updatePNL();
 			String fileName = this.csvName;
-			System.out.println(fileName);
+			//System.out.println(fileName);
 			csvOrdersExport(fileName);
 			csvHoldingsExport(fileName);
 

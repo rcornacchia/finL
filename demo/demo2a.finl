@@ -1,0 +1,15 @@
+print;
+
+stock stk1;
+stk1 << @DPZ;
+
+order order1;
+order1 << 100 of stk1;
+
+stk1[price] < 50 ? {
+	buy order1;
+} ! {
+	sell order1;
+};
+
+print;
