@@ -1,19 +1,12 @@
 package bin;
 
 
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-
-
-
 public class FinlOrder {
 
 	public int size				= 0;
 	public FinlStock stock		= null;
 	public double sharePrice 	= 0.0;
-	public Date date = null;
+	public java.util.Date date = null;
 	private String type;
 	private boolean execute		= false;
 
