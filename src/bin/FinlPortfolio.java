@@ -3,26 +3,17 @@ package bin;
 
 
 
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-
-import yahoofinance.Stock;
-import yahoofinance.YahooFinance;
-import yahoofinance.quotes.fx.FxQuote;
-import yahoofinance.quotes.fx.FxSymbols;
-import yahoofinance.quotes.stock.StockDividend;
-import yahoofinance.quotes.stock.StockQuote;
-import yahoofinance.quotes.stock.StockStats;
 
 
 public class FinlPortfolio {
@@ -156,6 +147,7 @@ public class FinlPortfolio {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private BufferedReader holdingImporter(FinlPortfolio importedPortfolio,
 			BufferedReader holdingReader) throws NumberFormatException, IOException, ParseException {
 
@@ -192,6 +184,7 @@ public class FinlPortfolio {
 		return holdingReader;
 	}
 
+	@SuppressWarnings("deprecation")
 	private BufferedReader orderImporter(FinlPortfolio importedPortfolio,
 			BufferedReader orderReader) throws NumberFormatException, IOException, ParseException {
 
