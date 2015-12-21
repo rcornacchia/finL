@@ -5,7 +5,7 @@
 %token PLUS MINUS TIMES DIVIDE POWER MOD
 %token ASSIGN AASSIGN SASSIGN MASSIGN DASSIGN
 %token EQ GEQ GT LEQ LT
-%token RETURN WHILE WHEN IF /*ELSE ELSEIF */ VOID /* NULL BREAK*/
+%token RETURN WHILE WHEN IF ELSE /*ELSEIF */ VOID /* NULL BREAK*/
 %token AND OR NOT
 %token BUY SELL PRINT
 %token INTD STRINGD FLOATD /*PERCENT ARRAY CURR */ STOCK ORDER /*PF*/ FUNC OF
@@ -19,7 +19,8 @@
 %token <string> VAR
 %token EOF
 
-/* %nonassoc ELSE */
+%nonassoc NOELSE
+%nonassoc ELSE
 %right ASSIGN AASSIGN SASSIGN MASSIGN DASSIGN
 %left AND OR
 %left EQ
@@ -48,7 +49,8 @@ statement:
   expression SEMI { Expr($1) }
   | WHILE expression LBRACE statement_list RBRACE SEMI { While($2, $4) }
   | WHEN access_expression LBRACE statement_list RBRACE SEMI { When($2, $4) }
-  | expression IF LBRACE statement_list RBRACE SEMI { If($1, $4) }
+  | expression IF LBRACE statement_list RBRACE %prec NOELSE SEMI { If($1, $4, []) }
+  | expression IF LBRACE statement_list RBRACE ELSE LBRACE statement_list RBRACE SEMI { If($1, $4, $8) }
   | vdecl SEMI { Vdecl($1) }
   | BUY order SEMI { Buy($2) }
   | SELL order SEMI { Sell($2) }

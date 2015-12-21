@@ -36,7 +36,7 @@ type statement =
   Expr of expression
   | While of expression * statement list
   | When of (expression * binop * expression) * statement list
-  | If of expression * statement list
+  | If of expression * statement list * statement list
   | Vdecl of var_decl
   | Ret of expression
   | Buy of expression
@@ -109,11 +109,13 @@ let string_of_vdecl (vdecl: var_decl) =
 
 let rec string_of_statement = function
   Expr(e) -> "expression{" ^ string_of_expression e ^ "}"
-  | If(expr, slst) -> "if{\n(" ^ 
-                      string_of_expression expr ^ 
-                      ") statementlist{\nstatement{" ^ 
-                      String.concat "}\nstatement{" (List.map string_of_statement slst) ^
-                      "}\n}\n}"
+  | If(expr, slst, slst2) -> "if{\n(" ^ 
+                             string_of_expression expr ^ 
+                             ") statementlist{\nstatement{" ^ 
+                             String.concat "}\nstatement{" (List.map string_of_statement slst) ^
+                             "}\n}\nelse{\nstatementlist{ statement{" ^
+                             String.concat "}\nstatement{" (List.map string_of_statement slst2) ^
+                             "\n}\n}\n}"
   | While(expr, slst) -> "while{\n(" ^ 
                          string_of_expression expr ^ 
                          ") statementlist{\nstatement{" ^ 

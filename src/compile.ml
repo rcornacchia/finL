@@ -69,11 +69,14 @@ let rec compile_sexpression (sexpr: Sast.sexpression) =
 
 let rec compile_sstatement = function
   Sexpr(expr) -> compile_sexpression expr ^ ";"
-  | Sif(e, sl) -> "if (" ^ 
-                  sexpr_to_boolean (compile_sexpression e) ^ 
-                  ") {\n" ^
-                  String.concat "\n" (List.map compile_sstatement sl) ^
-                  "\n}"
+  | Sif(e, sl, sl2) -> let els = if (List.length sl2) = 0 then ("")
+                       else "else {" ^ String.concat "\n" (List.map compile_sstatement sl2) ^ "}" in
+                       "if (" ^ 
+                       sexpr_to_boolean (compile_sexpression e) ^ 
+                       ") {\n" ^
+                       String.concat "\n" (List.map compile_sstatement sl) ^
+                       "\n} " ^
+                       els
   | Swhile(e, sl) -> "while (" ^ 
                   sexpr_to_boolean (compile_sexpression e) ^ 
                   ") {\n" ^
@@ -117,6 +120,7 @@ let compile (sprogram: Sast.sprogram) (filename: string) =
   " {\n" ^
   String.concat "\n" (List.map compile_sfdecl sprogram.sfunc_decls) ^
   "\npublic static void main(String[] args) {\n" ^
+  "try {\n " ^
   "FinlPortfolio default_portfolio = new FinlPortfolio();\n" ^
   String.concat "\n" (List.map compile_sstatement sprogram.sstatements) ^
-  "\n}\n}"
+  "\n} catch (Exception e) { System.out.println(\"Library Error\"); }\n}\n}"

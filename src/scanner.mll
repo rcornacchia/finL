@@ -40,8 +40,8 @@ rule token = parse
 	| "sell"				 { SELL }
 	| "print"				 { PRINT }
 	| '?'                    { IF }
-	(*| "??"                   { ELSEIF }
-	| '!'                    { ELSE }*)
+	(*| "??"                   { ELSEIF }*)
+	| '!'                    { ELSE }
 	| "while"                { WHILE }
 	| "when"                 { WHEN }
 	(*| "break"                { BREAK }*)
