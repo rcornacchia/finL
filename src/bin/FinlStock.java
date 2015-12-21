@@ -42,6 +42,8 @@ public class FinlStock {
 		try{
 			this.symbol = ticker;
 
+			System.out.println(ticker);
+
 			PrintStream defaultOutputStream = System.out;	//save output stream
 			System.setOut(null);							//redirect console output
 			this.stock = YahooFinance.get(this.symbol);		//assign stock w/ suppressed output

@@ -4,7 +4,6 @@ package bin;
 
 
 
-
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -19,20 +18,24 @@ import yahoofinance.quotes.fx.FxSymbols;
 public class StockTester {
 
 	public static void main(String[] args) {
-		try {
-			String ticker = "MSFT";
-//			String[] tickers
-//			= {"FB", "AAPL", "MSFT"};
-//			for(int i = 0; i < tickers.length; i++) {
-//				ticker = tickers[i];
-//				//stockTest(ticker);
-//				//orderTest(ticker);
-//			}
-			portfolioTest(ticker);
+//		String ticker = "MSFT";
+//		FinlPortfolio default_portfolio = new FinlPortfolio();
+//		FinlStock stk;
+//		stk = new FinlStock("TSLA");
+//		String s;
+//		s = stk.getRequest("price");
+//		s = new FinlStock("AAPL").getRequest("price");
+//		System.out.println(s);
 
-		} catch (NullPointerException NPE) {
-			NPE.printStackTrace();
-		}
+		FinlPortfolio testPortfolio = new FinlPortfolio();
+
+		testPortfolio.csvPortfolioBuilder();
+
+
+
+		//portfolioTest(ticker);
+
+
 	}	//end main()
 
 

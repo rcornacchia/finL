@@ -4,6 +4,9 @@ package bin;
 
 
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -34,6 +37,12 @@ public class FinlPortfolio {
 
 	public FinlPortfolio() {
 
+		orders = new ArrayList<FinlOrder>();		//list of all orders
+		holdings = new ArrayList<Holding>();		//list of all positions
+	}
+
+	public FinlPortfolio(String name) {
+		this.setPortfolioName(name);
 		orders = new ArrayList<FinlOrder>();		//list of all orders
 		holdings = new ArrayList<Holding>();		//list of all positions
 	}
@@ -102,9 +111,96 @@ public class FinlPortfolio {
 			System.out.format("Position P&L:\t$%.2f\n", listStock.pnl);
 			System.out.format("Weight:\t\t%.2f%%\n", listStock.percentOfPortfolio*100);
 			System.out.println("Last Trade:\t" + listStock.lastOrder.toString()
-					+ "\n_______________________________\n\n");
+			+ "\n_______________________________\n\n");
 		}
 		System.out.flush();
+	}
+
+	@SuppressWarnings("deprecation")
+	public void csvPortfolioBuilder() {
+		String csvHoldings = "./defaultPortfolio_holdings.csv";
+		String csvOrders = "./defaultPortfolio_orders.csv";
+
+		BufferedReader holdingReader = null;
+		BufferedReader orderReader = null;
+
+		int lineNum = 1;
+		String line = "";
+		String cvsSplitBy = ",";
+
+
+
+		try {
+			holdingReader = new BufferedReader(new FileReader(csvHoldings));
+			orderReader = new BufferedReader(new FileReader(csvOrders));
+
+			FinlPortfolio importedPortfolio = new FinlPortfolio("importPortfolio");
+
+			//build Portfolio: Holdings
+			while ((line = holdingReader.readLine()) != null) {
+				if(!(lineNum++ < 5)) {		//if the line is a header line, do this
+
+					//create new holding object to put into Portfolio
+					Holding holdingObject = new Holding();
+					String[] arrayHolding = line.split(cvsSplitBy);
+
+					//parse select results into correct formatting
+					String valueString = arrayHolding[2];
+					String avgpriceString = arrayHolding[3];
+					String pnlString = arrayHolding[4];
+					String weightString = arrayHolding[5];
+
+					// use comma as separator
+					holdingObject.stock = new FinlStock(arrayHolding[0]);					//stock
+					holdingObject.positionShares = Integer.parseInt(arrayHolding[1]);		//shares
+					holdingObject.positionValue = Double.parseDouble(arrayHolding[2]);		//value
+					holdingObject.avgPrice = Double.parseDouble(arrayHolding[3]);			//average price
+					holdingObject.pnl = Double.parseDouble(arrayHolding[4]);				//p&l
+					holdingObject.percentOfPortfolio = Double.parseDouble(arrayHolding[5]);	//weight
+					holdingObject.lastOrder = new Date(arrayHolding[6]);
+
+					importedPortfolio.holdings.add(holdingObject);		//add the holding object to the
+																		//holdings list
+				}	//end build object
+			}	//end holdings lister
+
+			while ((line = orderReader.readLine()) != null) {
+				if(!(lineNum++ < 2)) {		//if the line is a header line, do this
+
+					//create new order Object to put into portfolio
+					FinlOrder orderObject = new FinlOrder();
+
+					String[] arrayOrder = line.split(cvsSplitBy);
+					orderObject.stock = new FinlStock(arrayOrder[0]);
+					orderObject.setType(arrayOrder[1]);
+					orderObject.size = Integer.parseInt(arrayOrder[2]);
+					orderObject.sharePrice = Double.parseDouble(arrayOrder[3]);
+					orderObject.date = new Date(arrayOrder[4]);
+
+					importedPortfolio.orders.add(orderObject);
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (holdingReader != null) {
+				try {
+					holdingReader.close();
+				} catch (IOException e) {
+					System.err.println("IO Exception in CSV Importing");
+				}
+			}
+			if (orderReader != null) {
+				try {
+					orderReader.close();
+				} catch (IOException e) {
+					System.err.println("IO Exception in CSV Importing");
+				}
+			}
+		}
+		System.out.println("Done");
 	}
 
 
@@ -115,7 +211,6 @@ public class FinlPortfolio {
 			String fileName = this.portfolioName;
 			csvOrdersExport(fileName);
 			csvHoldingsExport(fileName);
-
 
 		} catch (IOException e) {
 			System.err.println("\n\nSomething is wrong with the file"
@@ -194,11 +289,6 @@ public class FinlPortfolio {
 		writer.close();
 	}
 
-
-
-
-
-
 	class Holding {
 
 		public int positionShares;
@@ -217,6 +307,10 @@ public class FinlPortfolio {
 				position.addToHolding(order);
 			}
 			updateCompositions();
+		}
+
+		private Holding() {						//used when importing from the csv
+
 		}
 
 		private void addToHolding(FinlOrder order) {
