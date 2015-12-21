@@ -298,7 +298,8 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 									 env_scope = env.env_scope; }
 					 in new_env
 		| Print(ex) -> let checked_expression = expression_to_sexpression env ex in
-					   if checked_expression.sdtype = Voidtype then (raise (Except("Cannot print 'void' type!")))
+					   if checked_expression.sdtype = Voidtype && checked_expression.sexpr <> Snoexpr then 
+					   		(raise (Except("Cannot print 'void' type!")))
 					   else let checked_statement = Sprint(checked_expression) in
 					   let new_env = { function_table = env.function_table;
 									   symbol_table = env.symbol_table;

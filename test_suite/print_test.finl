@@ -18,3 +18,4 @@ function string main(){
 print main();
 print @TSLA; # need to hit some test values here
 print 10 of @TSLA; # and here
+print;

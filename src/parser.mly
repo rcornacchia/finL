@@ -52,8 +52,8 @@ statement:
   | vdecl SEMI { Vdecl($1) }
   | BUY order SEMI { Buy($2) }
   | SELL order SEMI { Sell($2) }
-  | PRINT expression SEMI { Print($2) }
-  | RETURN expression SEMI { Ret($2) } /* VOID TYPES */
+  | PRINT expression_option SEMI { Print($2) }
+  | RETURN expression SEMI { Ret($2) } /* VOID TYPES -> EXPRESSION OPTION?? */
 
 order:
   VAR { Var($1) }
@@ -62,6 +62,10 @@ order:
 stock:
   VAR { Var($1) }
   | TICK { Stock($1) }
+
+expression_option:
+  /* nothing */ { Noexpr }
+  | expression { $1 }
 
 expression:
   INT { Int($1) }

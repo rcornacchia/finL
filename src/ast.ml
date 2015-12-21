@@ -30,7 +30,7 @@ type expression =
   | Massign of string * expression
   | Dassign of string * expression
   | Call of string * expression list
-  | Noexpr (* possibly take out *)
+  | Noexpr
 
 type statement =
   Expr of expression
@@ -102,7 +102,7 @@ let rec string_of_expression = function
   | Massign(ma, e) -> "Massign(" ^ ma ^ " = " ^ string_of_expression e ^ ")"
   | Dassign(da, e) -> "Dassign(" ^ da ^ " = " ^ string_of_expression e ^ ")"
   | Call(c, el) -> c ^ "(" ^ String.concat ", " (List.map string_of_expression el) ^ ")"
-  | Noexpr -> ""
+  | Noexpr -> "noexpr"
 
 let string_of_vdecl (vdecl: var_decl) = 
   "vdecl{" ^ vdecl.vname ^ " -> " ^ string_of_data_type vdecl.dtype ^ "}"

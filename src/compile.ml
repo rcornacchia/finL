@@ -86,6 +86,7 @@ let rec compile_sstatement = function
   | Sprint(e) -> (match e.sdtype with
                     Stocktype -> compile_sexpression e ^ ".printStock();"
                     | Ordertype -> "System.out.println(\"to do\");" (* TO DO *)
+                    | Voidtype -> "default_portfolio.printHoldings();"
                     | _ -> "System.out.println(" ^ compile_sexpression e ^ ");")
 
 let compile_sfdecl (func: Sast.sfunc_decl) =
