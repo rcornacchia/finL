@@ -57,15 +57,24 @@ statement:
   | PF STRING SEMI { Portfolio($2) }
 
 access_expression:
-  access_num EQ access_num { ($1, Equal, $3) }
-  | access_num LT access_num { ($1, Less, $3) }
-  | access_num LEQ access_num { ($1, Leq, $3) }
-  | access_num GT access_num { ($1, Greater, $3) }
-  | access_num GEQ access_num { ($1, Geq, $3) }
+  access EQ access { ($1, Equal, $3) }
+  | access EQ number { ($1, Equal, $3) }
+  | number EQ access { ($1, Equal, $3) }
+  | access LT access { ($1, Less, $3) }
+  | access LT number { ($1, Less, $3) }
+  | number LT access { ($1, Less, $3) }
+  | access LEQ access { ($1, Leq, $3) }
+  | access LEQ number { ($1, Leq, $3) }
+  | number LEQ access { ($1, Leq, $3) }
+  | access GT access { ($1, Greater, $3) }
+  | access GT number { ($1, Greater, $3) }
+  | number GT access { ($1, Greater, $3) }
+  | access GEQ access { ($1, Geq, $3) }
+  | access GEQ number { ($1, Geq, $3) }
+  | number GEQ access { ($1, Geq, $3) }
 
-access_num:
-  access { $1 }
-  | INT { Int($1) }
+number:
+  INT { Int($1) }
   | FLOAT { Float($1) }
 
 access:
@@ -84,9 +93,8 @@ expression_option:
   | expression { $1 }
 
 expression:
-  INT { Int($1) }
+  number { $1 }
   | STRING  { String($1) }
-  | FLOAT { Float($1) }
   | TICK { Stock($1) }
   | VAR  { Var($1) }
   | INT OF stock { Order($1, $3) }
