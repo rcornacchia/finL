@@ -13,7 +13,6 @@ rule token = parse
 	| ')'                    { RPAREN }
 	| '{'                    { LBRACE }
 	| '}'                    { RBRACE }
-	(*| ':'                    { COLON }*)
 	| ';'                    { SEMI }
 	| ','                    { COMMA }
 	| '+'                    { PLUS }
@@ -40,18 +39,13 @@ rule token = parse
 	| "sell"				 { SELL }
 	| "print"				 { PRINT }
 	| '?'                    { IF }
-	(*| "??"                   { ELSEIF }*)
 	| '!'                    { ELSE }
 	| "while"                { WHILE }
 	| "when"                 { WHEN }
-	(*| "break"                { BREAK }*)
 	| "int"                  { INTD }
 	| "float"                { FLOATD }
-	(*| "percent"              { PERCENT }
-	| "null"                 { NULL }
-	| "array"                { ARRAY }*)
+	(*| "array"                { ARRAY }*)
 	| "string"               { STRINGD }
-	(*| "currency"             { CURR }*)
 	| "stock"                { STOCK }
 	| "order"                { ORDER }
 	| "portfolio"            { PF }

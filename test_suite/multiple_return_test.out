@@ -1,0 +1,2 @@
+Fatal error: exception Semantics.Except("Unreachable statement!")
+Error: Could not find or load main class multiple_return_test

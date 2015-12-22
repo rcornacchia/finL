@@ -14,6 +14,7 @@ type environment = {
 	symbol_table : Ast.var_decl list;
 	checked_statements : Sast.sstatement list;
 	env_scope : scope;
+	returned : bool;
 }
 
 let root_env = {
@@ -21,6 +22,7 @@ let root_env = {
 	symbol_table = [];
 	checked_statements = [];
 	env_scope = { scope_name = "reserved"; scope_rtype = Voidtype; };
+	returned = false;
 }
 
 let name_to_sname env name =
@@ -38,7 +40,7 @@ let formal_to_sformal sformals (formal: Ast.var_decl) =
 	if found then raise (Except("Formal parameter '" ^ formal.vname ^ "' is already defined!")) (* bad_formals_test.finl *)
 	else formal :: sformals
 
-let analyze_vdecl env (vdecl: Ast.var_decl) =
+let analyze_vdecl env (vdecl: Ast.var_decl) = 
 	let found = List.exists (fun symbol -> symbol.vname = vdecl.vname) env.symbol_table in
 	if found then raise (Except("Variable '" ^ vdecl.vname ^ "' is already defined!")) (* redeclare_variable_test.finl *)
 	else vdecl
@@ -124,7 +126,7 @@ let rec expression_to_sexpression env (expression: Ast.expression) =
 		Int(i) -> 				{ sexpr = Sint(i); sdtype = Inttype; }
 		| String(s) -> 			{ sexpr = Sstring(s); sdtype = Stringtype; }
 		| Float(f) -> 			{ sexpr = Sfloat(f); sdtype = Floattype; }
-		| Stock(stk) ->			{ sexpr = Sstock(stk); sdtype = Stocktype; } (* CHECK FOR VALID TICKER??? *)
+		| Stock(stk) ->			{ sexpr = Sstock(stk); sdtype = Stocktype; }
 		| Order(i, ord) ->		let new_ord = (expression_to_sexpression env ord) in
 								if new_ord.sdtype = Stocktype then
 									({ sexpr = Sorder(i, new_ord); sdtype = Ordertype; })
@@ -208,14 +210,16 @@ let check_return env (sexpression: Sast.sexpression) =
 	else raise (Except("Return statements cannot be used outside of functions!")) (* outside_return_test.finl *)
 
 let rec statement_to_sstatement env (statement: Ast.statement) =
-	match statement with
+	if env.returned then (raise (Except("Unreachable statement!")))
+	else match statement with
 		If(ex, sl, els) -> let checked_expression = expression_to_sexpression env ex in (* handle multiple returns!!! *)
 					  		let typ = checked_expression.sdtype in
 					  		if typ <> Inttype && typ <> Floattype then (raise (Except("If expressions only take numerical types!")))
 					  		else let if_env = { function_table = env.function_table;
 										  		symbol_table = env.symbol_table;
 										  		checked_statements = [];
-										  		env_scope = env.env_scope; }
+										  		env_scope = env.env_scope;
+										  		returned = false; }
 						    in
 						    let else_env = if_env in
 					  	    let if_env = List.fold_left statement_to_sstatement if_env sl in
@@ -224,7 +228,8 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 					  	    let new_env = { function_table = env.function_table;
 								     	    symbol_table = env.symbol_table; 
 								     	    checked_statements = checked_statement :: env.checked_statements; 
-								     	    env_scope = env.env_scope; }
+								     	    env_scope = env.env_scope;
+								     	    returned = if_env.returned && else_env.returned; }
 						    in new_env
 
 		| While(ex, sl) -> let checked_expression = expression_to_sexpression env ex in (* should you be allowed to return from a while? YES *)
@@ -233,29 +238,34 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 					  			else let while_env = { function_table = env.function_table;
 										  			   symbol_table = env.symbol_table;
 										  			   checked_statements = [];
-										  			   env_scope = env.env_scope; }
+										  			   env_scope = env.env_scope;
+										  			   returned = false; }
 						   in
 					  	   let while_env = List.fold_left statement_to_sstatement while_env sl in
 					  	   let checked_statement = Swhile(checked_expression, while_env.checked_statements) in
 					  	   let new_env = { function_table = env.function_table;
 								     	   symbol_table = env.symbol_table; 
 								     	   checked_statements = checked_statement :: env.checked_statements; 
-								     	   env_scope = env.env_scope; }
+								     	   env_scope = env.env_scope;
+								     	   returned = while_env.returned; }
 						   in new_env
 
-		| When((e1, op, e2), sl) -> let checked_expression1 = expression_to_sexpression env e1 (* should you be allowed to return from a when? *)
+		| When((e1, op, e2), sl) -> let checked_expression1 = expression_to_sexpression env e1 (* should you be allowed to return from a when? NO *)
 					  	  			and checked_expression2 = expression_to_sexpression env e2 
 					  	  			in let when_env = { function_table = env.function_table;
 										  		   	 	symbol_table = env.symbol_table;
 										  		   	 	checked_statements = [];
-										  		   	 	env_scope = env.env_scope; }
+										  		   	 	env_scope = env.env_scope;
+										  		   	 	returned = false; }
 									in
 					  	   			let when_env = List.fold_left statement_to_sstatement when_env sl in
-					  	   			let checked_statement = Swhen((checked_expression1, op, checked_expression2), when_env.checked_statements) in
+					  	   			if when_env.returned then (raise (Except("When loops should not return!")))
+					  	   			else let checked_statement = Swhen((checked_expression1, op, checked_expression2), when_env.checked_statements) in
 					  	   			let new_env = { function_table = env.function_table;
 								     	   			symbol_table = env.symbol_table; 
 								     	   			checked_statements = checked_statement :: env.checked_statements; 
-								     	   			env_scope = env.env_scope; }
+								     	   			env_scope = env.env_scope; 
+								     	   			returned = false; }
 						   			in new_env
 
 		| Expr(e) -> let checked_expression = expression_to_sexpression env e in
@@ -263,21 +273,24 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 				     let new_env = { function_table = env.function_table;
 								     symbol_table = env.symbol_table; 
 								     checked_statements = checked_statement :: env.checked_statements; 
-								     env_scope = env.env_scope; }
+								     env_scope = env.env_scope; 
+								     returned = false; }
 				     in new_env 
 		| Vdecl(v) -> let checked_vdecl = analyze_vdecl env v in
 					  let checked_statement = Svdecl(checked_vdecl) in
 					  let new_env = { function_table = env.function_table;
 									  symbol_table = checked_vdecl :: env.symbol_table; 
 									  checked_statements = checked_statement :: env.checked_statements; 
-									  env_scope = env.env_scope; } 
+									  env_scope = env.env_scope; 
+									  returned = false; } 
 					  in new_env
 		| Ret(r) -> let checked_expression = check_return env (expression_to_sexpression env r) in (* break out of scope when return is found FLAG IN ENV?? *)
 					let checked_statement = Sret(checked_expression) in
 					let new_env = { function_table = env.function_table;
 									symbol_table = env.symbol_table;
 									checked_statements = checked_statement :: env.checked_statements; 
-									env_scope = env.env_scope; }
+									env_scope = env.env_scope; 
+									returned = true; }
 					in new_env
 
 		| Buy(b) -> let checked_expression = expression_to_sexpression env b in
@@ -286,7 +299,8 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 					let new_env = { function_table = env.function_table;
 									symbol_table = env.symbol_table;
 									checked_statements = checked_statement :: env.checked_statements;
-									env_scope = env.env_scope; }
+									env_scope = env.env_scope;
+									returned = false; }
 					in new_env
 
 		| Sell(s) -> let checked_expression = expression_to_sexpression env s in
@@ -295,7 +309,8 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 					 let new_env = { function_table = env.function_table;
 									 symbol_table = env.symbol_table;
 									 checked_statements = checked_statement :: env.checked_statements;
-									 env_scope = env.env_scope; }
+									 env_scope = env.env_scope;
+									 returned = false; }
 					 in new_env
 		| Print(ex) -> let checked_expression = expression_to_sexpression env ex in
 					   if checked_expression.sdtype = Voidtype && checked_expression.sexpr <> Snoexpr then 
@@ -304,13 +319,15 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 					   let new_env = { function_table = env.function_table;
 									   symbol_table = env.symbol_table;
 									   checked_statements = checked_statement :: env.checked_statements;
-									   env_scope = env.env_scope; }
+									   env_scope = env.env_scope;
+									   returned = false; }
 					   in new_env
 		| Portfolio(str) -> let checked_portfolio = Sportfolio(str) in
 							let new_env = { function_table = env.function_table;
 									   		symbol_table = env.symbol_table;
 									   		checked_statements = checked_portfolio :: env.checked_statements;
-									   		env_scope = env.env_scope; }
+									   		env_scope = env.env_scope;
+									   		returned = false; }
 					   		in new_env
 					
 let check_for_sreturn = function 
@@ -323,7 +340,8 @@ let fdecl_to_sfdecl env (fdecl: Ast.func_decl) = (* multiple_return_test.finl NE
 	let func_env = { function_table = env.function_table; 
 					 symbol_table = checked_formals; 
 					 checked_statements = []; 
-					 env_scope = { scope_name = fdecl.name; scope_rtype = fdecl.rtype; }; }
+					 env_scope = { scope_name = fdecl.name; scope_rtype = fdecl.rtype; };
+					 returned = false; }
 	in 
 	let func_env = List.fold_left statement_to_sstatement func_env fdecl.body in
 	let void = fdecl.rtype = Voidtype
@@ -337,7 +355,8 @@ let fdecl_to_sfdecl env (fdecl: Ast.func_decl) = (* multiple_return_test.finl NE
 		let new_env = { function_table = sfdecl :: env.function_table; 
 						symbol_table = env.symbol_table;
 						checked_statements = env.checked_statements;
-						env_scope = { scope_name = "reserved"; scope_rtype = Voidtype; }; }
+						env_scope = { scope_name = "reserved"; scope_rtype = Voidtype; };
+						returned = false; }
 		in
 		new_env)
 	else (raise (Except("Function '" ^ fdecl.name ^ "' does not have a return statement!"))) (* no_return_test.finl *)
