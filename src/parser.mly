@@ -1,21 +1,19 @@
 %{ open Ast %}
 
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA /*COLON*/
+%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA
 %token PLUS MINUS TIMES DIVIDE POWER MOD
 %token ASSIGN AASSIGN SASSIGN MASSIGN DASSIGN
 %token EQ GEQ GT LEQ LT
-%token RETURN WHILE WHEN IF ELSE /*ELSEIF */ VOID /* NULL BREAK*/
+%token RETURN WHILE WHEN IF ELSE VOID
 %token AND OR NOT
 %token BUY SELL PRINT
-%token INTD STRINGD FLOATD /*PERCENT ARRAY CURR */ STOCK ORDER PF FUNC OF
+%token INTD STRINGD FLOATD /*ARRAY*/ STOCK ORDER PF FUNC OF
 %token <string> TICK
 %token <string> ACCESS
 %token <int> INT
 %token <float> FLOAT
 %token <string> STRING
-/* %token <percent> FLOAT
-%token <currency> FLOAT */
 %token <string> VAR
 %token EOF
 
@@ -59,11 +57,16 @@ statement:
   | PF STRING SEMI { Portfolio($2) }
 
 access_expression:
-  access EQ access { ($1, Equal, $3) }
-  | access LT access { ($1, Less, $3) }
-  | access LEQ access { ($1, Leq, $3) }
-  | access GT access { ($1, Greater, $3) }
-  | access GEQ access { ($1, Geq, $3) }
+  access_num EQ access_num { ($1, Equal, $3) }
+  | access_num LT access_num { ($1, Less, $3) }
+  | access_num LEQ access_num { ($1, Leq, $3) }
+  | access_num GT access_num { ($1, Greater, $3) }
+  | access_num GEQ access_num { ($1, Geq, $3) }
+
+access_num:
+  access { $1 }
+  | INT { Int($1) }
+  | FLOAT { Float($1) }
 
 access:
   stock ACCESS { Access($1, $2) }
