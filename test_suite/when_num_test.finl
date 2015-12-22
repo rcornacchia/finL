@@ -1,7 +1,5 @@
-when @TSLA[price] > 0 {
-	print "hey";
-};
+when @TSLA[price] > 0 {};
 
-when @TSLA[price] < 1000000.1 {
-	print "heyhey";	
-};
+when @TSLA[price] < 1000000.1 {};
+
+print "hey";

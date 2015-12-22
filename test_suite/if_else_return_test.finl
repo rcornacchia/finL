@@ -1,0 +1,18 @@
+function int ret() {
+	1 > 2 ? {
+		return 1;
+	} ! {
+		return 0;
+	};	
+};
+
+print ret();
+
+function int ret2() {
+	1 > 2 ? {
+		return 1;
+	};
+	return 0;
+};
+
+print ret2();

@@ -212,7 +212,7 @@ let check_return env (sexpression: Sast.sexpression) =
 let rec statement_to_sstatement env (statement: Ast.statement) =
 	if env.returned then (raise (Except("Unreachable statement!")))
 	else match statement with
-		If(ex, sl, els) -> let checked_expression = expression_to_sexpression env ex in (* handle multiple returns!!! *)
+		If(ex, sl, els) -> let checked_expression = expression_to_sexpression env ex in
 					  		let typ = checked_expression.sdtype in
 					  		if typ <> Inttype && typ <> Floattype then (raise (Except("If expressions only take numerical types!")))
 					  		else let if_env = { function_table = env.function_table;
@@ -232,7 +232,7 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 								     	    returned = if_env.returned && else_env.returned; }
 						    in new_env
 
-		| While(ex, sl) -> let checked_expression = expression_to_sexpression env ex in (* should you be allowed to return from a while? YES *)
+		| While(ex, sl) -> let checked_expression = expression_to_sexpression env ex in
 					  	   let typ = checked_expression.sdtype in
 					  			if typ <> Inttype && typ <> Floattype then (raise (Except("While expressions only take numerical types!")))
 					  			else let while_env = { function_table = env.function_table;
@@ -250,7 +250,7 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 								     	   returned = while_env.returned; }
 						   in new_env
 
-		| When((e1, op, e2), sl) -> let checked_expression1 = expression_to_sexpression env e1 (* should you be allowed to return from a when? NO *)
+		| When((e1, op, e2), sl) -> let checked_expression1 = expression_to_sexpression env e1
 					  	  			and checked_expression2 = expression_to_sexpression env e2 
 					  	  			in let when_env = { function_table = env.function_table;
 										  		   	 	symbol_table = env.symbol_table;
@@ -329,10 +329,6 @@ let rec statement_to_sstatement env (statement: Ast.statement) =
 									   		env_scope = env.env_scope;
 									   		returned = false; }
 					   		in new_env
-					
-let check_for_sreturn = function 
-	Sret(_) -> true
-	| _ -> false
 
 let fdecl_to_sfdecl env (fdecl: Ast.func_decl) = (* multiple_return_test.finl NEEDS FIX *)
 	let checked_name = name_to_sname env fdecl.name in
@@ -345,7 +341,7 @@ let fdecl_to_sfdecl env (fdecl: Ast.func_decl) = (* multiple_return_test.finl NE
 	in 
 	let func_env = List.fold_left statement_to_sstatement func_env fdecl.body in
 	let void = fdecl.rtype = Voidtype
-	and returns = List.exists check_for_sreturn func_env.checked_statements in
+	and returns = func_env.returned in
 	if (void && not returns) || returns then
 		(let sfdecl = { sname = checked_name;
 				   		sformals = List.rev checked_formals;
