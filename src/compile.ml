@@ -2,6 +2,8 @@ open Ast
 open Sast
 open String
 
+let num_whens = ref 0
+
 let compile_dtype = function
   Inttype -> "int"
   | Stringtype -> "String"
@@ -82,7 +84,10 @@ let rec compile_sstatement = function
                   ") {\n" ^
                   String.concat "\n" (List.map compile_sstatement sl) ^
                   "\n}"
-  | Swhen((e1, op, e2), sl) -> "Thread when = new Thread(new Runnable() {\npublic void run(){\nwhile (true) {\n if (" ^
+  | Swhen((e1, op, e2), sl) -> num_whens := !num_whens + 1;
+                               "Thread when" ^
+                               string_of_int !num_whens ^
+                               " = new Thread(new Runnable() {\npublic void run(){\nwhile (true) {\n if (" ^
                                compile_sexpression e1 ^
                                " " ^
                                Ast.string_of_binop op ^
@@ -90,7 +95,13 @@ let rec compile_sstatement = function
                                compile_sexpression e2 ^
                                ") {\n" ^
                                String.concat "\n" (List.map compile_sstatement sl) ^
-                               "\nbreak;\n}\ntry{ Thread.sleep(10000); } catch (InterruptedException ie) { System.out.println(\"Program execution interrupted!\"); }\n}\n}\n});\nwhen.start();"
+                               "\nbreak;\n}" ^
+                               "\ntry{ Thread.sleep(10000); } " ^
+                               "catch (InterruptedException ie) " ^"
+                               { System.out.println(\"Program execution interrupted!\"); }\n}\n}\n});" ^
+                               "\nwhen" ^ 
+                               string_of_int !num_whens ^
+                               ".start();"
   | Svdecl(v) -> compile_vdecl v ^ ";"
   | Sret(r) -> "return " ^ compile_sexpression r ^ ";"
   | Sbuy(b) -> "portfolio.buy(" ^ compile_sexpression b ^ ");"
